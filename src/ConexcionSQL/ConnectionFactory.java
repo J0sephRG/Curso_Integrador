@@ -18,7 +18,7 @@ public class ConnectionFactory {
         }
     }**/
     private static final String URL = "jdbc:mysql://localhost:3306/restaurant?useSSL=false&serverTimezone=UTC";
-    private static final String USER = "root";  // Usuario XAMPP por defecto
+    private static final String USER = "roo";  // Usuario XAMPP por defecto
     private static final String PASSWORD = "";  // Contraseña vacía por defecto
 
     public static Connection getConnection() throws SQLException {

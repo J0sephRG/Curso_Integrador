@@ -26,47 +26,57 @@
           <Group type="102" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
-                      <Component id="MESASButton" min="-2" pref="95" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="74" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="PARALLEVARButton" min="-2" pref="122" max="-2" attributes="0"/>
-                          <Component id="jLabel1" min="-2" pref="99" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace min="-2" pref="229" max="-2" attributes="0"/>
+                              <Component id="jLabel1" min="-2" pref="99" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
+                              <Component id="MESASButton" min="-2" pref="103" max="-2" attributes="0"/>
+                              <EmptySpace pref="93" max="32767" attributes="0"/>
+                              <Component id="PARALLEVARButton" min="-2" pref="122" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace min="-2" pref="109" max="-2" attributes="0"/>
                       <Component id="DELIVERYButton" min="-2" pref="90" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="102" attributes="0">
-                      <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="MESA1jPanel3" max="32767" attributes="0"/>
-                          <Component id="MESA1jPanel1" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="MESA1jPanel6" max="32767" attributes="0"/>
-                          <Component id="MESA1jPanel" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="MESA1jPanel5" max="32767" attributes="0"/>
-                          <Component id="MESA1jPanel2" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="MESA1jPanel4" max="32767" attributes="0"/>
-                          <Component id="MESA1jPanel7" max="32767" attributes="0"/>
-                      </Group>
-                  </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="TRANSFERIRMESASBoton" min="-2" max="-2" attributes="0"/>
                           <Component id="UNIRMESASButton" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="TRANSFERIRMESASBoton" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="FinalizarTurnoBoton" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace pref="85" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="58" max="-2" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="108" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="MESAjPanel5" max="32767" attributes="0"/>
+                  <Component id="MESAjPanel1" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="MESAjPanel6" max="32767" attributes="0"/>
+                  <Component id="MESAjPanel2" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="MESAjPanel7" max="32767" attributes="0"/>
+                  <Component id="MESAjPanel3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="MESAjPanel4" max="32767" attributes="0"/>
+                  <Component id="MESAjPanel8" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -80,29 +90,28 @@
                   <Component id="DELIVERYButton" alignment="3" min="-2" pref="43" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
+              <Component id="jLabel1" min="-2" pref="60" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Component id="jLabel1" min="-2" pref="60" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="MESA1jPanel" min="-2" max="-2" attributes="0"/>
-                          <Component id="MESA1jPanel2" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                  <Component id="MESA1jPanel1" min="-2" max="-2" attributes="0"/>
-                  <Component id="MESA1jPanel4" min="-2" max="-2" attributes="0"/>
+                  <Component id="MESAjPanel2" min="-2" max="-2" attributes="0"/>
+                  <Component id="MESAjPanel3" min="-2" max="-2" attributes="0"/>
+                  <Component id="MESAjPanel1" min="-2" max="-2" attributes="0"/>
+                  <Component id="MESAjPanel4" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="MESA1jPanel3" alignment="0" max="32767" attributes="0"/>
-                  <Component id="MESA1jPanel6" alignment="0" max="32767" attributes="0"/>
-                  <Component id="MESA1jPanel5" alignment="1" max="32767" attributes="0"/>
-                  <Component id="MESA1jPanel7" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="MESAjPanel5" alignment="0" max="32767" attributes="0"/>
+                  <Component id="MESAjPanel6" alignment="0" max="32767" attributes="0"/>
+                  <Component id="MESAjPanel7" alignment="1" max="32767" attributes="0"/>
+                  <Component id="MESAjPanel8" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
               <Component id="UNIRMESASButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="TRANSFERIRMESASBoton" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="TRANSFERIRMESASBoton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="FinalizarTurnoBoton" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace pref="30" max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -132,7 +141,7 @@
         <Property name="text" type="java.lang.String" value="MESAS"/>
       </Properties>
     </Component>
-    <Container class="javax.swing.JPanel" name="MESA1jPanel">
+    <Container class="javax.swing.JPanel" name="MESAjPanel2">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="cc" green="cc" red="cc" type="rgb"/>
@@ -167,7 +176,7 @@
         </Component>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="MESA1jPanel1">
+    <Container class="javax.swing.JPanel" name="MESAjPanel1">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="cc" green="cc" red="cc" type="rgb"/>
@@ -202,7 +211,7 @@
         </Component>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="MESA1jPanel2">
+    <Container class="javax.swing.JPanel" name="MESAjPanel3">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="cc" green="cc" red="cc" type="rgb"/>
@@ -240,7 +249,7 @@
         </Component>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="MESA1jPanel3">
+    <Container class="javax.swing.JPanel" name="MESAjPanel5">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="cc" green="cc" red="cc" type="rgb"/>
@@ -278,7 +287,7 @@
         </Component>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="MESA1jPanel4">
+    <Container class="javax.swing.JPanel" name="MESAjPanel4">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="cc" green="cc" red="cc" type="rgb"/>
@@ -313,7 +322,7 @@
         </Component>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="MESA1jPanel5">
+    <Container class="javax.swing.JPanel" name="MESAjPanel7">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="cc" green="cc" red="cc" type="rgb"/>
@@ -348,7 +357,7 @@
         </Component>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="MESA1jPanel6">
+    <Container class="javax.swing.JPanel" name="MESAjPanel6">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="cc" green="cc" red="cc" type="rgb"/>
@@ -383,7 +392,7 @@
         </Component>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="MESA1jPanel7">
+    <Container class="javax.swing.JPanel" name="MESAjPanel8">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="cc" green="cc" red="cc" type="rgb"/>
@@ -426,6 +435,11 @@
     <Component class="javax.swing.JButton" name="TRANSFERIRMESASBoton">
       <Properties>
         <Property name="text" type="java.lang.String" value="TRANSFERIR MESAS"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="FinalizarTurnoBoton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="FINALIZAR TURNO"/>
       </Properties>
     </Component>
   </SubComponents>

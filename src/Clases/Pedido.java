@@ -20,7 +20,7 @@ public class Pedido {
     private double calcularTotal() {
         double suma = 0;
         for (Producto producto : productos) {
-            suma += producto.getPrecio();
+            suma += producto.getPrecio_unitario();
         }
         return suma;
     }
