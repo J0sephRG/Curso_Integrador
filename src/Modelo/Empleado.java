@@ -2,26 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Clases;
-
-import java.util.Date;
+package Modelo;
 
 /**
  *
  * @author JOSEPH ROJAS
  */
-public class Cliente extends Persona {
+public class Empleado extends Persona {
 
-    private int idClente;
-
-    public Cliente(int idClente) {
-        this.idClente = idClente;
-    }
-
-    public Cliente(int idClente, String nombre, String apellido, Date fechaNacimiento, String tipodocumento, String telefono, String email) {
-        super(nombre, apellido, fechaNacimiento, tipodocumento, telefono, email);
-        this.idClente = idClente;
-    }
+    
     
     
     @Override

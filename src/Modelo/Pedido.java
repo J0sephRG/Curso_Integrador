@@ -2,12 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Conexion;
+package Modelo;
 
 /**
  *
  * @author JOSEPH ROJAS
  */
-public class conexion {
+public class Pedido {
+    
+    
     
 }
