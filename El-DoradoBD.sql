@@ -342,3 +342,23 @@ INSERT INTO Notificacion (mensaje, estado) VALUES
 ('Nuevo usuario creado: Marta Ramírez', 'no_leído'),
 ('Promoción 2x1 activa en postres', 'leído'),
 ('Actualización de menú diario', 'no_leído');
+
+-- tabla Mesa y sus platos
+CREATE TABLE Mesa_Plato (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_mesa INT NOT NULL,
+    id_plato INT NOT NULL,
+    cantidad INT NOT NULL DEFAULT 1,
+    FOREIGN KEY (id_mesa) REFERENCES Mesa(id_mesa) ON DELETE CASCADE,
+    FOREIGN KEY (id_plato) REFERENCES Plato(id_plato) ON DELETE CASCADE
+)
+
+-- mesas con platos pedidos (Mesa_Plato)
+INSERT INTO Mesa_Plato (id_mesa, id_plato, cantidad) VALUES
+(1, 1, 2), -- Mesa 1: 2 x Combo Pollo
+(1, 4, 1), -- Mesa 1: 1 x Flan Casero
+(2, 2, 1), -- Mesa 2: 1 x Ensalada Mixta
+(3, 5, 3), -- Mesa 3: 3 x Menú Ejecutivo
+(4, 3, 2), -- Mesa 4: 2 x Sándwich de Jamón y Queso
+(5, 1, 1), -- Mesa 5: 1 x Combo Pollo
+(5, 5, 2); -- Mesa 5: 2 x Menú Ejecutivo
