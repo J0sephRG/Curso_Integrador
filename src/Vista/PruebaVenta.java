@@ -41,6 +41,8 @@ public class PruebaVenta extends javax.swing.JPanel {
         jButton18 = new javax.swing.JButton();
         jButtonFinalizarTurno = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jButton13 = new javax.swing.JButton();
+        jButton14 = new javax.swing.JButton();
 
         jpMesas.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -86,6 +88,12 @@ public class PruebaVenta extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 18)); // NOI18N
         jLabel1.setText("MESAS");
 
+        jButton13.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButton13.setText("Mesa 8");
+
+        jButton14.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButton14.setText("Mesa 7");
+
         javax.swing.GroupLayout jpMesasLayout = new javax.swing.GroupLayout(jpMesas);
         jpMesas.setLayout(jpMesasLayout);
         jpMesasLayout.setHorizontalGroup(
@@ -96,35 +104,40 @@ public class PruebaVenta extends javax.swing.JPanel {
                         .addGap(400, 400, 400)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jpMesasLayout.createSequentialGroup()
-                        .addGap(90, 90, 90)
-                        .addComponent(jButton7)
-                        .addGap(44, 44, 44)
-                        .addComponent(jButton8)
-                        .addGap(44, 44, 44)
-                        .addComponent(jButton9)
-                        .addGap(44, 44, 44)
-                        .addComponent(jButton10)
-                        .addGap(54, 54, 54)
-                        .addComponent(jButton11)
-                        .addGap(44, 44, 44)
-                        .addComponent(jButton12))
-                    .addGroup(jpMesasLayout.createSequentialGroup()
-                        .addGap(330, 330, 330)
-                        .addComponent(jButton15)
-                        .addGap(44, 44, 44)
-                        .addComponent(jButton16)
-                        .addGap(46, 46, 46)
-                        .addComponent(jButton17)
-                        .addGap(36, 36, 36)
-                        .addComponent(jButton18))
-                    .addGroup(jpMesasLayout.createSequentialGroup()
                         .addGap(40, 40, 40)
                         .addComponent(jButtonUnirMesas))
                     .addGroup(jpMesasLayout.createSequentialGroup()
                         .addGap(40, 40, 40)
                         .addComponent(jButtonTransferirMesas)
                         .addGap(528, 528, 528)
-                        .addComponent(jButtonFinalizarTurno)))
+                        .addComponent(jButtonFinalizarTurno))
+                    .addGroup(jpMesasLayout.createSequentialGroup()
+                        .addGap(90, 90, 90)
+                        .addGroup(jpMesasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton7)
+                            .addComponent(jButton14))
+                        .addGap(44, 44, 44)
+                        .addGroup(jpMesasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jpMesasLayout.createSequentialGroup()
+                                .addComponent(jButton13)
+                                .addGap(44, 44, 44)
+                                .addComponent(jButton15)
+                                .addGap(44, 44, 44)
+                                .addComponent(jButton16)
+                                .addGap(46, 46, 46)
+                                .addComponent(jButton17)
+                                .addGap(36, 36, 36)
+                                .addComponent(jButton18))
+                            .addGroup(jpMesasLayout.createSequentialGroup()
+                                .addComponent(jButton8)
+                                .addGap(44, 44, 44)
+                                .addComponent(jButton9)
+                                .addGap(44, 44, 44)
+                                .addComponent(jButton10)
+                                .addGap(54, 54, 54)
+                                .addComponent(jButton11)
+                                .addGap(44, 44, 44)
+                                .addComponent(jButton12)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jpMesasLayout.setVerticalGroup(
@@ -142,7 +155,10 @@ public class PruebaVenta extends javax.swing.JPanel {
                     .addComponent(jButton12))
                 .addGap(43, 43, 43)
                 .addGroup(jpMesasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton15)
+                    .addGroup(jpMesasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton15)
+                        .addComponent(jButton13)
+                        .addComponent(jButton14))
                     .addComponent(jButton16)
                     .addComponent(jButton17)
                     .addComponent(jButton18))
@@ -175,6 +191,8 @@ public class PruebaVenta extends javax.swing.JPanel {
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
+    private javax.swing.JButton jButton13;
+    private javax.swing.JButton jButton14;
     private javax.swing.JButton jButton15;
     private javax.swing.JButton jButton16;
     private javax.swing.JButton jButton17;

@@ -4,8 +4,12 @@
  */
 package Vista;
 
+import ConexionSQL.Conexion;
 import javax.swing.JOptionPane;
-
+import java.sql.PreparedStatement;
+import java.sql.Connection; 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 /**
  *
  * @author JOSEPH ROJAS
@@ -146,24 +150,48 @@ int intentos;
     }//GEN-LAST:event_jLabel2MouseClicked
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-        String usuario = "admin";
-        String password = "1234";
-        //OBTENEMOS LOS DATOS DE LOS JTextFild y JPasswordField
-        if (txtUsuario.getText().equals(usuario) && txtContraseña.getText().equals(password)) {
-            dispose(); //Ocultar la interfaz de login si se cumple lo anterior
-            JOptionPane.showMessageDialog(null, "Bienvenido", "Mensaje de bienvenida", JOptionPane.INFORMATION_MESSAGE);
-            Menu dash = new Menu();
-            dash.setVisible(true); //mostrar la interfaz donde esta el programa
-        } else if (intentos == 3) {
-            JOptionPane.showMessageDialog(null, "Has excedido el numero de intentos para poder ingresar al sistema", "Verificar Datos", JOptionPane.ERROR_MESSAGE);
-            System.exit(0);
-        } else {
-            JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrecto intentar nuevamente \n Quedan " + (3 - intentos) + " Intentos ");
-            txtUsuario.setText(""); //reiniciar campo
-            txtContraseña.setText(""); //reiniciar campo
-            txtUsuario.requestFocus(); //Para que pueda registrar nuevamente en el campo user
-            intentos++; //Incrementa los intentos
+        String usuario = txtUsuario.getText();
+        String password = new String (txtContraseña.getPassword());
+        
+        ConexionSQL.Conexion conect = new Conexion();
+        Connection conn = conect.Conectar();
+
+        
+         if (conn != null) {
+        try {
+            String sql = "SELECT * FROM Usuario WHERE nombre = ? AND clave = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, usuario);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                // Login exitoso
+                dispose(); // Cerrar login
+                JOptionPane.showMessageDialog(null, "Bienvenido", "Mensaje de bienvenida", JOptionPane.INFORMATION_MESSAGE);
+                Menu dash = new Menu(); 
+                dash.setVisible(true);
+            } else {
+                intentos++;
+                if (intentos >= 3) {
+                    JOptionPane.showMessageDialog(null, "Has excedido el número de intentos para ingresar al sistema", "Error", JOptionPane.ERROR_MESSAGE);
+                    System.exit(0);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos. Quedan " + (3 - intentos) + " intentos.");
+                    txtUsuario.setText("");
+                    txtContraseña.setText("");
+                    txtUsuario.requestFocus();
+                }
+            }
+
+            conn.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error de consulta: " + e.getMessage());
         }
+    } else {
+        JOptionPane.showMessageDialog(null, "No se pudo conectar a la base de datos.");
+    }
+
     }//GEN-LAST:event_btnSalirActionPerformed
 
     /**

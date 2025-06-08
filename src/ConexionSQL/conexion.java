@@ -4,10 +4,34 @@
  */
 package ConexionSQL;
 
+import java.sql.Connection; 
+import java.sql.DriverManager;
+import javax.swing.JOptionPane;
+
+
 /**
  *
  * @author JOSEPH ROJAS
  */
-public class conexion {
+public class Conexion {
+ Connection xd = null;
+    String usuario ="sa";
+    String pass = "Josephrojas123";
+    String db = "ElDoradoDB";
+    String ip = "localhost";
+    String puerto = "1433";
+                            
+                            
+    public Connection Conectar() {
+        try {
+            String cadena = "jdbc:sqlserver://" + ip + ":" + puerto + ";databaseName=" + db + ";encrypt=true;trustServerCertificate=true";
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            xd = DriverManager.getConnection(cadena, usuario, pass);
+            JOptionPane.showMessageDialog(null, "Se conectó correctamente a la base de datos");
+        } catch (Exception error) {
+            JOptionPane.showMessageDialog(null, "Error al conectar a la base de datos: " + error.toString());
+        }
+        return xd;
+    }
     
 }

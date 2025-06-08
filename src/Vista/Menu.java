@@ -155,10 +155,10 @@ public class Menu extends javax.swing.JFrame {
         );
         contLayout.setVerticalGroup(
             contLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 710, Short.MAX_VALUE)
+            .addGap(0, 720, Short.MAX_VALUE)
         );
 
-        getContentPane().add(cont, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 90, 850, 710));
+        getContentPane().add(cont, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 80, 850, 720));
         cont.getAccessibleContext().setAccessibleParent(jPanel1);
 
         pack();
