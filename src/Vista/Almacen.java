@@ -4,6 +4,11 @@
  */
 package Vista;
 
+import ConexionSQL.Conexion;
+import Controlador.ProductoCont;
+import DAO.ProductoDAO;
+import java.sql.Connection;
+
 /**
  *
  * @author enman
@@ -13,8 +18,13 @@ public class Almacen extends javax.swing.JPanel {
     /**
      * Creates new form DosAlm
      */
+    
     public Almacen() {
         initComponents();
+        Conexion conexion = new Conexion();  
+        ProductoDAO dao = new ProductoDAO(conexion.Conectar()); 
+        ProductoCont controlador = new ProductoCont(dao, tblProductos);
+        controlador.cargarProductosEnTabla();
     }
 
     /**
@@ -33,7 +43,7 @@ public class Almacen extends javax.swing.JPanel {
         jButtonEliminar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblProductos = new javax.swing.JTable();
         jButtonImprimirListado = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -69,7 +79,7 @@ public class Almacen extends javax.swing.JPanel {
         jLabel2.setText("LISTA DEL ALMACEN");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 120, -1, -1));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
@@ -80,7 +90,7 @@ public class Almacen extends javax.swing.JPanel {
                 "ID", "Nombre", "Costo", "Fecha", "Cantidad", "Tipo Movimiento"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblProductos);
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 160, 800, 260));
 
@@ -97,6 +107,11 @@ public class Almacen extends javax.swing.JPanel {
 
         jButtonNuevo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButtonNuevo.setText("Nuevo");
+        jButtonNuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonNuevoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -143,6 +158,11 @@ public class Almacen extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonBuacarActionPerformed
 
+    private void jButtonNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNuevoActionPerformed
+        ReProducto xd = new ReProducto();
+        xd.setVisible(true);
+    }//GEN-LAST:event_jButtonNuevoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonBuacar;
@@ -156,7 +176,8 @@ public class Almacen extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tblProductos;
     private javax.swing.JTextField textBuscar;
     // End of variables declaration//GEN-END:variables
+ 
 }
