@@ -7,7 +7,11 @@ package Vista;
 import ConexionSQL.Conexion;
 import Controlador.ProductoCont;
 import DAO.ProductoDAO;
+import Modelo.Producto;
 import java.sql.Connection;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -18,13 +22,13 @@ public class Almacen extends javax.swing.JPanel {
     /**
      * Creates new form DosAlm
      */
-    
+    private ProductoDAO productoDAO; // Asegúrate de tener tu ProductoDAO
+    private Conexion conexion;
     public Almacen() {
         initComponents();
-        Conexion conexion = new Conexion();  
-        ProductoDAO dao = new ProductoDAO(conexion.Conectar()); 
-        ProductoCont controlador = new ProductoCont(dao, tblProductos);
-        controlador.cargarProductosEnTabla();
+        conexion = new Conexion();  // Inicializamos la conexión
+        productoDAO = new ProductoDAO(conexion.Conectar());  // Creamos el ProductoDAO con la conexión
+        cargarDatos();
     }
 
     /**
@@ -68,11 +72,21 @@ public class Almacen extends javax.swing.JPanel {
         jButtonModificar.setBackground(new java.awt.Color(204, 255, 204));
         jButtonModificar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButtonModificar.setText("Modificar");
+        jButtonModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonModificarActionPerformed(evt);
+            }
+        });
         jPanel1.add(jButtonModificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 80, -1, -1));
 
         jButtonEliminar.setBackground(new java.awt.Color(255, 102, 102));
         jButtonEliminar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButtonEliminar.setText("Eliminar");
+        jButtonEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEliminarActionPerformed(evt);
+            }
+        });
         jPanel1.add(jButtonEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 80, -1, -1));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -155,13 +169,21 @@ public class Almacen extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonBuacarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuacarActionPerformed
-        // TODO add your handling code here:
+        buscar();
     }//GEN-LAST:event_jButtonBuacarActionPerformed
 
     private void jButtonNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNuevoActionPerformed
         ReProducto xd = new ReProducto();
         xd.setVisible(true);
     }//GEN-LAST:event_jButtonNuevoActionPerformed
+
+    private void jButtonEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarActionPerformed
+        eliminar();
+    }//GEN-LAST:event_jButtonEliminarActionPerformed
+
+    private void jButtonModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonModificarActionPerformed
+       //modificar();
+    }//GEN-LAST:event_jButtonModificarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -179,5 +201,56 @@ public class Almacen extends javax.swing.JPanel {
     private javax.swing.JTable tblProductos;
     private javax.swing.JTextField textBuscar;
     // End of variables declaration//GEN-END:variables
- 
+    private void cargarDatos() {
+        ProductoCont controlador = new ProductoCont(productoDAO, tblProductos);
+        controlador.cargarProductos();
+    }
+
+    private void eliminar() {
+        int rowIndex = tblProductos.getSelectedRow(); 
+        if (rowIndex >= 0) {
+            int idProducto = (int) tblProductos.getValueAt(rowIndex, 0); 
+            ProductoDAO dao = new ProductoDAO(conexion.Conectar());
+            dao.eliminarProducto(idProducto);  
+            DefaultTableModel modelo = (DefaultTableModel) tblProductos.getModel();
+            modelo.removeRow(rowIndex);  
+            tblProductos.revalidate();
+            tblProductos.repaint();
+        } else {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar una fila para eliminar.");
+        }
+    }
+
+    private void buscar() {
+       String searchTerm = textBuscar.getText().trim();  // Obtenemos el texto de búsqueda
+    
+    if (!searchTerm.isEmpty()) {
+        ProductoDAO dao = new ProductoDAO(conexion.Conectar());
+        ArrayList<Producto> productosEncontrados = dao.buscarProductos(searchTerm);  // Llama a la búsqueda
+        
+        // Limpia la tabla antes de agregar los resultados de la búsqueda
+        DefaultTableModel modelo = (DefaultTableModel) tblProductos.getModel();
+        modelo.setRowCount(0);  // Limpia la tabla
+
+        // Agrega las filas de los productos encontrados
+        for (Producto p : productosEncontrados) {
+            modelo.addRow(new Object[]{
+                p.getIdproducto(),
+                p.getNombre(),
+                p.getPrecio(),
+                p.getStockAct(),
+                p.getStockMin(),
+                p.getUnidadMedida(),
+                p.getDescripcion(),
+                p.getCategoria().getIdcategoria()
+            });
+        }
+
+        // Refresca la tabla para mostrar los resultados
+        tblProductos.revalidate();
+        tblProductos.repaint();
+    } else {
+        JOptionPane.showMessageDialog(this, "Por favor ingrese un término de búsqueda.");
+    }
+    }
 }

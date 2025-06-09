@@ -27,9 +27,9 @@ public class Conexion {
             String cadena = "jdbc:sqlserver://" + ip + ":" + puerto + ";databaseName=" + db + ";encrypt=true;trustServerCertificate=true";
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             xd = DriverManager.getConnection(cadena, usuario, pass);
-            JOptionPane.showMessageDialog(null, "Se conectó correctamente a la base de datos");
+            System.out.println("Se conectó correctamente a la base de datos");
         } catch (Exception error) {
-            JOptionPane.showMessageDialog(null, "Error al conectar a la base de datos: " + error.toString());
+           System.out.println("No se conectó correctamente a la base de datos");
         }
         return xd;
     }

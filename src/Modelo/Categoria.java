@@ -45,5 +45,9 @@ public class Categoria {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
-        
+    
+    @Override
+    public String toString() {
+        return String.valueOf(idcategoria); 
+    }    
 }

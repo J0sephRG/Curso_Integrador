@@ -60,6 +60,7 @@ public class ReProducto extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtDescrip = new javax.swing.JTextArea();
+        bntCancalar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -99,6 +100,13 @@ public class ReProducto extends javax.swing.JFrame {
         txtDescrip.setRows(5);
         jScrollPane1.setViewportView(txtDescrip);
 
+        bntCancalar.setText("Cancelar");
+        bntCancalar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bntCancalarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -119,12 +127,8 @@ public class ReProducto extends javax.swing.JFrame {
                                     .addComponent(jLabel6))
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(0, 54, Short.MAX_VALUE)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel4)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(btnGuardar)
-                                        .addGap(106, 106, 106)))))
+                                .addGap(0, 67, Short.MAX_VALUE)
+                                .addComponent(jLabel4)))
                         .addGap(91, 91, 91))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -137,6 +141,12 @@ public class ReProducto extends javax.swing.JFrame {
                             .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtNombre, javax.swing.GroupLayout.Alignment.LEADING))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addComponent(btnGuardar)
+                .addGap(75, 75, 75)
+                .addComponent(bntCancalar)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -172,7 +182,9 @@ public class ReProducto extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnGuardar)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnGuardar)
+                    .addComponent(bntCancalar))
                 .addContainerGap(31, Short.MAX_VALUE))
         );
 
@@ -197,6 +209,10 @@ public class ReProducto extends javax.swing.JFrame {
     private void cboCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboCategoriaActionPerformed
       
     }//GEN-LAST:event_cboCategoriaActionPerformed
+
+    private void bntCancalarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntCancalarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_bntCancalarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -234,6 +250,7 @@ public class ReProducto extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bntCancalar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JComboBox<String> cboCategoria;
     private javax.swing.JLabel jLabel1;
@@ -302,7 +319,7 @@ public class ReProducto extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Producto guardado correctamente");
 
                 ProductoCont controlador = new ProductoCont(dao, tblProductos);
-                controlador.cargarProductosEnTabla(); 
+                controlador.cargarProductos(); 
                 this.dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Error al guardar el producto");
