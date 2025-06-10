@@ -1,4 +1,4 @@
-package Modelo;
+package model;
 
 public class Mesa {
     private int id_mesa;

@@ -1,4 +1,5 @@
-package Modelo;
+package model;
+
 
 import java.math.BigDecimal;
 
@@ -7,9 +8,7 @@ public class Plato {
     private String nombre;
     private BigDecimal precio;
     private String descripcion;
-
-    public Plato() {
-    }
+    // Constructor, Getters y Setters
 
     public Plato(int id_plato, String nombre, BigDecimal precio, String descripcion) {
         this.id_plato = id_plato;

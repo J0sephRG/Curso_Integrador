@@ -1,33 +1,36 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package Modelo;
+
+package model;
 
 import java.sql.Timestamp;
-import java.util.Date;
 
-/**
- *
- * @author JOSEPH ROJAS
- */
-public class Cliente extends Persona {
 
-     private int id_cliente;
+public class Cliente {
+    private int id_cliente;
+   private String dni;
     private String nombre;
     private String apellido;
     private String telefono;
     private String email;
-    private Timestamp fecha_registro;
 
-    public Cliente(int id_cliente, String nombre, String apellido, String telefono, String email, Timestamp fecha_registro) {
+    public Cliente(int id_cliente, String dni, String nombre, String apellido, String telefono, String email, Timestamp fecha_registro) {
         this.id_cliente = id_cliente;
+        this.dni = dni;
         this.nombre = nombre;
         this.apellido = apellido;
         this.telefono = telefono;
         this.email = email;
         this.fecha_registro = fecha_registro;
     }
+
+    public String getDni() {
+        return dni;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
+    private Timestamp fecha_registro;
+    // Constructor, Getters y Setters
 
     public int getId_cliente() {
         return id_cliente;
@@ -77,9 +80,5 @@ public class Cliente extends Persona {
         this.fecha_registro = fecha_registro;
     }
 
-    @Override
-    public void mostrarInformacion() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-    
 }
+    

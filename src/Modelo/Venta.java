@@ -1,22 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package Modelo;
+package model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-/**
- *
- * @author JOSEPH ROJAS
- */
+
 public class Venta {
-      private int id_venta;
+    private int id_venta;
     private Timestamp fecha_venta;
-    private Integer id_usuario; 
-    private String metodo_pago; 
+    private Integer id_usuario; // Puede ser null si es SET NULL
+    private String metodo_pago; // efectivo, tarjeta, transferencia
     private BigDecimal monto_total;
+    // Constructor, Getters y Setters
+
 
     public Venta(int id_venta, Timestamp fecha_venta, Integer id_usuario, String metodo_pago, BigDecimal monto_total) {
         this.id_venta = id_venta;

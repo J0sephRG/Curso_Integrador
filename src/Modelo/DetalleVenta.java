@@ -1,10 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package Modelo;
+package model;
 
+import DAO.PlatoDAO;
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class DetalleVenta {
     private int id_detalle;
@@ -14,7 +15,8 @@ public class DetalleVenta {
     private BigDecimal precio_unitario;
     private BigDecimal subtotal;
     // Constructor, Getters y Setters
-
+    private Connection connection;
+    
     public DetalleVenta(int id_detalle, int id_venta, int id_producto, int cantidad, BigDecimal precio_unitario, BigDecimal subtotal) {
         this.id_detalle = id_detalle;
         this.id_venta = id_venta;
@@ -22,6 +24,7 @@ public class DetalleVenta {
         this.cantidad = cantidad;
         this.precio_unitario = precio_unitario;
         this.subtotal = subtotal;
+        this.connection = connection;
     }
 
     public int getId_detalle() {
@@ -71,4 +74,25 @@ public class DetalleVenta {
     public void setSubtotal(BigDecimal subtotal) {
         this.subtotal = subtotal;
     }
+
+    public Plato getPlato(int id) {
+        Plato plato = null;
+        String query = "SELECT * FROM platos WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, id);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                int id_plato = rs.getInt("id_plato");
+                String nombre = rs.getString("nombre");
+                BigDecimal precio = rs.getBigDecimal("precio");
+                String descripcion= rs.getString("descripcion");
+                plato = new Plato(id_plato, nombre, precio, descripcion);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Manejo de excepciones
+        }
+        return plato;
+    
+   }
+    
 }
