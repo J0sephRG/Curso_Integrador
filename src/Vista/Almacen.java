@@ -222,35 +222,26 @@ public class Almacen extends javax.swing.JPanel {
     }
 
     private void buscar() {
-       String searchTerm = textBuscar.getText().trim();  // Obtenemos el texto de búsqueda
-    
-    if (!searchTerm.isEmpty()) {
+       String textoBuscar = textBuscar.getText();  
         ProductoDAO dao = new ProductoDAO(conexion.Conectar());
-        ArrayList<Producto> productosEncontrados = dao.buscarProductos(searchTerm);  // Llama a la búsqueda
-        
-        // Limpia la tabla antes de agregar los resultados de la búsqueda
-        DefaultTableModel modelo = (DefaultTableModel) tblProductos.getModel();
-        modelo.setRowCount(0);  // Limpia la tabla
-
-        // Agrega las filas de los productos encontrados
-        for (Producto p : productosEncontrados) {
-            modelo.addRow(new Object[]{
-                p.getIdproducto(),
-                p.getNombre(),
-                p.getPrecio(),
-                p.getStockAct(),
-                p.getStockMin(),
-                p.getUnidadMedida(),
-                p.getDescripcion(),
-                p.getCategoria().getIdcategoria()
-            });
+        ArrayList<Producto> productos = dao.buscarProductos(textoBuscar); 
+        if (productos.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No se encontraron productos.");
+        } else {
+            DefaultTableModel modelo = (DefaultTableModel) tblProductos.getModel();
+            modelo.setRowCount(0); 
+            for (Producto producto : productos) {
+                modelo.addRow(new Object[]{
+                    producto.getIdproducto(),
+                    producto.getNombre(),
+                    producto.getPrecio(),
+                    producto.getStockAct(),
+                    producto.getStockMin(),
+                    producto.getUnidadMedida(),
+                    producto.getDescripcion(),
+                    producto.getCategoria().getIdcategoria()
+                });
+            }
         }
-
-        // Refresca la tabla para mostrar los resultados
-        tblProductos.revalidate();
-        tblProductos.repaint();
-    } else {
-        JOptionPane.showMessageDialog(this, "Por favor ingrese un término de búsqueda.");
-    }
     }
 }

@@ -4,6 +4,7 @@
  */
 package Vista;
 
+import Vista.UsAdm;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 
@@ -37,36 +38,50 @@ public class Menu extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         BtnUsuario = new javax.swing.JButton();
         BtnAlmacen = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         cont = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel1.setBackground(new java.awt.Color(204, 255, 255));
+        jPanel1.setBackground(new java.awt.Color(51, 51, 51));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        BtnInicio.setBackground(new java.awt.Color(153, 153, 153));
         BtnInicio.setText("Inicio");
+        BtnInicio.setBorder(null);
+        BtnInicio.setBorderPainted(false);
         BtnInicio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnInicioActionPerformed(evt);
             }
         });
+        jPanel1.add(BtnInicio, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 170, 190, 44));
 
+        btnVentas.setBackground(new java.awt.Color(153, 153, 153));
         btnVentas.setText("Ventas");
+        btnVentas.setBorder(null);
+        btnVentas.setBorderPainted(false);
         btnVentas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnVentasActionPerformed(evt);
             }
         });
+        jPanel1.add(btnVentas, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 310, 190, 40));
 
+        BtnProveedor.setBackground(new java.awt.Color(153, 153, 153));
         BtnProveedor.setText("Proveedor");
+        BtnProveedor.setBorder(null);
+        BtnProveedor.setBorderPainted(false);
         BtnProveedor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnProveedorActionPerformed(evt);
             }
         });
+        jPanel1.add(BtnProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 240, 190, 44));
 
-        jButton2.setBackground(new java.awt.Color(204, 255, 255));
+        jButton2.setBackground(new java.awt.Color(102, 102, 102));
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagen/pngwing.com (5).png"))); // NOI18N
         jButton2.setBorder(null);
         jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -75,74 +90,49 @@ public class Menu extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 800, 40, 40));
 
+        BtnUsuario.setBackground(new java.awt.Color(153, 153, 153));
         BtnUsuario.setText("Usuario");
+        BtnUsuario.setBorder(null);
+        BtnUsuario.setBorderPainted(false);
         BtnUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnUsuarioActionPerformed(evt);
             }
         });
+        jPanel1.add(BtnUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 370, 190, 44));
 
+        BtnAlmacen.setBackground(new java.awt.Color(153, 153, 153));
         BtnAlmacen.setText("Almacen ");
+        BtnAlmacen.setBorder(null);
+        BtnAlmacen.setBorderPainted(false);
         BtnAlmacen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnAlmacenActionPerformed(evt);
             }
         });
+        jPanel1.add(BtnAlmacen, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 440, 190, 44));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(BtnUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnVentas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(BtnProveedor, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
-                            .addComponent(BtnInicio, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(BtnAlmacen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(39, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(167, 167, 167)
-                .addComponent(BtnInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(BtnProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnVentas, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(BtnUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(BtnAlmacen, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 304, Short.MAX_VALUE)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagen/Logo-removebg-preview.png"))); // NOI18N
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 10, 120, 150));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 190, 800));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 190, 860));
 
-        jPanel2.setBackground(new java.awt.Color(167, 249, 249));
+        jPanel2.setBackground(new java.awt.Color(204, 204, 204));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 850, Short.MAX_VALUE)
+            .addGap(0, 860, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 90, Short.MAX_VALUE)
         );
 
-        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(187, -5, 850, 90));
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(187, -5, 860, 90));
 
         cont.setBackground(new java.awt.Color(255, 255, 255));
         cont.setName(""); // NOI18N
@@ -152,14 +142,14 @@ public class Menu extends javax.swing.JFrame {
         cont.setLayout(contLayout);
         contLayout.setHorizontalGroup(
             contLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 850, Short.MAX_VALUE)
+            .addGap(0, 860, Short.MAX_VALUE)
         );
         contLayout.setVerticalGroup(
             contLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 720, Short.MAX_VALUE)
+            .addGap(0, 780, Short.MAX_VALUE)
         );
 
-        getContentPane().add(cont, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 80, 850, 720));
+        getContentPane().add(cont, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 80, 860, 780));
         cont.getAccessibleContext().setAccessibleParent(jPanel1);
 
         pack();
@@ -186,7 +176,7 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_BtnAlmacenActionPerformed
 
     private void BtnUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnUsuarioActionPerformed
-        ShowJpanel(new Usuario());
+        ShowJpanel(new UsAdm());
     }//GEN-LAST:event_BtnUsuarioActionPerformed
 
     /**
@@ -233,6 +223,7 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JButton btnVentas;
     private javax.swing.JPanel cont;
     private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables

@@ -42,6 +42,7 @@ public class ProductoDAO {
             return false;
         }
     }
+    //metodo antes, o sea que muestra los productos en la tabla, antes de realizar alguna accion del CRUD
     public ArrayList<Producto> obtenerProductos() {
         String query = "SELECT * FROM Producto"; 
         ArrayList<Producto> productos = new ArrayList<>();
@@ -108,35 +109,34 @@ public class ProductoDAO {
 }
  
     public ArrayList<Producto> buscarProductos(String searchTerm) {
-    ArrayList<Producto> productos = new ArrayList<>();
-    String query = "SELECT * FROM Producto WHERE nombre LIKE ? OR id_producto LIKE ? OR precio LIKE ? OR stock_actual LIKE ? OR stock_minimo LIKE ? OR unidad_medida LIKE ?";
-    try (PreparedStatement stmt = conn.prepareStatement(query)) {
-        String searchQuery = "%" + searchTerm + "%"; 
-        stmt.setString(1, searchQuery);
-        stmt.setString(2, searchQuery);
-        stmt.setString(3, searchQuery);
-        stmt.setString(4, searchQuery);
-        stmt.setString(5, searchQuery);
-        stmt.setString(6, searchQuery);
+        ArrayList<Producto> productos = new ArrayList<>();
+        String query = "SELECT * FROM Producto WHERE nombre LIKE ? OR id_producto LIKE ? OR precio LIKE ? OR stock_actual LIKE ? OR stock_minimo LIKE ? OR unidad_medida LIKE ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            String searchQuery = "%" + searchTerm + "%"; 
+            stmt.setString(1, searchQuery);
+            stmt.setString(2, searchQuery);
+            stmt.setString(3, searchQuery);
+            stmt.setString(4, searchQuery);
+            stmt.setString(5, searchQuery);
+            stmt.setString(6, searchQuery);
 
-        ResultSet rs = stmt.executeQuery();
-        while (rs.next()) {
-            Producto p = new Producto(
-                rs.getInt("id_producto"),
-                rs.getString("nombre"),
-                rs.getDouble("precio"),
-                rs.getInt("stock_actual"),
-                rs.getInt("stock_minimo"),
-                rs.getString("unidad_medida"),
-                new Categoria(rs.getInt("id_categoria"), rs.getString("nombre"), rs.getString("descripcion")),
-                rs.getString("descripcion")
-            );
-            productos.add(p);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Producto p = new Producto(
+                    rs.getInt("id_producto"),
+                    rs.getString("nombre"),
+                    rs.getDouble("precio"),
+                    rs.getInt("stock_actual"),
+                    rs.getInt("stock_minimo"),
+                    rs.getString("unidad_medida"),
+                    new Categoria(rs.getInt("id_categoria"), rs.getString("nombre"), rs.getString("descripcion")),
+                    rs.getString("descripcion")
+                );
+                productos.add(p);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return productos;
     }
-    return productos;
-}
-    
 }

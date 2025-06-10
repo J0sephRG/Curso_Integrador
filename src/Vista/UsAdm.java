@@ -2,7 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package GUI;
+package Vista;
+
+import Vista.Usuario;
 
 /**
  *
@@ -49,8 +51,6 @@ public class UsAdm extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 313, Short.MAX_VALUE)
         );
-
-        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel2.setBackground(new java.awt.Color(204, 204, 204));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -109,6 +109,11 @@ public class UsAdm extends javax.swing.JPanel {
 
         jButtonNuevo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButtonNuevo.setText("Nuevo");
+        jButtonNuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonNuevoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -133,12 +138,26 @@ public class UsAdm extends javax.swing.JPanel {
 
         jPanel2.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 880, 70));
 
-        add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 880, 490));
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 874, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 479, Short.MAX_VALUE)
+        );
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButtonNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNuevoActionPerformed
+        Usuario us = new Usuario();
+        us.setVisible(true);
+    }//GEN-LAST:event_jButtonNuevoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
