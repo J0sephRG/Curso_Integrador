@@ -1,7 +1,7 @@
 package DAO;
 
-import Conexion.DatabaseConnection;
-import model.Notificacion;
+import ConexionSQL.Conexion;
+import Modelo.Notificacion;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,8 @@ import java.util.List;
 public class NotificacionDAO {
     private Connection connection;
 
-    public NotificacionDAO(Connection connection) throws SQLException {
-         this.connection = DatabaseConnection.getConnection(); // Obtener la conexión de la base de datos
+    public NotificacionDAO(Connection connection) {
+        this.connection = connection;
     }
 
     public void agregarNotificacion(Notificacion notificacion) throws SQLException {

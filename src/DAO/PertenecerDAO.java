@@ -1,6 +1,6 @@
 package DAO;
 
-import Conexion.DatabaseConnection;
+import ConexionSQL.Conexion;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +8,8 @@ import java.util.List;
 public class PertenecerDAO {
     private Connection connection;
 
-    public PertenecerDAO(Connection connection) throws SQLException {
-         this.connection = DatabaseConnection.getConnection(); // Obtener la conexión de la base de datos
+    public PertenecerDAO(Connection connection) {
+        this.connection = connection;
     }
 
     public void agregarRelacion(int idCategoria, int idProducto) throws SQLException {

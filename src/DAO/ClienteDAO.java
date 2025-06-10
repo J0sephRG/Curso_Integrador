@@ -1,7 +1,7 @@
 package DAO;
 
-import Conexion.DatabaseConnection;
-import model.Cliente;
+import ConexionSQL.Conexion;
+import Modelo.Cliente;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,10 +9,9 @@ import java.util.List;
 public class ClienteDAO {
     private Connection connection;
 
-    public ClienteDAO(Connection connection) throws SQLException {
-         this.connection = DatabaseConnection.getConnection(); // Obtener la conexión de la base de datos
+    public ClienteDAO(Connection connection) {
+        this.connection = connection;
     }
-
     public void agregarCliente(Cliente cliente) throws SQLException {
         String query = "INSERT INTO Cliente(nombre, apellido, telefono, email) VALUES (?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {

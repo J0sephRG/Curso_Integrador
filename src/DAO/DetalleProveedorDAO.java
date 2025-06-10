@@ -1,7 +1,7 @@
 package DAO;
 
-import Conexion.DatabaseConnection;
-import model.DetalleProveedor;
+import ConexionSQL.Conexion;
+import Modelo.DetalleProveedor;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,8 @@ import java.util.List;
 public class DetalleProveedorDAO {
     private Connection connection;
 
-    public DetalleProveedorDAO(Connection connection) throws SQLException {
-        this.connection = DatabaseConnection.getConnection(); // Obtener la conexión de la base de datos
+    public DetalleProveedorDAO(Connection connection) {
+        this.connection = connection;
     }
 
     public void agregarDetalleProveedor(DetalleProveedor detalle) throws SQLException {

@@ -1,23 +1,23 @@
 package DAO;
 
-import Conexion.DatabaseConnection;
+import ConexionSQL.Conexion;
 import java.math.BigDecimal;
-import model.Venta;
+import Modelo.Venta;
 import java.sql.*;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.security.Timestamp;
-import model.DetalleVenta;
+import Modelo.DetalleVenta;
 
 public class VentaDAO {
     private Connection connection;
 
-
-    public VentaDAO(Connection connection1) throws SQLException {
-         this.connection = DatabaseConnection.getConnection(); // Obtener la conexión de la base de datos
+    public VentaDAO(Connection connection) {
+        this.connection = connection;
     }
 
+    
     public void agregarVenta(Venta venta) throws SQLException {
         String query = "INSERT INTO Venta(fecha_venta, id_usuario, metodo_pago, monto_total) VALUES (?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {

@@ -1,18 +1,18 @@
 package DAO;
-import Conexion.DatabaseConnection;
+import ConexionSQL.Conexion;
 import java.sql.*;
 import java.sql.Connection;
-import model.Usuario;
+import Modelo.Usuario;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UsuarioDAO {
     private Connection connection;
 
-    public UsuarioDAO(Connection connection) throws SQLException {
-         this.connection = DatabaseConnection.getConnection(); // Obtener la conexión de la base de datos
+    public UsuarioDAO(Connection connection) {
+        this.connection = connection;
     }
-
+    
     public void agregarUsuario(Usuario usuario) throws SQLException {
         String query = "INSERT INTO Usuario(nombre, apellido, rol, clave) VALUES (?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {

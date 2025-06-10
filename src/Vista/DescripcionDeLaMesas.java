@@ -1,16 +1,15 @@
 package VISTA;
-import Conexion.DatabaseConnection;
+import ConexionSQL.Conexion;
 import DAO.ClienteDAO;
 import DAO.DetalleVentaDAO;
 import DAO.PlatoDAO;
 import DAO.VentaDAO;
-import model.Cliente;
-import model.DetalleVenta;
-import model.Plato;
-import model.Venta;
+import Modelo.Cliente;
+import Modelo.DetalleVenta;
+import Modelo.Plato;
+import Modelo.Venta;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -18,19 +17,19 @@ import java.util.List;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 public class DescripcionDeLaMesas extends javax.swing.JPanel {
-  private Connection connection; // Conexión a la base de datos
-  private int mesaNumber; // Número de la mesa
+  private Connection connection; 
+  private int mesaNumber;
   DefaultTableModel modelo = new DefaultTableModel();
   JTable jTableListaDeLosPedidos = new JTable(modelo);
     
    public DescripcionDeLaMesas(Connection connection, int numeroMesa) throws SQLException {
-        this.connection = connection; // Usar la conexión pasada como parámetro
-        this.mesaNumber = numeroMesa; // Guarda el número de mesa
+        this.connection = connection; 
+        this.mesaNumber = numeroMesa; 
         initComponents();
-        cargarPlatosEnComboBox(); // Cargar platos en el combo box
-        configurarComponentes(); // Configurar componentes de la interfaz
-        actualizarEtiquetaMesa(); // Actualizar la etiqueta de la mesa
-        cargarPedidosDeLaMesa(); // Cargar los pedidos existentes para la mesa
+        cargarPlatosEnComboBox(); 
+        configurarComponentes(); 
+        actualizarEtiquetaMesa(); 
+
     }
     
     private void configurarComponentes() {
@@ -40,14 +39,13 @@ public class DescripcionDeLaMesas extends javax.swing.JPanel {
         jTextFieldMontoACobrar.setEditable(false);
         jTextFieldTotalDeVenta.setEditable(false);
         jTextFieldResultadoDescuento.setEditable(false);
-        // Inicialización de comboBoxes para tipo comprobante y tipo de pago
-        jComboBoxTipoDePago.setModel(new DefaultComboBoxModel<>(new String[]{"Efectivo", "Billetera Digital", "Tarjeta"}));
+        cboTipoDePago.setModel(new DefaultComboBoxModel<>(new String[]{"Efectivo", "Billetera Digital", "Tarjeta"}));
         jComboBoxTipoDeComprobante.setModel(new DefaultComboBoxModel<>(new String[]{"Factura", "Boleta por DNI", "Boleta simple"}));
     }
     
     private void cargarPlatosEnComboBox() {
         try {
-            PlatoDAO platoDAO = new PlatoDAO(connection); // Usar la conexión existente
+            PlatoDAO platoDAO = new PlatoDAO(connection);
             List<Plato> platos = platoDAO.listarPlatos();
             for (Plato plato : platos) {
                 jComboBoxDeBusquedaDePlatillos.addItem(plato.getNombre()); // Agregar nombres de platos al combo box
@@ -57,34 +55,6 @@ public class DescripcionDeLaMesas extends javax.swing.JPanel {
         }
     }
     
-private void cargarPedidosDeLaMesa() {
-    try {
-        DetalleVentaDAO detalleVentaDAO = new DetalleVentaDAO(connection);
-        
-        // Obtener pedidos por mesa
-        List<DetalleVenta> pedidos = detalleVentaDAO.obtenerPedidosPorMesa(mesaNumber); 
-        
-        // Limpiar la tabla antes de cargar los nuevos pedidos
-        modelo.setRowCount(0);  // Asegúrate de que 'modelo' esté inicializado
-        
-        // Iterar sobre cada pedido
-        for (DetalleVenta detalle : pedidos) {
-            // Obtener el plato a partir del DetalleVenta
-            Plato plato = detalle.getPlato(int, id); // Cambié este método a getPlato()
-            
-            // Comprobar que plato no sea nulo
-            if (plato != null) {
-                agregarFilaTabla(plato.getId_plato(), plato.getNombre(), detalle.getCantidad(), plato.getPrecio(), detalle.getSubtotal());
-            } else {
-                System.err.println("El plato es nulo para el detalle de venta: " + detalle);
-            }
-        }
-        
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this, "Error cargando pedidos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    }
-}
-
 
     
     private void actualizarEtiquetaMesa() {
@@ -101,7 +71,7 @@ private void cargarPedidosDeLaMesa() {
                 total = total.add(filaTotal); // Solo sumar si filaTotal no es null
             }
         }
-jTextFieldTotalDeVenta.setText(total.toString());
+        jTextFieldTotalDeVenta.setText(total.toString());
         // Calcular descuento si existe
         String descuentoStr = jTextFieldDescuento.getText().trim();
         BigDecimal descuentoAplicado = BigDecimal.ZERO;
@@ -276,7 +246,7 @@ private void buscarClientePorDNI() {
 // Crear venta
             VentaDAO ventaDAO = new VentaDAO(connection);
             Venta venta = new Venta(0, new java.sql.Timestamp(System.currentTimeMillis()), null,
-                    (String) jComboBoxTipoDePago.getSelectedItem(), montoTotal);
+                    (String) cboTipoDePago.getSelectedItem(), montoTotal);
             ventaDAO.agregarVenta(venta);
             // Obtener ID de venta (debe implementarse método para recuperar último ID o usar retorno en agregarVenta)
             // Por simplicidad, se asume ID generado fuera de este ejemplo.
@@ -308,7 +278,7 @@ private void limpiarFormulario() {
         jTextFieldVuelto.setText("");
         jTextFieldDescuento.setText("");
         jTextFieldResultadoDescuento.setText("");
-        jComboBoxTipoDePago.setSelectedIndex(0);
+        cboTipoDePago.setSelectedIndex(0);
         jComboBoxTipoDeComprobante.setSelectedIndex(0);
     }
      
@@ -327,7 +297,7 @@ private void limpiarFormulario() {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jButtonBuscarCLIENTE = new javax.swing.JButton();
-        jComboBoxTipoDePago = new javax.swing.JComboBox<>();
+        cboTipoDePago = new javax.swing.JComboBox<>();
         jComboBoxTipoDeComprobante = new javax.swing.JComboBox<>();
         jLabel14 = new javax.swing.JLabel();
         textNombre = new javax.swing.JTextField();
@@ -386,8 +356,6 @@ private void limpiarFormulario() {
 
         jLabel3.setText("DNI");
         jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, -1));
-
-        textDni.setText("jTextField1");
         jPanel2.add(textDni, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 40, 110, -1));
 
         jLabel4.setText("Tipo de pago:");
@@ -405,12 +373,12 @@ private void limpiarFormulario() {
         });
         jPanel2.add(jButtonBuscarCLIENTE, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 40, 80, -1));
 
-        jComboBoxTipoDePago.addActionListener(new java.awt.event.ActionListener() {
+        cboTipoDePago.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBoxTipoDePagoActionPerformed(evt);
+                cboTipoDePagoActionPerformed(evt);
             }
         });
-        jPanel2.add(jComboBoxTipoDePago, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 130, 110, -1));
+        jPanel2.add(cboTipoDePago, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 130, 110, -1));
 
         jComboBoxTipoDeComprobante.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -423,7 +391,6 @@ private void limpiarFormulario() {
         jPanel2.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, -1, -1));
 
         textNombre.setEditable(false);
-        textNombre.setText("jTextField2");
         jPanel2.add(textNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 80, 200, -1));
 
         add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, 600, 160));
@@ -585,9 +552,9 @@ private void limpiarFormulario() {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxTipoDeComprobanteActionPerformed
 
-    private void jComboBoxTipoDePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTipoDePagoActionPerformed
+    private void cboTipoDePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboTipoDePagoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxTipoDePagoActionPerformed
+    }//GEN-LAST:event_cboTipoDePagoActionPerformed
 
     private void jButtonAgregarAListaDeLosPedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgregarAListaDeLosPedidosActionPerformed
         agregarPedido();
@@ -606,6 +573,7 @@ private void limpiarFormulario() {
     }//GEN-LAST:event_jTextFieldDescuentoKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> cboTipoDePago;
     private javax.swing.JButton jButtoRegistrarVenta;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButtonAgregarAListaDeLosPedidos;
@@ -616,7 +584,6 @@ private void limpiarFormulario() {
     private javax.swing.JComboBox<String> jComboBox4;
     private javax.swing.JComboBox<String> jComboBoxDeBusquedaDePlatillos;
     private javax.swing.JComboBox<String> jComboBoxTipoDeComprobante;
-    private javax.swing.JComboBox<String> jComboBoxTipoDePago;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

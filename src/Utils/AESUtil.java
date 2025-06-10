@@ -14,7 +14,6 @@ import java.util.Base64;
  * @author grace
  */
 public class AESUtil {
-    // Clave de 16 caracteres (128 bits). ¡Debe ser secreta!
     private static final String SECRET_KEY = "1234567890abcdef";
     private static final String INIT_VECTOR = "abcdef1234567890";
 

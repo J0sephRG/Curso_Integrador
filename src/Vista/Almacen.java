@@ -202,18 +202,18 @@ public class Almacen extends javax.swing.JPanel {
     private javax.swing.JTextField textBuscar;
     // End of variables declaration//GEN-END:variables
     private void cargarDatos() {
-        ProductoCont controlador = new ProductoCont(productoDAO, tblProductos);
-        controlador.cargarProductos();
+        ProductoCont cont = new ProductoCont(productoDAO, tblProductos);
+        cont.cargarProductos();
     }
 
     private void eliminar() {
-        int rowIndex = tblProductos.getSelectedRow(); 
-        if (rowIndex >= 0) {
-            int idProducto = (int) tblProductos.getValueAt(rowIndex, 0); 
+        int elprod = tblProductos.getSelectedRow(); 
+        if (elprod >= 0) {
+            int idProducto = (int) tblProductos.getValueAt(elprod, 0); 
             ProductoDAO dao = new ProductoDAO(conexion.Conectar());
             dao.eliminarProducto(idProducto);  
             DefaultTableModel modelo = (DefaultTableModel) tblProductos.getModel();
-            modelo.removeRow(rowIndex);  
+            modelo.removeRow(elprod);  
             tblProductos.revalidate();
             tblProductos.repaint();
         } else {
@@ -222,9 +222,9 @@ public class Almacen extends javax.swing.JPanel {
     }
 
     private void buscar() {
-       String textoBuscar = textBuscar.getText();  
+       String buscar = textBuscar.getText();  
         ProductoDAO dao = new ProductoDAO(conexion.Conectar());
-        ArrayList<Producto> productos = dao.buscarProductos(textoBuscar); 
+        ArrayList<Producto> productos = dao.buscarProductos(buscar); 
         if (productos.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No se encontraron productos.");
         } else {

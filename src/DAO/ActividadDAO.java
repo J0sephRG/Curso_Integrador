@@ -1,7 +1,7 @@
 package DAO;
 
-import Conexion.DatabaseConnection;
-import model.Actividad;
+import ConexionSQL.Conexion;
+import Modelo.Actividad;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,8 @@ import java.util.List;
 public class ActividadDAO {
     private Connection connection;
 
-    public ActividadDAO(Connection connection) throws SQLException {
-         this.connection = DatabaseConnection.getConnection(); // Obtener la conexión de la base de datos
+    public ActividadDAO(Connection connection) {
+        this.connection = connection;
     }
 
     public void agregarActividad(Actividad actividad) throws SQLException {

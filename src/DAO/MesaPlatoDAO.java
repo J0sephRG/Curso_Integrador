@@ -1,7 +1,7 @@
 package DAO;
 
-import Conexion.DatabaseConnection;
-import model.MesaPlato;
+import ConexionSQL.Conexion;
+import Modelo.MesaPlato;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,8 @@ import java.util.List;
 public class MesaPlatoDAO {
     private Connection connection;
 
-    public MesaPlatoDAO(Connection connection) throws SQLException {
-         this.connection = DatabaseConnection.getConnection(); // Obtener la conexión de la base de datos
+    public MesaPlatoDAO(Connection connection) {
+        this.connection = connection;
     }
 
     public void agregarMesaPlato(MesaPlato mesaPlato) throws SQLException {

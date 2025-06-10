@@ -48,6 +48,7 @@ int intentos;
         jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -153,51 +154,48 @@ int intentos;
     }//GEN-LAST:event_jLabel2MouseClicked
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-        String usuario = txtUsuario.getText();
-        String password = new String (txtContraseña.getPassword());
-        
-        ConexionSQL.Conexion conect = new Conexion();
-        Connection conn = conect.Conectar();
+      String usuario = txtUsuario.getText();
+String password = new String(txtContraseña.getPassword());
 
-        
-         if (conn != null) {
-        try {
-            String sql = "SELECT * FROM Usuario WHERE nombre = ? AND clave = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            //ejemplo de encriptar
-            String passEncrypt=AESUtil.encrypt(password);
-            //ejemplo de decencriptar
-            //String passDecript=AESUtil.decrypt(passEncrypt);
-            ps.setString(1, usuario);
-            ps.setString(2, passEncrypt);
-            ResultSet rs = ps.executeQuery();
+ConexionSQL.Conexion conect = new Conexion();
+Connection conn = conect.Conectar();
 
-            if (rs.next()) {
-                // Login exitoso
-                dispose(); // Cerrar login
-                JOptionPane.showMessageDialog(null, "Bienvenido", "Mensaje de bienvenida", JOptionPane.INFORMATION_MESSAGE);
-                Menu dash = new Menu(); 
-                dash.setVisible(true);
+if (conn != null) {
+    try {
+        // Consulta SQL que verifica que el usuario y la contraseña coincidan
+        String sql = "SELECT * FROM Usuario WHERE nombre = ? AND clave = ?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, usuario);
+        ps.setString(2, password);
+        ResultSet rs = ps.executeQuery();
+
+        // Si se encontró una coincidencia
+        if (rs.next()) {
+            dispose();  // Cierra el login
+            JOptionPane.showMessageDialog(null, "Bienvenido", "Mensaje de bienvenida", JOptionPane.INFORMATION_MESSAGE);
+            Menu dash = new Menu();  // Abre el menú principal
+            dash.setVisible(true);
+        } else {
+            intentos++;
+            if (intentos >= 3) {
+                JOptionPane.showMessageDialog(null, "Has excedido el número de intentos para ingresar al sistema", "Error", JOptionPane.ERROR_MESSAGE);
+                System.exit(0);  // Cierra la aplicación después de 3 intentos fallidos
             } else {
-                intentos++;
-                if (intentos >= 3) {
-                    JOptionPane.showMessageDialog(null, "Has excedido el número de intentos para ingresar al sistema", "Error", JOptionPane.ERROR_MESSAGE);
-                    System.exit(0);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos. Quedan " + (3 - intentos) + " intentos.");
-                    txtUsuario.setText("");
-                    txtContraseña.setText("");
-                    txtUsuario.requestFocus();
-                }
+                JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos. Quedan " + (3 - intentos) + " intentos.");
+                txtUsuario.setText("");
+                txtContraseña.setText("");
+                txtUsuario.requestFocus();
             }
-
-            conn.close();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error de consulta: " + e.getMessage());
         }
-    } else {
-        JOptionPane.showMessageDialog(null, "No se pudo conectar a la base de datos.");
+
+        conn.close();
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(null, "Error de consulta: " + e.getMessage());
     }
+} else {
+    JOptionPane.showMessageDialog(null, "No se pudo conectar a la base de datos.");
+}
+    
 
     }//GEN-LAST:event_btnSalirActionPerformed
 

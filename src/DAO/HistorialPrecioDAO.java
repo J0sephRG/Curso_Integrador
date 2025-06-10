@@ -1,7 +1,7 @@
 package DAO;
 
-import Conexion.DatabaseConnection;
-import model.HistorialPrecio;
+import ConexionSQL.Conexion;
+import Modelo.HistorialPrecio;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +9,11 @@ import java.util.List;
 public class HistorialPrecioDAO {
     private Connection connection;
 
-    public HistorialPrecioDAO(Connection connection) throws SQLException {
-        this.connection = DatabaseConnection.getConnection(); // Obtener la conexión de la base de datos
+    public HistorialPrecioDAO(Connection connection) {
+        this.connection = connection;
     }
+
+
 
     public void agregarHistorial(HistorialPrecio historial) throws SQLException {
         String query = "INSERT INTO Historial_Precio(id_producto, precio, fecha_cambio) VALUES (?, ?, ?)";

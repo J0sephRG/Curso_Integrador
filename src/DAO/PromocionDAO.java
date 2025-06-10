@@ -1,7 +1,7 @@
 package DAO;
 
-import Conexion.DatabaseConnection;
-import model.Promocion;
+import ConexionSQL.Conexion;
+import Modelo.Promocion;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,8 @@ import java.util.List;
 public class PromocionDAO {
     private Connection connection;
 
-    public PromocionDAO(Connection connection) throws SQLException {
-         this.connection = DatabaseConnection.getConnection(); // Obtener la conexión de la base de datos
+    public PromocionDAO(Connection connection) {
+        this.connection = connection;
     }
 
     public void agregarPromocion(Promocion promocion) throws SQLException {

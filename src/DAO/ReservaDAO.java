@@ -1,7 +1,7 @@
 package DAO;
 
-import Conexion.DatabaseConnection;
-import model.Reserva;
+import ConexionSQL.Conexion;
+import Modelo.Reserva;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,8 @@ import java.util.List;
 public class ReservaDAO {
     private Connection connection;
 
-    public ReservaDAO(Connection connection) throws SQLException {
-         this.connection = DatabaseConnection.getConnection(); // Obtener la conexión de la base de datos
+    public ReservaDAO(Connection connection) {
+        this.connection = connection;
     }
 
     public void agregarReserva(Reserva reserva) throws SQLException {

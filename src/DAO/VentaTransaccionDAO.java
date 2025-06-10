@@ -1,22 +1,18 @@
 package DAO;
 
-import Conexion.DatabaseConnection;
-import model.Venta;
-import model.DetalleVenta;
+import ConexionSQL.Conexion;
+import Modelo.Venta;
+import Modelo.DetalleVenta;
 import java.sql.*;
 import java.util.List;
 
 public class VentaTransaccionDAO {
     private Connection connection;
 
-    public VentaTransaccionDAO(Connection connection) throws SQLException {
-         this.connection = DatabaseConnection.getConnection(); // Obtener la conexión de la base de datos
+    public VentaTransaccionDAO(Connection connection) {
+        this.connection = connection;
     }
 
-    /**
-     * Inserta una venta con lista de detalles en una transacción.
-     * Commit solo si todos los inserts se realizan exitosamente.
-     */
     public void insertarVentaConDetalles(Venta venta, List<DetalleVenta> detalles) throws SQLException {
         String insertVenta = "INSERT INTO Venta(fecha_venta, id_usuario, metodo_pago, monto_total) VALUES (?, ?, ?, ?)";
         String insertDetalle = "INSERT INTO Detalle_Venta(id_venta, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)";
