@@ -1,6 +1,6 @@
 package VISTA;
 
-import ConexionSQL.Conexion;
+import Conexion.DatabaseConnection;
 import java.awt.BorderLayout;
 import java.sql.SQLException;
 import javax.swing.JPanel;
@@ -9,7 +9,7 @@ import java.sql.Connection;
 public class PanelCentralDeVentas extends javax.swing.JPanel {
 private Connection connection; // Conexión a la base de datos
     public PanelCentralDeVentas() throws SQLException {
-        
+        this.connection = DatabaseConnection.getConnection(); // Obtener la conexión de la base de datos
         initComponents();
     }
     
@@ -109,19 +109,27 @@ private Connection connection; // Conexión a la base de datos
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonMesasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMesasActionPerformed
-   /*try {
+   try {
             ShowJpanel(new PanelDeVentaMesas(connection)); // Pasar la conexión al constructor
         } catch (SQLException e) {
             e.printStackTrace(); // Manejo de errores
-        }*/
+        }
     }//GEN-LAST:event_jButtonMesasActionPerformed
 
     private void jButtonParaLlevarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonParaLlevarActionPerformed
-        /*ShowJpanel(new PanelDeVentaParallevar());*/
+        try {
+            ShowJpanel(new PanelDeVentaMesas(connection)); // Pasar la conexión al constructor
+        } catch (SQLException e) {
+            e.printStackTrace(); // Manejo de errores
+        }
     }//GEN-LAST:event_jButtonParaLlevarActionPerformed
 
     private void jButtonDeliveryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeliveryActionPerformed
-        ShowJpanel(new PanelDeVentaDelivery());
+        try {
+            ShowJpanel(new PanelDeVentaMesas(connection)); // Pasar la conexión al constructor
+        } catch (SQLException e) {
+            e.printStackTrace(); // Manejo de errores
+        }
     }//GEN-LAST:event_jButtonDeliveryActionPerformed
 
     

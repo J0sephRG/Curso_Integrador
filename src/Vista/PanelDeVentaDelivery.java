@@ -85,10 +85,8 @@ public class PanelDeVentaDelivery extends javax.swing.JPanel {
         });
         jPanel3.add(jButtonBuscarCLIENTE, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 40, 80, -1));
 
-        jComboBoxTipoDePago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jPanel3.add(jComboBoxTipoDePago, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 130, 110, -1));
 
-        jComboBoxTipoDeComprobante.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jPanel3.add(jComboBoxTipoDeComprobante, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 130, 120, -1));
 
         jButtoRegistrarVenta.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -146,11 +144,8 @@ public class PanelDeVentaDelivery extends javax.swing.JPanel {
 
         jLabel17.setText("Cantidad:");
         jPanel4.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, 60, -1));
-
-        jTextFieldCantidadDelPlatillo.setText("jTextField10");
         jPanel4.add(jTextFieldCantidadDelPlatillo, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 90, 140, -1));
 
-        jComboBoxDeBusquedaDePlatillos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jComboBoxDeBusquedaDePlatillos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBoxDeBusquedaDePlatillosActionPerformed(evt);

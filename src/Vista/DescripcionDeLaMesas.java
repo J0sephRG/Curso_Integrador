@@ -1,288 +1,253 @@
 package VISTA;
-import ConexionSQL.Conexion;
+import Conexion.DatabaseConnection;
 import DAO.ClienteDAO;
-import DAO.DetalleVentaDAO;
+import DAO.MesaPlatoDAO;
 import DAO.PlatoDAO;
 import DAO.VentaDAO;
-import Modelo.Cliente;
-import Modelo.DetalleVenta;
-import Modelo.Plato;
-import Modelo.Venta;
+import model.Cliente;
+import model.DetalleVenta;
+import model.Mesa;
+import model.Plato;
+import model.Venta;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-public class DescripcionDeLaMesas extends javax.swing.JPanel {
-  private Connection connection; 
-  private int mesaNumber;
-  DefaultTableModel modelo = new DefaultTableModel();
-  JTable jTableListaDeLosPedidos = new JTable(modelo);
-    
-   public DescripcionDeLaMesas(Connection connection, int numeroMesa) throws SQLException {
-        this.connection = connection; 
-        this.mesaNumber = numeroMesa; 
-        initComponents();
-        cargarPlatosEnComboBox(); 
-        configurarComponentes(); 
-        actualizarEtiquetaMesa(); 
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+public class DescripcionDeLaMesas extends javax.swing.JPanel {
+  private Connection connection;
+    private int mesaNumber;
+    private DefaultTableModel modelo;
+    private MesaPlatoDAO mesaPlatoDAO;
+    private PlatoDAO platoDAO;
+    private ClienteDAO clienteDAO;
+    private VentaDAO ventaDAO;
+    private Mesa mesa;
+
+   public DescripcionDeLaMesas(Connection connection, int numeroMesa) throws SQLException {
+    this.connection = connection;
+        this.mesaNumber = numeroMesa;
+        this.mesaPlatoDAO = new MesaPlatoDAO(connection);
+        this.platoDAO = new PlatoDAO(connection);
+        this.clienteDAO = new ClienteDAO(connection);
+        this.ventaDAO = new VentaDAO(connection);
+        initComponents();
+        jLabel1.setText("Mesa " + numeroMesa);
+        cargarComboPlatillos();
+        cargarTipoPagoYComprobante();
+        inicializarTabla();
+        recargarPedidos();
+        calcularTotales();
     }
-    
-    private void configurarComponentes() {
-        // Configurar solo lectura para ciertos campos
-        textNombre.setEditable(false);
-        jTextFieldVuelto.setEditable(false);
-        jTextFieldMontoACobrar.setEditable(false);
-        jTextFieldTotalDeVenta.setEditable(false);
-        jTextFieldResultadoDescuento.setEditable(false);
-        cboTipoDePago.setModel(new DefaultComboBoxModel<>(new String[]{"Efectivo", "Billetera Digital", "Tarjeta"}));
-        jComboBoxTipoDeComprobante.setModel(new DefaultComboBoxModel<>(new String[]{"Factura", "Boleta por DNI", "Boleta simple"}));
+
+   private void inicializarTabla() {
+        modelo = new DefaultTableModel();
+        modelo.addColumn("ID");
+        modelo.addColumn("Plato");
+        modelo.addColumn("Cantidad");
+        modelo.addColumn("Precio");
+        modelo.addColumn("Total");
+        jTablelListaDeLosPedidos.setModel(modelo);
     }
-    
-    private void cargarPlatosEnComboBox() {
+   private void recargarPedidos() {
+       List<Plato> platos = mesaPlatoDAO.obtenerPlatosPorMesa(mesaNumber);
+       modelo.setRowCount(0); // Limpiar la tabla
+       for (Plato plato : platos) {
+           BigDecimal precio = plato.getPrecio();
+           int cantidad = 1; // Suponiendo cantidad 1 por ahora, ajustar si es necesario
+           BigDecimal total = precio.multiply(new BigDecimal(cantidad));
+           Object[] row = {plato.getId_plato(), plato.getNombre(), cantidad, precio, total};
+           modelo.addRow(row);
+       }
+       calcularTotales();
+    }
+
+   private void cargarComboPlatillos() {
         try {
             PlatoDAO platoDAO = new PlatoDAO(connection);
             List<Plato> platos = platoDAO.listarPlatos();
+            jComboBoxDeBusquedaDePlatillos.removeAllItems();
             for (Plato plato : platos) {
-                jComboBoxDeBusquedaDePlatillos.addItem(plato.getNombre()); // Agregar nombres de platos al combo box
+                jComboBoxDeBusquedaDePlatillos.addItem(plato.getNombre());
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error cargando platos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error al cargar los platillos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-    
-
-    
-    private void actualizarEtiquetaMesa() {
-        jLabel1.setText("Mesa " + mesaNumber);
-    }
-    
-    
-    private void actualizarTotales() {
-        BigDecimal total = BigDecimal.ZERO; // Asegúrate de inicializar total
-        for (int i = 0; i < jTableListaDeLosPedidos.getRowCount(); i++) {
-            // Asegúrate de que el valor de la fila no sea null
-            BigDecimal filaTotal = (BigDecimal) jTableListaDeLosPedidos.getValueAt(i, 4);
-            if (filaTotal != null) {
-                total = total.add(filaTotal); // Solo sumar si filaTotal no es null
-            }
-        }
-        jTextFieldTotalDeVenta.setText(total.toString());
-        // Calcular descuento si existe
-        String descuentoStr = jTextFieldDescuento.getText().trim();
-        BigDecimal descuentoAplicado = BigDecimal.ZERO;
-        if (!descuentoStr.isEmpty()) {
-            try {
-                BigDecimal porcentaje = new BigDecimal(descuentoStr);
-                descuentoAplicado = total.multiply(porcentaje).divide(new BigDecimal("100"));
-            } catch (NumberFormatException ex) {
-                // No hacer nada o mostrar error con validación
-            }
-        }
-        jTextFieldResultadoDescuento.setText(descuentoAplicado.toString());
-        // Monto a cobrar = total - descuento
-        BigDecimal montoACobrar = total.subtract(descuentoAplicado);
-        if (montoACobrar.compareTo(BigDecimal.ZERO) < 0) montoACobrar = BigDecimal.ZERO;
-        jTextFieldMontoACobrar.setText(montoACobrar.toString());
-        calcularVuelto();
     }
 
-        
+    private void cargarTipoPagoYComprobante() {
+        jComboBoxTipoDePago.addItem("Efectivo");
+        jComboBoxTipoDePago.addItem("Tarjeta");
+        jComboBoxTipoDePago.addItem("Billetera Digital");
+        jComboBoxTipoDeComprobante.addItem("Factura");
+        jComboBoxTipoDeComprobante.addItem("Boleta por DNI");
+        jComboBoxTipoDeComprobante.addItem("Boleta Simple");
+    }
+   
+    private void buscarClientePorDNI() {
+    String dni = textDni.getText();
+    try {
+        Cliente cliente = null;
+        List<Cliente> clientes = clienteDAO.listarClientes();
+
+        // Usar streams para buscar el cliente por DNI
+        Optional<Cliente> optionalCliente = clientes.stream()
+                .filter(c -> c.getDni().equals(dni))
+                .findFirst();
+
+        if (optionalCliente.isPresent()) {
+            cliente = optionalCliente.get();
+            textNombre.setText(cliente.getNombre() + " " + cliente.getApellido());
+        } else {
+            textNombre.setText("Cliente no encontrado");
+        }
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, "Error al buscar cliente: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
+    
+     private void agregarPedido() {
+        try {
+            String platoNombre = (String) jComboBoxDeBusquedaDePlatillos.getSelectedItem();
+            int cantidad = Integer.parseInt(textCantidad.getText());
+
+            // Obtener el id_plato basado en el nombre seleccionado
+            Plato plato = null;
+            List<Plato> platos = platoDAO.listarPlatos();
+            plato = platos.stream().filter(p -> p.getNombre().equals(platoNombre)).collect(Collectors.toList()).get(0);
+            int idPlato = plato.getId_plato();
+
+            // Insertar el pedido en la tabla Mesa_Plato
+            boolean agregado = mesaPlatoDAO.agregarPlatoAMesa(mesaNumber, plato, cantidad);
+
+            if (agregado) {
+                recargarPedidos();
+                calcularTotales();
+                JOptionPane.showMessageDialog(this, "Plato agregado a la mesa.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al agregar el plato a la mesa.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al agregar pedido: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Cantidad inválida.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
+    private void eliminarPedido() {
+        int selectedRow = jTablelListaDeLosPedidos.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un plato para eliminar.", "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int idPlato = (int) jTablelListaDeLosPedidos.getValueAt(selectedRow, 0);
+        boolean eliminado = mesaPlatoDAO.eliminarPlatoDeMesa(mesaNumber, idPlato);
+        if (eliminado) {
+            recargarPedidos();
+            calcularTotales();
+            JOptionPane.showMessageDialog(this, "Plato eliminado de la mesa.");
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al eliminar el plato de la mesa.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void calcularTotales() {
+    BigDecimal subtotal = BigDecimal.ZERO;
+
+    // Sumar los valores de la columna 4 (Total por plato)
+    for (int i = 0; i < jTablelListaDeLosPedidos.getRowCount(); i++) {
+        BigDecimal totalPlato = (BigDecimal) jTablelListaDeLosPedidos.getValueAt(i, 4);
+        subtotal = subtotal.add(totalPlato);
+    }
+
+    // Mostrar IGV (solo como información, no se suma al total)
+    BigDecimal igv = subtotal.multiply(new BigDecimal("0.05"));
+    jTextFieldIGV.setText(igv.toString());
+
+    // Descuento (solo si se proporciona un número válido)
+    BigDecimal descuentoPorcentaje = BigDecimal.ZERO;
+    if (!jTextFieldDescuento.getText().trim().isEmpty()) {
+        try {
+            descuentoPorcentaje = new BigDecimal(jTextFieldDescuento.getText());
+        } catch (NumberFormatException e) {
+            // Si el número no es válido, asumimos 0%
+            descuentoPorcentaje = BigDecimal.ZERO;
+        }
+    }
+
+    BigDecimal descuentoAplicado = subtotal.multiply(descuentoPorcentaje.divide(new BigDecimal("100")));
+    jTextFieldResultadoDescuento.setText(descuentoAplicado.toString());
+
+    // Total a pagar sin IGV, solo con descuento si aplica
+    BigDecimal totalPagar = subtotal.subtract(descuentoAplicado);
+    jTextFieldTotalDeVenta.setText(totalPagar.toString());
+    jTextFieldMontoACobrar.setText(totalPagar.toString());
+}
+
     private void calcularVuelto() {
         try {
-            BigDecimal montoPago = new BigDecimal(jTextFieldMontoDePago.getText().trim());
-            BigDecimal montoACobrar = new BigDecimal(jTextFieldMontoACobrar.getText().trim());
-            BigDecimal vuelto = montoPago.subtract(montoACobrar);
+            BigDecimal montoPago = new BigDecimal(jTextFieldMontoDePago.getText());
+            BigDecimal montoCobrar = new BigDecimal(jTextFieldMontoACobrar.getText());
+            BigDecimal vuelto = montoPago.subtract(montoCobrar);
             jTextFieldVuelto.setText(vuelto.toString());
         } catch (NumberFormatException e) {
-            // Campo con valor inválido: poner vuelto vacío.
-            jTextFieldVuelto.setText("");
+            jTextFieldVuelto.setText("0.00");
         }
-    }
-     
-    private int obtenerIdPlatoSeleccionado() throws SQLException {
-        String nombrePlato = (String) jComboBoxDeBusquedaDePlatillos.getSelectedItem();
-        if (nombrePlato == null) return -1;
-        PlatoDAO platoDAO = new PlatoDAO(connection);
-        List<Plato> platos = platoDAO.listarPlatos();
-        for (Plato p : platos) {
-            if (p.getNombre().equals(nombrePlato)) return p.getId_plato();
-        }
-        return -1;
-    }
-     
-    private void agregarPedido() {
-        try {
-            // Validación de entrada: cantidad
-            String cantidadStr = textCantidad.getText().trim();
-            int cantidad = Integer.parseInt(cantidadStr);
-            if (cantidad <= 0) {
-                mostrarMensaje("Ingrese una cantidad válida mayor que 0", "Cantidad inválida", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            // Validación de plato seleccionado
-            int idPlato = obtenerIdPlatoSeleccionado();
-            if (idPlato == -1) {
-                mostrarMensaje("Seleccione un plato válido", "Plato inválido", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-// Obtener el plato y verificar su existencia
-            PlatoDAO platoDAO = new PlatoDAO(connection);
-            Plato plato = platoDAO.buscarPlatoPorId(idPlato);
-            if (plato == null) {
-                mostrarMensaje("Plato no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            // Cálculo del total y agregar a la tabla
-            BigDecimal totalLinea = plato.getPrecio().multiply(new BigDecimal(cantidad));
-            agregarFilaTabla(idPlato, plato.getNombre(), cantidad, plato.getPrecio(), totalLinea);
-            // Guardar el pedido en la base de datos
-            guardarPedidoEnBaseDeDatos(idPlato, cantidad, plato.getPrecio());
-            // Actualizar totales y limpiar el campo de entrada
-            actualizarTotales();
-            textCantidad.setText("");
-        } catch (NumberFormatException ex) {
-            mostrarMensaje("Cantidad debe ser un número entero válido", "Error de entrada", JOptionPane.WARNING_MESSAGE);
-        } catch (SQLException sqle) {
-            mostrarMensaje("Error obteniendo datos desde la base: " + sqle.getMessage(), "Error de BD", JOptionPane.WARNING_MESSAGE);
-        }
-    }
-
-  private void guardarPedidoEnBaseDeDatos(int idPlato, int cantidad, BigDecimal precioUnitario) throws SQLException {
-        int idVenta = obtenerIdVentaActual(); // Implementa este método según tu lógica
-        if (idVenta == -1) {
-            throw new SQLException("No hay una venta activa para guardar el pedido.");
-        }
-        // Crear un nuevo objeto DetalleVenta
-        DetalleVenta detalleVenta = new DetalleVenta(0, idVenta, idPlato, cantidad, precioUnitario, precioUnitario.multiply(new BigDecimal(cantidad)));
-        // Usar DetalleVentaDAO para agregar el detalle de la venta
-        DetalleVentaDAO detalleVentaDAO = new DetalleVentaDAO(connection);
-        detalleVentaDAO.agregarDetalleVenta(detalleVenta);
-    }
-
-    private int obtenerIdVentaActual() throws SQLException {
-        String query = "SELECT id_venta FROM Venta WHERE numero_mesa = ? AND estado = 'activa'"; // Asegúrate de que el campo 'estado' exista
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, mesaNumber); // mesaNumber es el número de la mesa actual
-            ResultSet rs = statement.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("id_venta");
-            }
-        }
-        return -1; // Si no se encuentra una venta activa
-    }
-
-     
-// Método auxiliar para mostrar mensajes
-    private void mostrarMensaje(String mensaje, String titulo, int tipo) {
-        JOptionPane.showMessageDialog(this, mensaje, titulo, tipo);
-    }
-    // Método auxiliar para agregar fila a la tabla
-    private void agregarFilaTabla(int idPlato, String nombre, int cantidad, BigDecimal precioUnitario, BigDecimal totalLinea) {
-        DefaultTableModel model = (DefaultTableModel) jTableListaDeLosPedidos.getModel();
-        model.addRow(new Object[]{idPlato, nombre, cantidad, precioUnitario, totalLinea});
-    }
-     
-private void eliminarPedido() {
-        int filaSeleccionada = jTableListaDeLosPedidos.getSelectedRow();
-        if (filaSeleccionada == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione un pedido para eliminar", "Advertencia", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        // Obtener el idPlato de la fila seleccionada
-        int idPlato = (int) jTableListaDeLosPedidos.getValueAt(filaSeleccionada, 0);
-        
-        // Eliminar de la base de datos
-        try {
-            DetalleVentaDAO detalleVentaDAO = new DetalleVentaDAO(connection);
-            detalleVentaDAO.eliminarDetalleVenta(idPlato); // Método que debes implementar en DetalleVentaDAO
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error eliminando pedido: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        // Eliminar de la tabla
-        DefaultTableModel model = (DefaultTableModel) jTableListaDeLosPedidos.getModel();
-        model.removeRow(filaSeleccionada); // Use the model to remove the row
-        actualizarTotales();
     }
     
-private void buscarClientePorDNI() {
-        String dniCliente = textDni.getText().trim();
-        if (dniCliente.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingrese DNI para buscar", "Campo vacío", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        try {
-            ClienteDAO clienteDAO = new ClienteDAO(connection);
-            List<Cliente> clientes = clienteDAO.listarClientes();
-            for (Cliente c : clientes) {
-                // Aquí se asume búsqueda por nombre o apellido incluyendo DNI si estuviera
-                if (c.getTelefono() != null && c.getTelefono().equals(dniCliente)) {
-                    textNombre.setText(c.getNombre() + " " + c.getApellido());
-                    return;
-                }
-            }
-            textNombre.setText("");
-            JOptionPane.showMessageDialog(this, "Cliente no encontrado con DNI proporcionado.", "No encontrado", JOptionPane.INFORMATION_MESSAGE);
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error buscando cliente: " + e.getMessage(), "Error de BD", JOptionPane.ERROR_MESSAGE);
-        }
+    private void actualizarTotales() {
+        calcularTotales();
+        calcularVuelto();
     }
-        
- private void registrarVenta() {
+    
+    private void registrarVenta() {
         try {
-            if (jTableListaDeLosPedidos.getRowCount() == 0) {
-                JOptionPane.showMessageDialog(this, "No hay pedidos para registrar", "Error", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            BigDecimal montoTotal = new BigDecimal(jTextFieldMontoACobrar.getText().trim());
-            if (montoTotal.compareTo(BigDecimal.ZERO) <= 0) {
-                JOptionPane.showMessageDialog(this, "El monto total debe ser mayor que cero", "Error", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-// Crear venta
-            VentaDAO ventaDAO = new VentaDAO(connection);
-            Venta venta = new Venta(0, new java.sql.Timestamp(System.currentTimeMillis()), null,
-                    (String) cboTipoDePago.getSelectedItem(), montoTotal);
+            // 1. Crear la Venta
+            Venta venta = new Venta(
+                0, // El ID se genera automáticamente en la base de datos
+                new Timestamp(System.currentTimeMillis()),
+                1, //TODO Obtener el id del usuario actual
+                (String) jComboBoxTipoDePago.getSelectedItem(),
+                new BigDecimal(jTextFieldTotalDeVenta.getText())
+            );
+            // 2. Registrar la Venta en la base de datos y obtener el ID generado
             ventaDAO.agregarVenta(venta);
-            // Obtener ID de venta (debe implementarse método para recuperar último ID o usar retorno en agregarVenta)
-            // Por simplicidad, se asume ID generado fuera de este ejemplo.
-            // Registrar detalles de venta según tabla pedidos
-            DetalleVentaDAO detalleVentaDAO = new DetalleVentaDAO(connection);
-            for (int i = 0; i < jTableListaDeLosPedidos.getRowCount(); i++) {
-                int idPlato = (int) jTableListaDeLosPedidos.getValueAt(i, 0);
-                int cantidad = (int) jTableListaDeLosPedidos.getValueAt(i, 2);
-                BigDecimal precioUnitario = (BigDecimal) jTableListaDeLosPedidos.getValueAt(i, 3);
-                DetalleVenta detalle = new DetalleVenta(0, venta.getId_venta(), idPlato, cantidad, precioUnitario,
-                        precioUnitario.multiply(new BigDecimal(cantidad)));
-                detalleVentaDAO.agregarDetalleVenta(detalle);
+            // 3. Recorrer la tabla de pedidos y crear los DetallesVenta
+            for (int i = 0; i < jTablelListaDeLosPedidos.getRowCount(); i++) {
+                int idProducto = (int) jTablelListaDeLosPedidos.getValueAt(i, 0);
+                int cantidad = (int) jTablelListaDeLosPedidos.getValueAt(i, 2);
+                BigDecimal precioUnitario = (BigDecimal) jTablelListaDeLosPedidos.getValueAt(i, 3);
+                DetalleVenta detalle = new DetalleVenta(
+                    0, // El ID se genera automáticamente en la base de datos
+                    venta.getId_venta(), // Usar el ID de la venta recién insertada
+                    idProducto,
+                    cantidad,
+                    precioUnitario,
+                    precioUnitario.multiply(new BigDecimal(cantidad))
+                );
+                ventaDAO.agregarDetalleVenta(detalle);
             }
-            JOptionPane.showMessageDialog(this, "Venta registrada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            limpiarFormulario();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error registrando venta: " + e.getMessage(), "Error de BD", JOptionPane.ERROR_MESSAGE);
+            // 4. Limpiar la mesa (eliminar los platos de Mesa_Plato)
+            mesaPlatoDAO.limpiarMesa(mesaNumber);
+            // 5. Actualizar la interfaz
+            recargarPedidos();
+            calcularTotales();
+            JOptionPane.showMessageDialog(this, "Venta registrada correctamente.");
+        } catch (SQLException ex) {
+         JOptionPane.showMessageDialog(this, "Error al registrar la venta: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
-private void limpiarFormulario() {
-        textDni.setText("");
-        textNombre.setText("");
-        jComboBoxDeBusquedaDePlatillos.setSelectedIndex(-1);
-        textCantidad.setText("");
-        jTextFieldTotalDeVenta.setText("");
-        jTextFieldMontoACobrar.setText("");
-        jTextFieldMontoDePago.setText("");
-        jTextFieldVuelto.setText("");
-        jTextFieldDescuento.setText("");
-        jTextFieldResultadoDescuento.setText("");
-        cboTipoDePago.setSelectedIndex(0);
-        jComboBoxTipoDeComprobante.setSelectedIndex(0);
-    }
-     
-    
+            
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -297,7 +262,7 @@ private void limpiarFormulario() {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jButtonBuscarCLIENTE = new javax.swing.JButton();
-        cboTipoDePago = new javax.swing.JComboBox<>();
+        jComboBoxTipoDePago = new javax.swing.JComboBox<>();
         jComboBoxTipoDeComprobante = new javax.swing.JComboBox<>();
         jLabel14 = new javax.swing.JLabel();
         textNombre = new javax.swing.JTextField();
@@ -373,12 +338,12 @@ private void limpiarFormulario() {
         });
         jPanel2.add(jButtonBuscarCLIENTE, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 40, 80, -1));
 
-        cboTipoDePago.addActionListener(new java.awt.event.ActionListener() {
+        jComboBoxTipoDePago.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cboTipoDePagoActionPerformed(evt);
+                jComboBoxTipoDePagoActionPerformed(evt);
             }
         });
-        jPanel2.add(cboTipoDePago, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 130, 110, -1));
+        jPanel2.add(jComboBoxTipoDePago, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 130, 110, -1));
 
         jComboBoxTipoDeComprobante.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -552,9 +517,9 @@ private void limpiarFormulario() {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxTipoDeComprobanteActionPerformed
 
-    private void cboTipoDePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboTipoDePagoActionPerformed
+    private void jComboBoxTipoDePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTipoDePagoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_cboTipoDePagoActionPerformed
+    }//GEN-LAST:event_jComboBoxTipoDePagoActionPerformed
 
     private void jButtonAgregarAListaDeLosPedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgregarAListaDeLosPedidosActionPerformed
         agregarPedido();
@@ -573,7 +538,6 @@ private void limpiarFormulario() {
     }//GEN-LAST:event_jTextFieldDescuentoKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> cboTipoDePago;
     private javax.swing.JButton jButtoRegistrarVenta;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButtonAgregarAListaDeLosPedidos;
@@ -584,6 +548,7 @@ private void limpiarFormulario() {
     private javax.swing.JComboBox<String> jComboBox4;
     private javax.swing.JComboBox<String> jComboBoxDeBusquedaDePlatillos;
     private javax.swing.JComboBox<String> jComboBoxTipoDeComprobante;
+    private javax.swing.JComboBox<String> jComboBoxTipoDePago;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -620,5 +585,4 @@ private void limpiarFormulario() {
     private javax.swing.JTextField textDni;
     private javax.swing.JTextField textNombre;
     // End of variables declaration//GEN-END:variables
-
 }
