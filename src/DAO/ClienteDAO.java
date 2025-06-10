@@ -1,7 +1,7 @@
 package DAO;
 
-import ConexionSQL.Conexion;
-import Modelo.Cliente;
+import Conexion.DatabaseConnection;
+import model.Cliente;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,16 +9,18 @@ import java.util.List;
 public class ClienteDAO {
     private Connection connection;
 
-    public ClienteDAO(Connection connection) {
-        this.connection = connection;
+    public ClienteDAO(Connection connection) throws SQLException {
+         this.connection = DatabaseConnection.getConnection(); // Obtener la conexión de la base de datos
     }
+
     public void agregarCliente(Cliente cliente) throws SQLException {
-        String query = "INSERT INTO Cliente(nombre, apellido, telefono, email) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO Cliente(dni, nombre, apellido, telefono, email) VALUES (?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, cliente.getNombre());
-            statement.setString(2, cliente.getApellido());
-            statement.setString(3, cliente.getTelefono());
-            statement.setString(4, cliente.getEmail());
+            statement.setString(1, cliente.getDni());
+            statement.setString(2, cliente.getNombre());
+            statement.setString(3, cliente.getApellido());
+            statement.setString(4, cliente.getTelefono());
+            statement.setString(5, cliente.getEmail());
             statement.executeUpdate();
         }
     }
@@ -30,7 +32,7 @@ public class ClienteDAO {
             statement.setInt(1, id_cliente);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
-                cliente = new Cliente(rs.getInt("id_cliente"), rs.getString("nombre"),
+                cliente = new Cliente(rs.getInt("id_cliente"),rs.getString("dni"), rs.getString("nombre"),
                                       rs.getString("apellido"), rs.getString("telefono"),
                                       rs.getString("email"), rs.getTimestamp("fecha_registro"));
             }
@@ -44,7 +46,7 @@ public class ClienteDAO {
         try (PreparedStatement statement = connection.prepareStatement(query);
              ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
-                clientes.add(new Cliente(rs.getInt("id_cliente"), rs.getString("nombre"),
+                clientes.add(new Cliente(rs.getInt("id_cliente"), rs.getString("dni"), rs.getString("nombre"),
                                          rs.getString("apellido"), rs.getString("telefono"),
                                          rs.getString("email"), rs.getTimestamp("fecha_registro")));
             }

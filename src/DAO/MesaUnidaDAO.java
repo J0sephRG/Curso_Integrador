@@ -1,7 +1,7 @@
 package DAO;
 
-import ConexionSQL.Conexion;
-import Modelo.MesaUnida;
+import Conexion.DatabaseConnection;
+import model.MesaUnida;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,8 @@ import java.util.List;
 public class MesaUnidaDAO {
     private Connection connection;
 
-    public MesaUnidaDAO(Connection connection) {
-        this.connection = connection;
+    public MesaUnidaDAO(Connection connection) throws SQLException {
+         this.connection = DatabaseConnection.getConnection(); // Obtener la conexión de la base de datos
     }
 
     public void agregarMesaUnida(MesaUnida mesaUnida) throws SQLException {

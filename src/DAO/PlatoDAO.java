@@ -1,7 +1,7 @@
 package DAO;
 
-import ConexionSQL.Conexion;
-import Modelo.Plato;
+import Conexion.DatabaseConnection;
+import model.Plato;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +9,11 @@ import java.math.BigDecimal;
 
 public class PlatoDAO {
     private Connection connection;
-
-    public PlatoDAO(Connection connection) {
-        this.connection = connection;
-    }
     
+    public PlatoDAO(Connection connection) throws SQLException {
+        this.connection = DatabaseConnection.getConnection(); // Obtener la conexión de la base de datos
+    }
+
     public void agregarPlato(Plato plato) throws SQLException {
         String query = "INSERT INTO Plato(nombre, precio, descripcion) VALUES (?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {

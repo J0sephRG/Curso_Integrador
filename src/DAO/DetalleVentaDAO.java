@@ -1,18 +1,18 @@
 package DAO;
 
-import ConexionSQL.Conexion;
-import Modelo.DetalleVenta;
+import Conexion.DatabaseConnection;
+import model.DetalleVenta;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.math.BigDecimal;
-import Modelo.Plato;
+import model.Plato;
 
 public class DetalleVentaDAO {
     private Connection connection;
 
-    public DetalleVentaDAO(Connection connection) {
-        this.connection = connection;
+    public DetalleVentaDAO(Connection connection) throws SQLException {
+         this.connection = DatabaseConnection.getConnection(); // Obtener la conexión de la base de datos
     }
 
     public void agregarDetalleVenta(DetalleVenta detalle) throws SQLException {
