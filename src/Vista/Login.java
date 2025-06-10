@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.Connection; 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import Utils.AESUtil;
 /**
  *
  * @author JOSEPH ROJAS
@@ -163,8 +164,12 @@ int intentos;
         try {
             String sql = "SELECT * FROM Usuario WHERE nombre = ? AND clave = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
+            //ejemplo de encriptar
+            String passEncrypt=AESUtil.encrypt(password);
+            //ejemplo de decencriptar
+            //String passDecript=AESUtil.decrypt(passEncrypt);
             ps.setString(1, usuario);
-            ps.setString(2, password);
+            ps.setString(2, passEncrypt);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -206,7 +211,7 @@ int intentos;
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
           FlatMaterialLighterIJTheme.setup();
-            FlatCyanLightIJTheme.setup();
+          FlatCyanLightIJTheme.setup();
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
