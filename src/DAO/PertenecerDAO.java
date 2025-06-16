@@ -1,9 +1,12 @@
 package DAO;
 
 import ConexionSQL.Conexion;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
 
 public class PertenecerDAO {
     private Connection connection;

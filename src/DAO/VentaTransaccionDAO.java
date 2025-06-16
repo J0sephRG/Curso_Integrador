@@ -1,16 +1,16 @@
 package DAO;
 
-import Conexion.DatabaseConnection;
+import ConexionSQL.Conexion; // Asegúrate de que esta clase maneje la conexión a SQL Server
 import model.Venta;
 import model.DetalleVenta;
 import java.sql.*;
 import java.util.List;
 
 public class VentaTransaccionDAO {
-    private Connection connection;
+    private Connection conn; 
 
-    public VentaTransaccionDAO(Connection connection) throws SQLException {
-         this.connection = DatabaseConnection.getConnection(); // Obtener la conexión de la base de datos
+    public VentaTransaccionDAO(Connection conn) { // Cambiado el nombre del constructor
+        this.conn = conn;
     }
 
     /**
@@ -22,9 +22,9 @@ public class VentaTransaccionDAO {
         String insertDetalle = "INSERT INTO Detalle_Venta(id_venta, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)";
 
         try {
-            connection.setAutoCommit(false);
+            conn.setAutoCommit(false); // Cambiado 'connection' a 'conn'
 
-            try (PreparedStatement ventaStmt = connection.prepareStatement(insertVenta, Statement.RETURN_GENERATED_KEYS)) {
+            try (PreparedStatement ventaStmt = conn.prepareStatement(insertVenta, Statement.RETURN_GENERATED_KEYS)) { // Cambiado 'connection' a 'conn'
                 ventaStmt.setTimestamp(1, venta.getFecha_venta());
                 ventaStmt.setObject(2, venta.getId_usuario());
                 ventaStmt.setString(3, venta.getMetodo_pago());
@@ -35,7 +35,7 @@ public class VentaTransaccionDAO {
                 if (generatedKeys.next()) {
                     int idVenta = generatedKeys.getInt(1);
 
-                    try (PreparedStatement detalleStmt = connection.prepareStatement(insertDetalle)) {
+                    try (PreparedStatement detalleStmt = conn.prepareStatement(insertDetalle)) { // Cambiado 'connection' a 'conn'
                         for (DetalleVenta detalle : detalles) {
                             detalleStmt.setInt(1, idVenta);
                             detalleStmt.setInt(2, detalle.getId_producto());
@@ -50,12 +50,12 @@ public class VentaTransaccionDAO {
                 }
             }
 
-            connection.commit();
+            conn.commit(); // Cambiado 'connection' a 'conn'
         } catch (SQLException ex) {
-            connection.rollback();
+            conn.rollback(); // Cambiado 'connection' a 'conn'
             throw ex;
         } finally {
-            connection.setAutoCommit(true);
+            conn.setAutoCommit(true); // Cambiado 'connection' a 'conn'
         }
     }
 }

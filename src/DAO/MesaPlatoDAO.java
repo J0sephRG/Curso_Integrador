@@ -1,24 +1,27 @@
 package DAO;
 
-import Conexion.DatabaseConnection;
+import ConexionSQL.Conexion; // Asegúrate de que esta clase maneje la conexión a SQL Server
 import java.math.BigDecimal;
 import model.MesaPlato;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import model.Plato;
+import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
 
 public class MesaPlatoDAO {
-    private Connection connection;
+    private Connection conn; 
 
-    public MesaPlatoDAO(Connection connection) throws SQLException {
-         this.connection = DatabaseConnection.getConnection(); // Obtener la conexión de la base de datos
+    public MesaPlatoDAO(Connection conn) {
+        this.conn = conn;
     }
 
-   // Agrega un plato a la mesa (registro del pedido)
+    // Agrega un plato a la mesa (registro del pedido)
     public boolean agregarPlatoAMesa(int idMesa, Plato plato, int cantidad) {
         String sql = "INSERT INTO mesa_plato (id_mesa, id_plato, cantidad) VALUES (?, ?, ?)";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) { // Cambiado 'connection' a 'conn'
             ps.setInt(1, idMesa);
             ps.setInt(2, plato.getId_plato());
             ps.setInt(3, cantidad);
@@ -36,7 +39,7 @@ public class MesaPlatoDAO {
                      "FROM mesa_plato mp " +
                      "JOIN plato p ON mp.id_plato = p.id_plato " +
                      "WHERE mp.id_mesa = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) { // Cambiado 'connection' a 'conn'
             ps.setInt(1, idMesa);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -55,7 +58,7 @@ public class MesaPlatoDAO {
     // Eliminar un plato de una mesa (por ejemplo, al cancelar un pedido)
     public boolean eliminarPlatoDeMesa(int idMesa, int idPlato) {
         String sql = "DELETE FROM mesa_plato WHERE id_mesa = ? AND id_plato = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) { // Cambiado 'connection' a 'conn'
             ps.setInt(1, idMesa);
             ps.setInt(2, idPlato);
             return ps.executeUpdate() > 0;
@@ -68,7 +71,7 @@ public class MesaPlatoDAO {
     // Limpiar todos los pedidos de una mesa (opcional, útil al cerrar cuenta)
     public boolean limpiarMesa(int idMesa) {
         String sql = "DELETE FROM mesa_plato WHERE id_mesa = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) { // Cambiado 'connection' a 'conn'
             ps.setInt(1, idMesa);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -76,5 +79,4 @@ public class MesaPlatoDAO {
             return false;
         }
     }
-    
 }
