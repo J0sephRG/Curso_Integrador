@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package VISTA;
+import ConexionSQL.Conexion; // Asegúrate de que esta clase maneje la conexión a SQL Server
 
 /**
  *

@@ -1,6 +1,6 @@
 package VISTA;
 
-import Conexion.DatabaseConnection;
+import ConexionSQL.Conexion; // Asegúrate de que esta clase maneje la conexión a SQL Server
 import javax.swing.*;
 import java.awt.*;
 import java.sql.Connection;

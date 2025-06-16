@@ -4,8 +4,10 @@
  */
 package Vista;
 
+import VISTA.PanelCentralDeVentas;
 import Vista.UsAdm;
 import java.awt.BorderLayout;
+import java.sql.SQLException;
 import javax.swing.JPanel;
 
 /**
@@ -156,7 +158,11 @@ public class Menu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVentasActionPerformed
-      ShowJpanel(new Ventas());
+      try {
+            ShowJpanel(new PanelCentralDeVentas()); // Pasar la conexión al constructor
+        } catch (SQLException e) {
+            e.printStackTrace(); // Manejo de errores
+        }
     }//GEN-LAST:event_btnVentasActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

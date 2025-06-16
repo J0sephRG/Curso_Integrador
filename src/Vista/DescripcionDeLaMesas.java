@@ -1,5 +1,6 @@
 package VISTA;
-import Conexion.DatabaseConnection;
+
+import ConexionSQL.Conexion; // Asegúrate de que esta clase maneje la conexión a SQL Server
 import DAO.ClienteDAO;
 import DAO.MesaPlatoDAO;
 import DAO.PlatoDAO;
