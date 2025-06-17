@@ -1,20 +1,20 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt 
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java 
  */
 package VISTA;
-import ConexionSQL.Conexion; // Asegúrate de que esta clase maneje la conexión a SQL Server
+import ConexionSQL.Conexion; 
 
 /**
  *
  * @author enman
  */
-public class PanelDeVentaParallevar extends javax.swing.JPanel {
+public class VentaParallevar extends javax.swing.JPanel {
 
     /**
      * Creates new form PllrVts
      */
-    public PanelDeVentaParallevar() {
+    public VentaParallevar() {
         initComponents();
     }
 
@@ -80,8 +80,6 @@ public class PanelDeVentaParallevar extends javax.swing.JPanel {
         jButtonEliminarDeListaDePedidos = new javax.swing.JButton();
         jLabel22 = new javax.swing.JLabel();
         jComboBox8 = new javax.swing.JComboBox<>();
-        jButtonDelivery = new javax.swing.JButton();
-        jButtonMesas = new javax.swing.JButton();
 
         jPanel2.setBackground(new java.awt.Color(204, 204, 204));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -156,6 +154,8 @@ public class PanelDeVentaParallevar extends javax.swing.JPanel {
         jTextField5.setEditable(false);
         jTextField5.setText("jTextField2");
         jPanel3.add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 80, 200, -1));
+
+        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jButtonParaLlevar.setBackground(new java.awt.Color(51, 51, 51));
         jButtonParaLlevar.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 18)); // NOI18N
@@ -271,16 +271,6 @@ public class PanelDeVentaParallevar extends javax.swing.JPanel {
         jComboBox8.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jPanel5.add(jComboBox8, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 50, -1, -1));
 
-        jButtonDelivery.setBackground(new java.awt.Color(51, 51, 51));
-        jButtonDelivery.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 14)); // NOI18N
-        jButtonDelivery.setForeground(new java.awt.Color(255, 255, 255));
-        jButtonDelivery.setText("Delivery");
-
-        jButtonMesas.setBackground(new java.awt.Color(51, 51, 51));
-        jButtonMesas.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 18)); // NOI18N
-        jButtonMesas.setForeground(new java.awt.Color(255, 255, 255));
-        jButtonMesas.setText("Mesas");
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -288,39 +278,21 @@ public class PanelDeVentaParallevar extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(jButtonMesas)
-                        .addGap(23, 23, 23)
-                        .addComponent(jButtonParaLlevar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButtonDelivery))
+                    .addComponent(jButtonParaLlevar)
                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 791, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 791, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonMesas)
-                    .addComponent(jButtonParaLlevar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonDelivery))
+                .addComponent(jButtonParaLlevar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(8, 8, 8)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
+        add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void textNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textNombreActionPerformed
@@ -351,9 +323,7 @@ public class PanelDeVentaParallevar extends javax.swing.JPanel {
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButtonAgregarAListaDeLosPedidos;
     private javax.swing.JButton jButtonBuscarCLIENTE;
-    private javax.swing.JButton jButtonDelivery;
     private javax.swing.JButton jButtonEliminarDeListaDePedidos;
-    private javax.swing.JButton jButtonMesas;
     private javax.swing.JButton jButtonParaLlevar;
     private javax.swing.JButton jButtonRegistrarCliente;
     private javax.swing.JComboBox<String> jComboBox1;

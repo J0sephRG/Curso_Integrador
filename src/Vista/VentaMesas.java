@@ -6,11 +6,11 @@ import java.awt.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class PanelDeVentaMesas extends javax.swing.JPanel {
+public class VentaMesas extends javax.swing.JPanel {
     
     private Connection connection; // Conexión a BD, de ser necesaria para futuras operaciones
     
-    public PanelDeVentaMesas(Connection connection) throws SQLException {
+    public VentaMesas(Connection connection) throws SQLException {
         this.connection = connection; // Usar la conexión pasada como parámetro
         initComponents();
         aplicarEstiloModerno();

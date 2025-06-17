@@ -44,7 +44,8 @@ int intentos;
         jLabel4 = new javax.swing.JLabel();
         txtContraseña = new javax.swing.JPasswordField();
         jSeparator1 = new javax.swing.JSeparator();
-        btnSalir = new javax.swing.JButton();
+        btnIngresar = new javax.swing.JButton();
+        btnCuenta = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -91,12 +92,12 @@ int intentos;
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setText("Usuario:");
         jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 180, 100, -1));
-        jPanel1.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 240, 170, 20));
+        jPanel1.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 240, 230, 20));
 
         txtUsuario.setBackground(new java.awt.Color(16, 16, 16));
         txtUsuario.setForeground(new java.awt.Color(255, 255, 255));
         txtUsuario.setBorder(null);
-        jPanel1.add(txtUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 210, 170, 30));
+        jPanel1.add(txtUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 210, 230, 30));
 
         jLabel4.setFont(new java.awt.Font("High Tower Text", 0, 24)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
@@ -106,20 +107,26 @@ int intentos;
         txtContraseña.setBackground(new java.awt.Color(16, 16, 16));
         txtContraseña.setForeground(new java.awt.Color(255, 255, 255));
         txtContraseña.setBorder(null);
-        jPanel1.add(txtContraseña, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 310, 170, 30));
-        jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 340, 170, 20));
+        jPanel1.add(txtContraseña, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 310, 230, 30));
+        jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 340, 230, 20));
 
-        btnSalir.setBackground(new java.awt.Color(51, 51, 51));
-        btnSalir.setForeground(new java.awt.Color(255, 255, 255));
-        btnSalir.setText("Ingresar");
-        btnSalir.setBorder(null);
-        btnSalir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnSalir.addActionListener(new java.awt.event.ActionListener() {
+        btnIngresar.setBackground(new java.awt.Color(51, 51, 51));
+        btnIngresar.setForeground(new java.awt.Color(255, 255, 255));
+        btnIngresar.setText("Ingresar");
+        btnIngresar.setBorder(null);
+        btnIngresar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnIngresar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSalirActionPerformed(evt);
+                btnIngresarActionPerformed(evt);
             }
         });
-        jPanel1.add(btnSalir, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 400, 80, 30));
+        jPanel1.add(btnIngresar, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 390, 80, 30));
+
+        btnCuenta.setBackground(new java.awt.Color(51, 51, 51));
+        btnCuenta.setForeground(new java.awt.Color(255, 255, 255));
+        btnCuenta.setText("Crear Usuario");
+        btnCuenta.setBorder(null);
+        jPanel1.add(btnCuenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(121, 450, 80, 30));
 
         jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagen/Fondo_Restaurante.png"))); // NOI18N
 
@@ -153,51 +160,9 @@ int intentos;
         }
     }//GEN-LAST:event_jLabel2MouseClicked
 
-    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-      String usuario = txtUsuario.getText();
-String password = new String(txtContraseña.getPassword());
-
-ConexionSQL.Conexion conect = new Conexion();
-Connection conn = conect.Conectar();
-
-if (conn != null) {
-    try {
-        // Consulta SQL que verifica que el usuario y la contraseña coincidan
-        String sql = "SELECT * FROM Usuario WHERE nombre = ? AND clave = ?";
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, usuario);
-        ps.setString(2, password);
-        ResultSet rs = ps.executeQuery();
-
-        // Si se encontró una coincidencia
-        if (rs.next()) {
-            dispose();  // Cierra el login
-            JOptionPane.showMessageDialog(null, "Bienvenido", "Mensaje de bienvenida", JOptionPane.INFORMATION_MESSAGE);
-            Menu dash = new Menu();  // Abre el menú principal
-            dash.setVisible(true);
-        } else {
-            intentos++;
-            if (intentos >= 3) {
-                JOptionPane.showMessageDialog(null, "Has excedido el número de intentos para ingresar al sistema", "Error", JOptionPane.ERROR_MESSAGE);
-                System.exit(0);  // Cierra la aplicación después de 3 intentos fallidos
-            } else {
-                JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos. Quedan " + (3 - intentos) + " intentos.");
-                txtUsuario.setText("");
-                txtContraseña.setText("");
-                txtUsuario.requestFocus();
-            }
-        }
-
-        conn.close();
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(null, "Error de consulta: " + e.getMessage());
-    }
-} else {
-    JOptionPane.showMessageDialog(null, "No se pudo conectar a la base de datos.");
-}
-    
-
-    }//GEN-LAST:event_btnSalirActionPerformed
+    private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
+    ingresar();
+    }//GEN-LAST:event_btnIngresarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -220,7 +185,8 @@ if (conn != null) {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnSalir;
+    private javax.swing.JButton btnCuenta;
+    private javax.swing.JButton btnIngresar;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -234,4 +200,47 @@ if (conn != null) {
     private javax.swing.JPasswordField txtContraseña;
     private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
+ private void ingresar() {
+          String usuario = txtUsuario.getText();
+    String password = new String(txtContraseña.getPassword());
+
+    ConexionSQL.Conexion conect = new Conexion();
+    Connection conn = conect.Conectar();
+
+    if (conn != null) {
+        try {
+            // Consulta SQL que verifica que el usuario y la contraseña coincidan
+            String sql = "SELECT * FROM Usuario WHERE nombre = ? AND clave = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, usuario);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+
+            // Si se encontró una coincidencia
+            if (rs.next()) {
+                dispose();  // Cierra el login
+                JOptionPane.showMessageDialog(null, "Bienvenido", "Mensaje de bienvenida", JOptionPane.INFORMATION_MESSAGE);
+                Menu dash = new Menu();  // Abre el menú principal
+                dash.setVisible(true);
+            } else {
+                intentos++;
+                if (intentos >= 3) {
+                    JOptionPane.showMessageDialog(null, "Has excedido el número de intentos para ingresar al sistema", "Error", JOptionPane.ERROR_MESSAGE);
+                    System.exit(0);  // Cierra la aplicación después de 3 intentos fallidos
+                } else {
+                    JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos. Quedan " + (3 - intentos) + " intentos.");
+                    txtUsuario.setText("");
+                    txtContraseña.setText("");
+                    txtUsuario.requestFocus();
+                }
+            }
+
+            conn.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error de consulta: " + e.getMessage());
+        }
+    } else {
+        JOptionPane.showMessageDialog(null, "No se pudo conectar a la base de datos.");
+    }
+ }
 }

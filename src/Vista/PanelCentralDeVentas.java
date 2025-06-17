@@ -1,28 +1,23 @@
 package VISTA;
-import ConexionSQL.Conexion; // Asegúrate de que esta clase maneje la conexión a SQL Server
-import Vista.DeliveryVts;
-import Vista.VentaParallevar;
+import ConexionSQL.Conexion; 
 import java.awt.BorderLayout;
 import java.sql.SQLException;
 import javax.swing.JPanel;
 import java.sql.Connection;
+import DAO.MesaDAO;
 
 public class PanelCentralDeVentas extends javax.swing.JPanel {
-    private Connection conn; // Conexión a la base de datos
+
     
-    public PanelCentralDeVentas() throws SQLException {
-        this.conn = Conexion.getConnection(); // Obtener la conexión de la base de datos
-    initComponents();
+    private MesaDAO mesadao;
+    private Conexion conexion;
+    public PanelCentralDeVentas() {
+        initComponents();
+        conexion = new Conexion();  
+        mesadao = new MesaDAO(conexion.Conectar());  
     }
+
     
-    private void ShowJpanel(JPanel p) {
-        p.setSize(1280, 820);
-        p.setLocation(0, 0);
-        jpMes.removeAll();
-        jpMes.add(p, BorderLayout.CENTER);
-        jpMes.revalidate();
-        jpMes.repaint();
-    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -30,7 +25,7 @@ public class PanelCentralDeVentas extends javax.swing.JPanel {
 
         jpMes = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        jButtonMesas = new javax.swing.JButton();
+        btnMesas = new javax.swing.JButton();
         jButtonParaLlevar = new javax.swing.JButton();
         jButtonDelivery = new javax.swing.JButton();
 
@@ -53,13 +48,13 @@ public class PanelCentralDeVentas extends javax.swing.JPanel {
 
         jPanel2.setBackground(new java.awt.Color(102, 102, 102));
 
-        jButtonMesas.setBackground(new java.awt.Color(51, 51, 51));
-        jButtonMesas.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 14)); // NOI18N
-        jButtonMesas.setForeground(new java.awt.Color(255, 255, 255));
-        jButtonMesas.setText("MESAS");
-        jButtonMesas.addActionListener(new java.awt.event.ActionListener() {
+        btnMesas.setBackground(new java.awt.Color(51, 51, 51));
+        btnMesas.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 14)); // NOI18N
+        btnMesas.setForeground(new java.awt.Color(255, 255, 255));
+        btnMesas.setText("MESAS");
+        btnMesas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonMesasActionPerformed(evt);
+                btnMesasActionPerformed(evt);
             }
         });
 
@@ -89,7 +84,7 @@ public class PanelCentralDeVentas extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(90, 90, 90)
-                .addComponent(jButtonMesas, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnMesas, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(115, 115, 115)
                 .addComponent(jButtonDelivery, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(82, 82, 82)
@@ -101,7 +96,7 @@ public class PanelCentralDeVentas extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonMesas, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnMesas, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonDelivery, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonParaLlevar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(20, 20, 20))
@@ -110,29 +105,33 @@ public class PanelCentralDeVentas extends javax.swing.JPanel {
         add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 850, 90));
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonMesasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMesasActionPerformed
-    try {
-            ShowJpanel(new PanelDeVentaMesas(conn)); // Pasar la conexión al constructor
-        } catch (SQLException e) {
-            e.printStackTrace(); // Manejo de errores
-        }
-    }//GEN-LAST:event_jButtonMesasActionPerformed
+    private void btnMesasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesasActionPerformed
+      //  ShowJpanel(new VentaMesas()); // Pasar la conexión al constructor
+    }//GEN-LAST:event_btnMesasActionPerformed
 
     private void jButtonParaLlevarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonParaLlevarActionPerformed
         ShowJpanel(new VentaParallevar());
     }//GEN-LAST:event_jButtonParaLlevarActionPerformed
 
     private void jButtonDeliveryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeliveryActionPerformed
-        ShowJpanel(new DeliveryVts());
+        ShowJpanel(new VentaDelivery());
     }//GEN-LAST:event_jButtonDeliveryActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnMesas;
     private javax.swing.JButton jButtonDelivery;
-    private javax.swing.JButton jButtonMesas;
     private javax.swing.JButton jButtonParaLlevar;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jpMes;
     // End of variables declaration//GEN-END:variables
+    private void ShowJpanel(JPanel p) {
+        p.setSize(1280, 820);
+        p.setLocation(0, 0);
+        jpMes.removeAll();
+        jpMes.add(p, BorderLayout.CENTER);
+        jpMes.revalidate();
+        jpMes.repaint();
+    }
 
 }

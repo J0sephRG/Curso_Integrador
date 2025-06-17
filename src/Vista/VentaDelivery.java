@@ -8,12 +8,12 @@ package VISTA;
  *
  * @author enman
  */
-public class PanelDeVentaDelivery extends javax.swing.JPanel {
+public class VentaDelivery extends javax.swing.JPanel {
 
     /**
      * Creates new form DeliveryVts
      */
-    public PanelDeVentaDelivery() {
+    public VentaDelivery() {
         initComponents();
     }
 

@@ -158,11 +158,7 @@ public class Menu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVentasActionPerformed
-      try {
-            ShowJpanel(new PanelCentralDeVentas()); // Pasar la conexión al constructor
-        } catch (SQLException e) {
-            e.printStackTrace(); // Manejo de errores
-        }
+        ShowJpanel(new PanelCentralDeVentas());
     }//GEN-LAST:event_btnVentasActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

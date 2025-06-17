@@ -22,12 +22,12 @@ public class Almacen extends javax.swing.JPanel {
     /**
      * Creates new form DosAlm
      */
-    private ProductoDAO productoDAO; // Asegúrate de tener tu ProductoDAO
+    private ProductoDAO productoDAO; 
     private Conexion conexion;
     public Almacen() {
         initComponents();
-        conexion = new Conexion();  // Inicializamos la conexión
-        productoDAO = new ProductoDAO(conexion.Conectar());  // Creamos el ProductoDAO con la conexión
+        conexion = new Conexion();  
+        productoDAO = new ProductoDAO(conexion.Conectar());  
         cargarDatos();
     }
 
