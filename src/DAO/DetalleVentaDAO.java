@@ -1,6 +1,6 @@
 package DAO;
 
-import ConexionSQL.Conexion; 
+import ConexionSQL.Conexion; // Asegúrate de que esta clase maneje la conexión a SQL Server
 import model.DetalleVenta;
 import java.util.List;
 import java.math.BigDecimal;
