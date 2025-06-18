@@ -85,11 +85,11 @@ public class PanelCentralDeVentas extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(90, 90, 90)
                 .addComponent(btnMesas, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(115, 115, 115)
+                .addGap(111, 111, 111)
                 .addComponent(jButtonDelivery, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(82, 82, 82)
+                .addGap(86, 86, 86)
                 .addComponent(jButtonParaLlevar)
-                .addContainerGap(216, Short.MAX_VALUE))
+                .addContainerGap(221, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -106,7 +106,7 @@ public class PanelCentralDeVentas extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnMesasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesasActionPerformed
-      //  ShowJpanel(new VentaMesas()); // Pasar la conexión al constructor
+      // ShowJpanel(new VentaMesas()); 
     }//GEN-LAST:event_btnMesasActionPerformed
 
     private void jButtonParaLlevarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonParaLlevarActionPerformed
@@ -114,7 +114,7 @@ public class PanelCentralDeVentas extends javax.swing.JPanel {
     }//GEN-LAST:event_jButtonParaLlevarActionPerformed
 
     private void jButtonDeliveryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeliveryActionPerformed
-        ShowJpanel(new VentaDelivery());
+       // ShowJpanel(new VentaDelivery());
     }//GEN-LAST:event_jButtonDeliveryActionPerformed
 
 
