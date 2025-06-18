@@ -257,17 +257,13 @@ public class VentaMesas extends javax.swing.JPanel {
     }
    
 private void abrirDescripcionDeLaMesa(int numeroMesa) {
-        try {
-            DescripcionDeLaMesas panelDescripcion = new DescripcionDeLaMesas(connection, numeroMesa);
-            JFrame frame = new JFrame("Descripción Mesa " + numeroMesa);
-            frame.setContentPane(panelDescripcion);
-            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            frame.pack();
-            frame.setLocationRelativeTo(this);
-            frame.setVisible(true);
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al abrir la descripción de la mesa: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+    DescripcionDeLaMesas panelDescripcion = new DescripcionDeLaMesas(connection, numeroMesa);
+    JFrame frame = new JFrame("Descripción Mesa " + numeroMesa);
+    frame.setContentPane(panelDescripcion);
+    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    frame.pack();
+    frame.setLocationRelativeTo(this);
+    frame.setVisible(true);
     }
      
    private void aplicarEstiloModerno() {

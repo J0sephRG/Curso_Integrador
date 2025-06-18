@@ -1,7 +1,6 @@
-package VISTA;
+package Vista;
 
 import ConexionSQL.Conexion; // Asegúrate de que esta clase maneje la conexión a SQL Server
-import Controlador.DescripcionDeLaMesasController;
 import DAO.ClienteDAO;
 import DAO.MesaPlatoDAO;
 import DAO.PlatoDAO;
@@ -22,80 +21,241 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.sql.Connection;
 
+public class VentaDelivery extends javax.swing.JPanel {
+  private Connection connection;
+    private int mesaNumber;
+    private DefaultTableModel modelo;
+    private MesaPlatoDAO mesaPlatoDAO;
+    private PlatoDAO platoDAO;
+    private ClienteDAO clienteDAO;
+    private VentaDAO ventaDAO;
+    private Mesa mesa;
 
-public class DescripcionDeLaMesas extends JPanel {
-    private DescripcionDeLaMesasController controller;
-    private Connection connection;
-    
-    public DescripcionDeLaMesas(Connection connection,int numeroMesa) {
-        this.controller = new DescripcionDeLaMesasController(connection, numeroMesa, this);
+   public VentaDelivery(Connection connection, int numeroMesa) throws SQLException {
+    this.connection = connection;
+        this.mesaNumber = numeroMesa;
+        this.mesaPlatoDAO = new MesaPlatoDAO(connection);
+        this.platoDAO = new PlatoDAO(connection);
+        this.clienteDAO = new ClienteDAO(connection);
+        this.ventaDAO = new VentaDAO(connection);
         initComponents();
-        controller.inicializar();
+        jLabelVENTA.setText("Mesa " + numeroMesa);
+        cargarComboPlatillos();
+        cargarTipoPagoYComprobante();
+        inicializarTabla();
+        recargarPedidos();
+        calcularTotales();
     }
 
-public void actualizarTabla(DefaultTableModel modelo) {
+   private void inicializarTabla() {
+        modelo = new DefaultTableModel();
+        modelo.addColumn("ID");
+        modelo.addColumn("Plato");
+        modelo.addColumn("Cantidad");
+        modelo.addColumn("Precio");
+        modelo.addColumn("Total");
         jTablelListaDeLosPedidos.setModel(modelo);
     }
+   private void recargarPedidos() {
+       List<Plato> platos = mesaPlatoDAO.obtenerPlatosPorMesa(mesaNumber);
+       modelo.setRowCount(0); // Limpiar la tabla
+       for (Plato plato : platos) {
+           BigDecimal precio = plato.getPrecio();
+           int cantidad = 1; // Suponiendo cantidad 1 por ahora, ajustar si es necesario
+           BigDecimal total = precio.multiply(new BigDecimal(cantidad));
+           Object[] row = {plato.getId_plato(), plato.getNombre(), cantidad, precio, total};
+           modelo.addRow(row);
+       }
+       calcularTotales();
+    }
+
+   private void cargarComboPlatillos() {
+        try {
+            PlatoDAO platoDAO = new PlatoDAO(connection);
+            List<Plato> platos = platoDAO.listarPlatos();
+            jComboBoxDeBusquedaDePlatillos.removeAllItems();
+            for (Plato plato : platos) {
+                jComboBoxDeBusquedaDePlatillos.addItem(plato.getNombre());
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar los platillos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void cargarTipoPagoYComprobante() {
+        jComboBoxTipoDePago.addItem("Efectivo");
+        jComboBoxTipoDePago.addItem("Tarjeta");
+        jComboBoxTipoDePago.addItem("Billetera Digital");
+        jComboBoxTipoDeComprobante.addItem("Factura");
+        jComboBoxTipoDeComprobante.addItem("Boleta por DNI");
+        jComboBoxTipoDeComprobante.addItem("Boleta Simple");
+    }
+   
+    private void buscarClientePorDNI() {
+    String dni = textDni.getText();
+    try {
+        Cliente cliente = null;
+        List<Cliente> clientes = clienteDAO.listarClientes();
+
+        // Usar streams para buscar el cliente por DNI
+        Optional<Cliente> optionalCliente = clientes.stream()
+                .filter(c -> c.getDni().equals(dni))
+                .findFirst();
+
+        if (optionalCliente.isPresent()) {
+            cliente = optionalCliente.get();
+            textNombre.setText(cliente.getNombre() + " " + cliente.getApellido());
+        } else {
+            textNombre.setText("Cliente no encontrado");
+        }
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, "Error al buscar cliente: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
     
-    public void mostrarMensaje(String mensaje) {
-        JOptionPane.showMessageDialog(this, mensaje);
+     private void agregarPedido() {
+        try {
+            String platoNombre = (String) jComboBoxDeBusquedaDePlatillos.getSelectedItem();
+            int cantidad = Integer.parseInt(textCantidad.getText());
+
+            // Obtener el id_plato basado en el nombre seleccionado
+            Plato plato = null;
+            List<Plato> platos = platoDAO.listarPlatos();
+            plato = platos.stream().filter(p -> p.getNombre().equals(platoNombre)).collect(Collectors.toList()).get(0);
+            int idPlato = plato.getId_plato();
+
+            // Insertar el pedido en la tabla Mesa_Plato
+            boolean agregado = mesaPlatoDAO.agregarPlatoAMesa(mesaNumber, plato, cantidad);
+
+            if (agregado) {
+                recargarPedidos();
+                calcularTotales();
+                JOptionPane.showMessageDialog(this, "Plato agregado a la mesa.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al agregar el plato a la mesa.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al agregar pedido: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Cantidad inválida.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
-    public String getDni() {
-        return textDni.getText();
-    }
-    public String getCantidad() {
-        return textCantidad.getText();
-    }
-    public String getPlatilloSeleccionado() {
-        return (String) jComboBoxDeBusquedaDePlatillos.getSelectedItem();
-    }
-    public String getTipoDePago() {
-        return (String) jComboBoxTipoDePago.getSelectedItem();
-    }
-     
-   public void setMontoACobrar(String monto) {
-        jTextFieldMontoACobrar.setText(monto);
-    }
-    public void setVuelto(String vuelto) {
-        jTextFieldVuelto.setText(vuelto);
-    }
-    public String getMontoDePago() {
-        return jTextFieldMontoDePago.getText();
-    }
-    public DefaultTableModel getModeloTablaPedidos() {
-        return (DefaultTableModel) jTablelListaDeLosPedidos.getModel();
-    }
-    public void setModeloTablaPedidos(DefaultTableModel modelo) {
-        jTablelListaDeLosPedidos.setModel(modelo);
-        jTablelListaDeLosPedidos.repaint();
-    }
-    public String getTipoDeComprobante() {
-        return (String) jComboBoxTipoDeComprobante.getSelectedItem();
-    }
-    public void setTextNombre(String nombre) {
-        textNombre.setText(nombre);
-    }
-    public void setIGV(String igv) {
-        jTextFieldIGV.setText(igv);
-    }
-    public void setResultadoDescuento(String descuento) {
-        jTextFieldResultadoDescuento.setText(descuento);
-    }
-    public void setTotalDeVenta(String total) {
-        jTextFieldTotalDeVenta.setText(total);
+
+
+    private void eliminarPedido() {
+        int selectedRow = jTablelListaDeLosPedidos.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un plato para eliminar.", "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int idPlato = (int) jTablelListaDeLosPedidos.getValueAt(selectedRow, 0);
+        boolean eliminado = mesaPlatoDAO.eliminarPlatoDeMesa(mesaNumber, idPlato);
+        if (eliminado) {
+            recargarPedidos();
+            calcularTotales();
+            JOptionPane.showMessageDialog(this, "Plato eliminado de la mesa.");
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al eliminar el plato de la mesa.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
+    private void calcularTotales() {
+    BigDecimal subtotal = BigDecimal.ZERO;
+
+    // Sumar los valores de la columna 4 (Total por plato)
+    for (int i = 0; i < jTablelListaDeLosPedidos.getRowCount(); i++) {
+        BigDecimal totalPlato = (BigDecimal) jTablelListaDeLosPedidos.getValueAt(i, 4);
+        subtotal = subtotal.add(totalPlato);
+    }
+
+    // Mostrar IGV (solo como información, no se suma al total)
+    BigDecimal igv = subtotal.multiply(new BigDecimal("0.05"));
+    jTextFieldIGV.setText(igv.toString());
+
+    // Descuento (solo si se proporciona un número válido)
+    BigDecimal descuentoPorcentaje = BigDecimal.ZERO;
+    if (!jTextFieldDescuento.getText().trim().isEmpty()) {
+        try {
+            descuentoPorcentaje = new BigDecimal(jTextFieldDescuento.getText());
+        } catch (NumberFormatException e) {
+            // Si el número no es válido, asumimos 0%
+            descuentoPorcentaje = BigDecimal.ZERO;
+        }
+    }
+
+    BigDecimal descuentoAplicado = subtotal.multiply(descuentoPorcentaje.divide(new BigDecimal("100")));
+    jTextFieldResultadoDescuento.setText(descuentoAplicado.toString());
+
+    // Total a pagar sin IGV, solo con descuento si aplica
+    BigDecimal totalPagar = subtotal.subtract(descuentoAplicado);
+    jTextFieldTotalDeVenta.setText(totalPagar.toString());
+    jTextFieldMontoACobrar.setText(totalPagar.toString());
+}
+
+    private void calcularVuelto() {
+        try {
+            BigDecimal montoPago = new BigDecimal(jTextFieldMontoDePago.getText());
+            BigDecimal montoCobrar = new BigDecimal(jTextFieldMontoACobrar.getText());
+            BigDecimal vuelto = montoPago.subtract(montoCobrar);
+            jTextFieldVuelto.setText(vuelto.toString());
+        } catch (NumberFormatException e) {
+            jTextFieldVuelto.setText("0.00");
+        }
+    }
+    
+    private void actualizarTotales() {
+        calcularTotales();
+        calcularVuelto();
+    }
+    
+    private void registrarVenta() {
+        try {
+            // 1. Crear la Venta
+            Venta venta = new Venta(
+                0, // El ID se genera automáticamente en la base de datos
+                new Timestamp(System.currentTimeMillis()),
+                1, //TODO Obtener el id del usuario actual
+                (String) jComboBoxTipoDePago.getSelectedItem(),
+                new BigDecimal(jTextFieldTotalDeVenta.getText())
+            );
+            // 2. Registrar la Venta en la base de datos y obtener el ID generado
+            ventaDAO.agregarVenta(venta);
+            // 3. Recorrer la tabla de pedidos y crear los DetallesVenta
+            for (int i = 0; i < jTablelListaDeLosPedidos.getRowCount(); i++) {
+                int idProducto = (int) jTablelListaDeLosPedidos.getValueAt(i, 0);
+                int cantidad = (int) jTablelListaDeLosPedidos.getValueAt(i, 2);
+                BigDecimal precioUnitario = (BigDecimal) jTablelListaDeLosPedidos.getValueAt(i, 3);
+                DetalleVenta detalle = new DetalleVenta(
+                    0, // El ID se genera automáticamente en la base de datos
+                    venta.getId_venta(), // Usar el ID de la venta recién insertada
+                    idProducto,
+                    cantidad,
+                    precioUnitario,
+                    precioUnitario.multiply(new BigDecimal(cantidad))
+                );
+                ventaDAO.agregarDetalleVenta(detalle);
+            }
+            // 4. Limpiar la mesa (eliminar los platos de Mesa_Plato)
+            mesaPlatoDAO.limpiarMesa(mesaNumber);
+            // 5. Actualizar la interfaz
+            recargarPedidos();
+            calcularTotales();
+            JOptionPane.showMessageDialog(this, "Venta registrada correctamente.");
+        } catch (SQLException ex) {
+         JOptionPane.showMessageDialog(this, "Error al registrar la venta: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+            
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jButton4 = new javax.swing.JButton();
-        jButtonMesas = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        jButtonDELIVERY = new javax.swing.JButton();
+        jLabelVENTA = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -144,15 +304,15 @@ public void actualizarTabla(DefaultTableModel modelo) {
 
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButtonMesas.setBackground(new java.awt.Color(51, 51, 51));
-        jButtonMesas.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 18)); // NOI18N
-        jButtonMesas.setForeground(new java.awt.Color(255, 255, 255));
-        jButtonMesas.setText("Mesas");
-        add(jButtonMesas, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 20, -1, -1));
+        jButtonDELIVERY.setBackground(new java.awt.Color(51, 51, 51));
+        jButtonDELIVERY.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 18)); // NOI18N
+        jButtonDELIVERY.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonDELIVERY.setText("DELIVERY");
+        add(jButtonDELIVERY, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 20, -1, -1));
 
-        jLabel1.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 18)); // NOI18N
-        jLabel1.setText("MESAS");
-        add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(392, 45, -1, -1));
+        jLabelVENTA.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 18)); // NOI18N
+        jLabelVENTA.setText("DELIVERY");
+        add(jLabelVENTA, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 50, -1, -1));
 
         jPanel2.setBackground(new java.awt.Color(204, 204, 204));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -342,7 +502,7 @@ public void actualizarTabla(DefaultTableModel modelo) {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtoRegistrarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtoRegistrarVentaActionPerformed
-        controller.registrarVenta();
+        registrarVenta();
     }//GEN-LAST:event_jButtoRegistrarVentaActionPerformed
 
     private void jButtonAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAtrasActionPerformed
@@ -351,7 +511,7 @@ public void actualizarTabla(DefaultTableModel modelo) {
     }//GEN-LAST:event_jButtonAtrasActionPerformed
 
     private void jButtonBuscarCLIENTEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarCLIENTEActionPerformed
-        controller.buscarClientePorDNI();
+        buscarClientePorDNI();
     }//GEN-LAST:event_jButtonBuscarCLIENTEActionPerformed
 
     private void jComboBoxTipoDeComprobanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTipoDeComprobanteActionPerformed
@@ -363,34 +523,33 @@ public void actualizarTabla(DefaultTableModel modelo) {
     }//GEN-LAST:event_jComboBoxTipoDePagoActionPerformed
 
     private void jButtonAgregarAListaDeLosPedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgregarAListaDeLosPedidosActionPerformed
-        controller.agregarPedido();
+        agregarPedido();
     }//GEN-LAST:event_jButtonAgregarAListaDeLosPedidosActionPerformed
 
     private void jButtonEliminarDeListaDePedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarDeListaDePedidosActionPerformed
-        controller.eliminarPedido();
+        eliminarPedido();
     }//GEN-LAST:event_jButtonEliminarDeListaDePedidosActionPerformed
 
     private void jTextFieldVueltoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldVueltoKeyReleased
-         controller.calcularVuelto();
+         calcularVuelto();
     }//GEN-LAST:event_jTextFieldVueltoKeyReleased
 
     private void jTextFieldDescuentoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldDescuentoKeyReleased
-        controller.actualizarTotales();
+        actualizarTotales();
     }//GEN-LAST:event_jTextFieldDescuentoKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JButton jButtoRegistrarVenta;
+    private javax.swing.JButton jButtoRegistrarVenta;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButtonAgregarAListaDeLosPedidos;
-    public javax.swing.JButton jButtonAtras;
-    public javax.swing.JButton jButtonBuscarCLIENTE;
+    private javax.swing.JButton jButtonAtras;
+    private javax.swing.JButton jButtonBuscarCLIENTE;
+    private javax.swing.JButton jButtonDELIVERY;
     private javax.swing.JButton jButtonEliminarDeListaDePedidos;
-    private javax.swing.JButton jButtonMesas;
     private javax.swing.JComboBox<String> jComboBox4;
-    public javax.swing.JComboBox<String> jComboBoxDeBusquedaDePlatillos;
-    public javax.swing.JComboBox<String> jComboBoxTipoDeComprobante;
-    public javax.swing.JComboBox<String> jComboBoxTipoDePago;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JComboBox<String> jComboBoxDeBusquedaDePlatillos;
+    private javax.swing.JComboBox<String> jComboBoxTipoDeComprobante;
+    private javax.swing.JComboBox<String> jComboBoxTipoDePago;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -410,21 +569,21 @@ public void actualizarTabla(DefaultTableModel modelo) {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabelVENTA;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    public javax.swing.JTable jTablelListaDeLosPedidos;
-    public javax.swing.JTextField jTextFieldDescuento;
-    public javax.swing.JTextField jTextFieldIGV;
-    public javax.swing.JTextField jTextFieldMontoACobrar;
-    public javax.swing.JTextField jTextFieldMontoDePago;
-    public javax.swing.JTextField jTextFieldResultadoDescuento;
-    public javax.swing.JTextField jTextFieldTotalDeVenta;
-    public javax.swing.JTextField jTextFieldVuelto;
+    private javax.swing.JTable jTablelListaDeLosPedidos;
+    private javax.swing.JTextField jTextFieldDescuento;
+    private javax.swing.JTextField jTextFieldIGV;
+    private javax.swing.JTextField jTextFieldMontoACobrar;
+    private javax.swing.JTextField jTextFieldMontoDePago;
+    private javax.swing.JTextField jTextFieldResultadoDescuento;
+    private javax.swing.JTextField jTextFieldTotalDeVenta;
+    private javax.swing.JTextField jTextFieldVuelto;
     private javax.swing.JTextField textCantidad;
-    public javax.swing.JTextField textDni;
-    public javax.swing.JTextField textNombre;
+    private javax.swing.JTextField textDni;
+    private javax.swing.JTextField textNombre;
     // End of variables declaration//GEN-END:variables
-
 }
