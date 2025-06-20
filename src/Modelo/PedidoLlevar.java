@@ -1,25 +1,44 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package model;
+package Modelo;
 
-public class PedidoLlevar {
+import Interface.Pedido;
+import Strategy.CalculoTotalLlevar;
+import Strategy.CalculoTotalStrategy;
+import java.sql.Timestamp;
+
+public class PedidoLlevar implements Pedido {
     private int id;
     private int idCliente;
     private String estado;
-    private java.sql.Timestamp fechaPedido;
+    private Timestamp fechaPedido;
+    private final CalculoTotalStrategy estrategiaCalculo;
 
-    // Getters y Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public PedidoLlevar(int id, int idCliente, String estado, Timestamp fechaPedido) {
+        this.id = id;
+        this.idCliente = idCliente;
+        this.estado = estado;
+        this.fechaPedido = fechaPedido;
+        this.estrategiaCalculo = new CalculoTotalLlevar(this);
+    }
 
-    public int getIdCliente() { return idCliente; }
-    public void setIdCliente(int idCliente) { this.idCliente = idCliente; }
+    // Implementación de métodos de la interfaz
+    @Override public int getId() { return id; }
+    @Override public void setId(int id) { this.id = id; }
+    @Override public int getIdCliente() { return idCliente; }
+    @Override public void setIdCliente(int idCliente) { this.idCliente = idCliente; }
+    @Override public String getEstado() { return estado; }
+    @Override public void setEstado(String estado) { this.estado = estado; }
+    @Override public Timestamp getFechaPedido() { return fechaPedido; }
+    @Override public void setFechaPedido(Timestamp fechaPedido) { this.fechaPedido = fechaPedido; }
+    @Override public String getDireccionEntrega() { return "RECOGER EN TIENDA"; }
+    
+    @Override
+    public double calcularTotal() {
+        return estrategiaCalculo.calcularTotal();
+    }
 
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
-
-    public java.sql.Timestamp getFechaPedido() { return fechaPedido; }
-    public void setFechaPedido(java.sql.Timestamp fechaPedido) { this.fechaPedido = fechaPedido; }
+    @Override
+    public String getTipoPedido() {
+        return "PARA LLEVAR";
+    }
 }
+
