@@ -1,13 +1,6 @@
 package Vista;
 
 import Controlador.ControladorPedidos;
-import DAO.PRUEBADEPEDIDOS.PedidoLlevar;
-
-import Interface.Pedido;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.sql.Timestamp;
-/*import Controlador.ControladorPedidos;
 import Interface.Pedido;
 import Modelo.PedidoLlevar;
 import javax.swing.*;
@@ -15,33 +8,14 @@ import javax.swing.table.DefaultTableModel;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.List;*/
+import java.util.List;
 
 /** @author Miguel*/
 public class TablaDePEDIDOS extends javax.swing.JFrame {
     private final ControladorPedidos controlador;
-    private final DefaultTableModel modeloTabla;
+    private final DefaultTableModel modeloTabla; 
     
-    public TablaDePEDIDOS(ControladorPedidos controlador) {
-        initComponents();
-        this.controlador = controlador;
-        this.modeloTabla = (DefaultTableModel) jTablePedidosLlevar.getModel();
-        cargarPedidos();
-    }
-    private void cargarPedidos() {
-        modeloTabla.setRowCount(0);
-        controlador.listarPedidosPorTipo("PARA LLEVAR").forEach(pedido -> {
-            modeloTabla.addRow(new Object[]{
-                pedido.getId(),
-                pedido.getIdCliente(),
-                pedido.getEstado(),
-                pedido.getFechaPedido()
-            });
-        });
-    }
-    
-    //NO BORRAR ESTA ES LA CONEXION A LA BASE DE DATOS
-    /*public TablaDePEDIDOS(Connection connection) {
+    public TablaDePEDIDOS(Connection connection) {
         initComponents();
         controlador = new ControladorPedidos(connection);
         modeloTabla = (DefaultTableModel) jTablePedidosLlevar.getModel();
@@ -155,43 +129,19 @@ public class TablaDePEDIDOS extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonAgregarPedidoLLEVARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgregarPedidoLLEVARActionPerformed
-       
-        PedidoLlevar nuevoPedido = new PedidoLlevar(
-            0, 
-            200 + (int)(Math.random() * 100), 
-            "NUEVO",
-            new Timestamp(System.currentTimeMillis())
-        );
-        
-        controlador.agregarPedido(nuevoPedido);
-        cargarPedidos();
-        JOptionPane.showMessageDialog(this, "Pedido para llevar agregado: " + nuevoPedido.getId());
-   
-        
-        /*// Aquí puedes abrir un formulario para agregar un nuevo pedido
-        // Por simplicidad, se agrega un pedido de ejemplo
+    
+        // Aquí puedes abrir un formulario para agregar un nuevo pedido
         PedidoLlevar nuevoPedido = new PedidoLlevar(0, 1, "PENDIENTE", new Timestamp(System.currentTimeMillis()));
         try {
             controlador.agregarPedido(nuevoPedido);
             cargarPedidos(); // Recargar la tabla
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error al agregar pedido: " + e.getMessage());
-        } */
+        } 
     }//GEN-LAST:event_jButtonAgregarPedidoLLEVARActionPerformed
 
-    private void jButtonEliminarPedidoLLEVARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarPedidoLLEVARActionPerformed
-    
+    private void jButtonEliminarPedidoLLEVARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarPedidoLLEVARActionPerformed        
         int filaSeleccionada = jTablePedidosLlevar.getSelectedRow();
-        if (filaSeleccionada != -1) {
-            int id = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
-            controlador.eliminarPedido(id, "PARA LLEVAR");
-            cargarPedidos();
-            JOptionPane.showMessageDialog(this, "Pedido eliminado");
-        } else {
-            JOptionPane.showMessageDialog(this, "Seleccione un pedido para eliminar");
-        }
-        
-        /* int filaSeleccionada = jTablePedidosLlevar.getSelectedRow();
         if (filaSeleccionada != -1) {
             int idPedido = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
             try {
@@ -202,7 +152,7 @@ public class TablaDePEDIDOS extends javax.swing.JFrame {
             }
         } else {
             JOptionPane.showMessageDialog(this, "Seleccione un pedido para eliminar.");
-        }*/
+        }
     }//GEN-LAST:event_jButtonEliminarPedidoLLEVARActionPerformed
 
     private void jButtonMODIFICARPedidoLLEVARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMODIFICARPedidoLLEVARActionPerformed
