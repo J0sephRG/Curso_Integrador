@@ -1,6 +1,6 @@
 package Vista;
 
-/*import Controlador.ControladorPedidos;
+import Controlador.ControladorPedidos;
 import Interface.Pedido;
 import Modelo.PedidoDelivery;
 import javax.swing.*;
@@ -8,15 +8,7 @@ import javax.swing.table.DefaultTableModel;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.List;*/
-
-import Controlador.ControladorPedidos;
-import DAO.PRUEBADEPEDIDOS.PedidoDelivery;
-
-import Interface.Pedido;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.sql.Timestamp;
+import java.util.List;
 
 /**
  *
@@ -26,28 +18,8 @@ public class TablaDePEDIDOSDElivery extends javax.swing.JFrame {
  
     private final ControladorPedidos controlador;
     private final DefaultTableModel modeloTabla;
-
-    public TablaDePEDIDOSDElivery(ControladorPedidos controlador) {
-        initComponents();
-        this.controlador = controlador;
-        this.modeloTabla = (DefaultTableModel) jTablePedidosDelivery.getModel();
-        cargarPedidos();
-    }
     
-    private void cargarPedidos() {
-        modeloTabla.setRowCount(0);
-        controlador.listarPedidosPorTipo("DELIVERY").forEach(pedido -> {
-            modeloTabla.addRow(new Object[]{
-                pedido.getId(),
-                pedido.getIdCliente(),
-                pedido.getDireccionEntrega(),
-                pedido.getEstado(),
-                pedido.getFechaPedido()
-            });
-        });
-    } 
-    
-    /*public TablaDePEDIDOSDElivery(Connection connection) {
+    public TablaDePEDIDOSDElivery(Connection connection) {
         initComponents();
         controlador = new ControladorPedidos(connection);
         modeloTabla = (DefaultTableModel) jTablePedidosDelivery.getModel();
@@ -72,7 +44,7 @@ public class TablaDePEDIDOSDElivery extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error al cargar pedidos: " + e.getMessage());
         }
     }
-     */
+     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -166,20 +138,8 @@ public class TablaDePEDIDOSDElivery extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonAgregarPedidoDeliveryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgregarPedidoDeliveryActionPerformed
-    PedidoDelivery nuevoPedido = new PedidoDelivery(
-            0, 
-            100 + (int)(Math.random() * 100), 
-            "Calle Prueba " + (int)(Math.random() * 100), 
-            "NUEVO",
-            new Timestamp(System.currentTimeMillis())
-        );
-        
-        controlador.agregarPedido(nuevoPedido);
-        cargarPedidos();
-        JOptionPane.showMessageDialog(this, "Pedido de prueba agregado: " + nuevoPedido.getId());
-   
-        
-        /*        // Aquí puedes abrir un formulario para agregar un nuevo pedido
+       
+              // Aquí puedes abrir un formulario para agregar un nuevo pedido
         // Por simplicidad, se agrega un pedido de ejemplo
         PedidoDelivery nuevoPedido = new PedidoDelivery(0, 1, "Calle Principal 123", "PENDIENTE", new Timestamp(System.currentTimeMillis()));
         try {
@@ -187,7 +147,7 @@ public class TablaDePEDIDOSDElivery extends javax.swing.JFrame {
             cargarPedidos(); // Recargar la tabla
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error al agregar pedido: " + e.getMessage());
-        }*/
+        }
     }//GEN-LAST:event_jButtonAgregarPedidoDeliveryActionPerformed
 
     private void jButtonMODIFICARPedidoDeliveryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMODIFICARPedidoDeliveryActionPerformed
@@ -207,19 +167,7 @@ public class TablaDePEDIDOSDElivery extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonMODIFICARPedidoDeliveryActionPerformed
 
     private void jButtonEliminarPedidoDeliveryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarPedidoDeliveryActionPerformed
-      
-                int filaSeleccionada = jTablePedidosDelivery.getSelectedRow();
-        if (filaSeleccionada != -1) {
-            int id = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
-            controlador.eliminarPedido(id, "DELIVERY");
-            cargarPedidos();
-            JOptionPane.showMessageDialog(this, "Pedido eliminado");
-        } else {
-            JOptionPane.showMessageDialog(this, "Seleccione un pedido para eliminar");
-        }
-
-        
-        /*int filaSeleccionada = jTablePedidosDelivery.getSelectedRow();
+      int filaSeleccionada = jTablePedidosDelivery.getSelectedRow();
         if (filaSeleccionada != -1) {
             int idPedido = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
             try {
@@ -230,7 +178,7 @@ public class TablaDePEDIDOSDElivery extends javax.swing.JFrame {
             }
         } else {
             JOptionPane.showMessageDialog(this, "Seleccione un pedido para eliminar.");
-        }*/
+        }
     }//GEN-LAST:event_jButtonEliminarPedidoDeliveryActionPerformed
 
 
