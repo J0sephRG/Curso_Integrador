@@ -1,34 +1,78 @@
-
 package Vista;
 
-import java.util.List;
+/*import Controlador.ControladorPedidos;
+import Interface.Pedido;
+import Modelo.PedidoDelivery;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import model.PedidoDelivery;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.List;*/
+
+import Controlador.ControladorPedidos;
+import DAO.PRUEBADEPEDIDOS.PedidoDelivery;
+
+import Interface.Pedido;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.sql.Timestamp;
 
 /**
  *
- * @author Usuario
+ * @author Miguel
  */
 public class TablaDePEDIDOSDElivery extends javax.swing.JFrame {
+ 
+    private final ControladorPedidos controlador;
+    private final DefaultTableModel modeloTabla;
 
-    public TablaDePEDIDOSDElivery() {
+    public TablaDePEDIDOSDElivery(ControladorPedidos controlador) {
         initComponents();
+        this.controlador = controlador;
+        this.modeloTabla = (DefaultTableModel) jTablePedidosDelivery.getModel();
+        cargarPedidos();
     }
-// Método para llenar la tabla de Pedidos de Delivery
-public void llenarTablaPedidosDelivery(List<PedidoDelivery> pedidos) {
-    DefaultTableModel model = (DefaultTableModel) jTablePedidosDelivery.getModel();
-    model.setRowCount(0); // Limpiar la tabla antes de llenarla
-    for (PedidoDelivery pedido : pedidos) {
-        model.addRow(new Object[]{
-            pedido.getId(),
-            pedido.getIdCliente(),
-            pedido.getDireccionEntrega(),
-            pedido.getEstado(),
-            pedido.getFechaPedido()
+    
+    private void cargarPedidos() {
+        modeloTabla.setRowCount(0);
+        controlador.listarPedidosPorTipo("DELIVERY").forEach(pedido -> {
+            modeloTabla.addRow(new Object[]{
+                pedido.getId(),
+                pedido.getIdCliente(),
+                pedido.getDireccionEntrega(),
+                pedido.getEstado(),
+                pedido.getFechaPedido()
+            });
         });
+    } 
+    
+    /*public TablaDePEDIDOSDElivery(Connection connection) {
+        initComponents();
+        controlador = new ControladorPedidos(connection);
+        modeloTabla = (DefaultTableModel) jTablePedidosDelivery.getModel();
+        cargarPedidos();
     }
-}
-
+   
+    
+     private void cargarPedidos() {
+        try {
+            List<Pedido> pedidos = controlador.listarPedidosPorTipo("DELIVERY");
+            modeloTabla.setRowCount(0); // Limpiar la tabla
+            for (Pedido pedido : pedidos) {
+                modeloTabla.addRow(new Object[]{
+                    pedido.getId(),
+                    pedido.getIdCliente(),
+                    pedido.getDireccionEntrega(),
+                    pedido.getEstado(),
+                    pedido.getFechaPedido()
+                });
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar pedidos: " + e.getMessage());
+        }
+    }
+     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -122,49 +166,73 @@ public void llenarTablaPedidosDelivery(List<PedidoDelivery> pedidos) {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonAgregarPedidoDeliveryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgregarPedidoDeliveryActionPerformed
-        // ShowJpanel(new VentaDelivery());
+    PedidoDelivery nuevoPedido = new PedidoDelivery(
+            0, 
+            100 + (int)(Math.random() * 100), 
+            "Calle Prueba " + (int)(Math.random() * 100), 
+            "NUEVO",
+            new Timestamp(System.currentTimeMillis())
+        );
+        
+        controlador.agregarPedido(nuevoPedido);
+        cargarPedidos();
+        JOptionPane.showMessageDialog(this, "Pedido de prueba agregado: " + nuevoPedido.getId());
+   
+        
+        /*        // Aquí puedes abrir un formulario para agregar un nuevo pedido
+        // Por simplicidad, se agrega un pedido de ejemplo
+        PedidoDelivery nuevoPedido = new PedidoDelivery(0, 1, "Calle Principal 123", "PENDIENTE", new Timestamp(System.currentTimeMillis()));
+        try {
+            controlador.agregarPedido(nuevoPedido);
+            cargarPedidos(); // Recargar la tabla
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al agregar pedido: " + e.getMessage());
+        }*/
     }//GEN-LAST:event_jButtonAgregarPedidoDeliveryActionPerformed
 
     private void jButtonMODIFICARPedidoDeliveryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMODIFICARPedidoDeliveryActionPerformed
-        // TODO add your handling code here:
+        int filaSeleccionada = jTablePedidosDelivery.getSelectedRow();
+        if (filaSeleccionada != -1) {
+            int id = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
+            Pedido pedido = controlador.buscarPedidoPorId(id, "DELIVERY");
+            if (pedido != null) {
+                pedido.setEstado("MODIFICADO");
+                controlador.actualizarPedido(pedido);
+                cargarPedidos();
+                JOptionPane.showMessageDialog(this, "Pedido modificado");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Seleccione un pedido para modificar");
+        }
     }//GEN-LAST:event_jButtonMODIFICARPedidoDeliveryActionPerformed
 
     private void jButtonEliminarPedidoDeliveryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarPedidoDeliveryActionPerformed
-        // TODO add your handling code here:
+      
+                int filaSeleccionada = jTablePedidosDelivery.getSelectedRow();
+        if (filaSeleccionada != -1) {
+            int id = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
+            controlador.eliminarPedido(id, "DELIVERY");
+            cargarPedidos();
+            JOptionPane.showMessageDialog(this, "Pedido eliminado");
+        } else {
+            JOptionPane.showMessageDialog(this, "Seleccione un pedido para eliminar");
+        }
+
+        
+        /*int filaSeleccionada = jTablePedidosDelivery.getSelectedRow();
+        if (filaSeleccionada != -1) {
+            int idPedido = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
+            try {
+                controlador.eliminarPedido(idPedido, "DELIVERY");
+                cargarPedidos(); // Recargar la tabla
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "Error al eliminar pedido: " + e.getMessage());
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Seleccione un pedido para eliminar.");
+        }*/
     }//GEN-LAST:event_jButtonEliminarPedidoDeliveryActionPerformed
 
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TablaDePEDIDOSDElivery.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TablaDePEDIDOSDElivery.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TablaDePEDIDOSDElivery.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TablaDePEDIDOSDElivery.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TablaDePEDIDOSDElivery().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAgregarPedidoDelivery;
