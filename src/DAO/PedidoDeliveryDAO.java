@@ -1,46 +1,112 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DAO;
 
+import Interface.Pedido;
+import Interface.PedidoDAO;
+import Modelo.PedidoDelivery;
 import java.sql.*;
-import java.util.*;
-import model.PedidoDelivery;
+import java.util.ArrayList;
+import java.util.List;
 
-public class PedidoDeliveryDAO {
-    private Connection connection;
+public class PedidoDeliveryDAO implements PedidoDAO {
+    private final Connection connection;
 
     public PedidoDeliveryDAO(Connection connection) {
         this.connection = connection;
     }
 
-    public void insertar(PedidoDelivery pedido) throws SQLException {
+    @Override
+    public void insertar(Pedido pedido) throws SQLException {
+        PedidoDelivery pd = (PedidoDelivery) pedido;
         String sql = "INSERT INTO PedidoDelivery (id_cliente, direccion_entrega, estado, fecha_pedido) VALUES (?, ?, ?, ?)";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, pd.getIdCliente());
+            stmt.setString(2, pd.getDireccionEntrega());
+            stmt.setString(3, pd.getEstado());
+            stmt.setTimestamp(4, pd.getFechaPedido());
+            
+            int affectedRows = stmt.executeUpdate();
+            
+            if (affectedRows == 0) {
+                throw new SQLException("Error al insertar pedido, ninguna fila afectada");
+            }
+            
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    pd.setId(generatedKeys.getInt(1));
+                } else {
+                    throw new SQLException("Error al obtener ID generado");
+                }
+            }
+        }
+    }
+
+    @Override
+    public List<Pedido> listarTodos() throws SQLException {
+        List<Pedido> pedidos = new ArrayList<>();
+        String sql = "SELECT * FROM PedidoDelivery";
+        
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                PedidoDelivery pd = new PedidoDelivery(
+                    rs.getInt("id_delivery"),
+                    rs.getInt("id_cliente"),
+                    rs.getString("direccion_entrega"),
+                    rs.getString("estado"),
+                    rs.getTimestamp("fecha_pedido")
+                );
+                pedidos.add(pd);
+            }
+        }
+        return pedidos;
+    }
+
+    @Override
+    public void actualizar(Pedido pedido) throws SQLException {
+        PedidoDelivery pd = (PedidoDelivery) pedido;
+        String sql = "UPDATE PedidoDelivery SET id_cliente = ?, direccion_entrega = ?, estado = ?, fecha_pedido = ? WHERE id_delivery = ?";
+        
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, pedido.getIdCliente());
-            stmt.setString(2, pedido.getDireccionEntrega());
-            stmt.setString(3, pedido.getEstado());
-            stmt.setTimestamp(4, pedido.getFechaPedido());
+            stmt.setInt(1, pd.getIdCliente());
+            stmt.setString(2, pd.getDireccionEntrega());
+            stmt.setString(3, pd.getEstado());
+            stmt.setTimestamp(4, pd.getFechaPedido());
+            stmt.setInt(5, pd.getId());
+            
             stmt.executeUpdate();
         }
     }
 
-    public List<PedidoDelivery> listarTodos() throws SQLException {
-        List<PedidoDelivery> lista = new ArrayList<>();
-        String sql = "SELECT * FROM PedidoDelivery";
-        try (PreparedStatement stmt = connection.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                PedidoDelivery p = new PedidoDelivery();
-                p.setId(rs.getInt("id_delivery"));
-                p.setIdCliente(rs.getInt("id_cliente"));
-                p.setDireccionEntrega(rs.getString("direccion_entrega"));
-                p.setEstado(rs.getString("estado"));
-                p.setFechaPedido(rs.getTimestamp("fecha_pedido"));
-                lista.add(p);
+    @Override
+    public void eliminar(int id) throws SQLException {
+        String sql = "DELETE FROM PedidoDelivery WHERE id_delivery = ?";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        }
+    }
+
+    @Override
+    public Pedido buscarPorId(int id) throws SQLException {
+        String sql = "SELECT * FROM PedidoDelivery WHERE id_delivery = ?";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new PedidoDelivery(
+                        rs.getInt("id_delivery"),
+                        rs.getInt("id_cliente"),
+                        rs.getString("direccion_entrega"),
+                        rs.getString("estado"),
+                        rs.getTimestamp("fecha_pedido")
+                    );
+                }
             }
         }
-        return lista;
+        return null;
     }
 }
