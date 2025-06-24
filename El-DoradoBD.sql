@@ -1,221 +1,335 @@
--- Creando la base de datos
-CREATE DATABASE IF NOT EXISTS ElDoradoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- Crear base de datos
+IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = N'ElDoradoDB')
+BEGIN
+    CREATE DATABASE ElDoradoDB;
+END;
+GO
+
 USE ElDoradoDB;
+GO
+
+-- Tablas lookup para roles, método de pago, estados
+CREATE TABLE Rol (
+    rol VARCHAR(20) PRIMARY KEY
+);
+INSERT INTO Rol VALUES ('admin'), ('cajero'), ('cocinero');
+
+CREATE TABLE MetodoPago (
+    metodo_pago VARCHAR(20) PRIMARY KEY
+);
+INSERT INTO MetodoPago VALUES ('efectivo'), ('tarjeta'), ('transferencia');
+
+CREATE TABLE EstadoReserva (
+    estado VARCHAR(20) PRIMARY KEY
+);
+INSERT INTO EstadoReserva VALUES ('confirmada'), ('cancelada'), ('completada');
+
+CREATE TABLE EstadoMesa (
+    estado VARCHAR(20) PRIMARY KEY
+);
+INSERT INTO EstadoMesa VALUES ('disponible'), ('ocupada'), ('reservada');
+
+CREATE TABLE TipoMovimiento (
+    tipo_movimiento VARCHAR(20) PRIMARY KEY
+);
+INSERT INTO TipoMovimiento VALUES ('entrada'), ('salida');
+
+CREATE TABLE TipoPromocion (
+    tipo VARCHAR(20) PRIMARY KEY
+);
+INSERT INTO TipoPromocion VALUES ('porcentaje'), ('monto_fijo');
+
+CREATE TABLE TipoPedido (
+    tipo VARCHAR(20) PRIMARY KEY
+);
+INSERT INTO TipoPedido VALUES ('delivery'), ('para_llevar');
+
+CREATE TABLE EstadoPedido (
+    estado VARCHAR(20) PRIMARY KEY
+);
+INSERT INTO EstadoPedido VALUES ('pendiente'), ('en_preparacion'), ('en_camino'), ('entregado'), ('cancelado');
 
 -- Tabla Usuario
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Usuario') AND type = N'U')
+BEGIN
 CREATE TABLE Usuario (
-    id_usuario INT PRIMARY KEY AUTO_INCREMENT,
+    id_usuario INT IDENTITY(1,1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     apellido VARCHAR(50) NOT NULL,
-    rol ENUM('admin', 'cajero', 'cocinero') NOT NULL,
+    rol VARCHAR(20) NOT NULL FOREIGN KEY REFERENCES Rol(rol),
     clave VARCHAR(255) NOT NULL,
-    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    fecha_creacion DATETIME2 DEFAULT SYSUTCDATETIME()
 );
+END;
+GO
 
 -- Tabla Proveedor
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Proveedor') AND type = N'U')
+BEGIN
 CREATE TABLE Proveedor (
-    id_proveedor INT PRIMARY KEY AUTO_INCREMENT,
+    id_proveedor INT IDENTITY(1,1) PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     contacto VARCHAR(50),
     telefono VARCHAR(15),
     email VARCHAR(100),
-    direccion TEXT
+    direccion VARCHAR(MAX)
 );
+END;
+GO
 
 -- Tabla Categoria
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Categoria') AND type = N'U')
+BEGIN
 CREATE TABLE Categoria (
-    id_categoria INT PRIMARY KEY AUTO_INCREMENT,
+    id_categoria INT IDENTITY(1,1) PRIMARY KEY,
     nombre_categoria VARCHAR(50) NOT NULL UNIQUE,
-    descripcion TEXT
+    descripcion VARCHAR(MAX)
 );
+END;
+GO
 
 -- Tabla Producto
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Producto') AND type = N'U')
+BEGIN
 CREATE TABLE Producto (
-    id_producto INT PRIMARY KEY AUTO_INCREMENT,
+    id_producto INT IDENTITY(1,1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     stock_actual INT NOT NULL CHECK (stock_actual >= 0),
     stock_minimo INT NOT NULL CHECK (stock_minimo >= 0),
     precio_unitario DECIMAL(10, 2) NOT NULL,
     unidad_medida VARCHAR(20) NOT NULL,
-    id_categoria INT,
-    descripcion TEXT,
-    FOREIGN KEY (id_categoria) REFERENCES Categoria(id_categoria) ON DELETE SET NULL
+    id_categoria INT NULL FOREIGN KEY REFERENCES Categoria(id_categoria) ON DELETE SET NULL,
+    descripcion VARCHAR(MAX)
 );
+END;
+GO
 
--- Tabla Pertenecer (relación Producto-Categoria)
+-- Tabla Pertenecer
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Pertenecer') AND type = N'U')
+BEGIN
 CREATE TABLE Pertenecer (
-    id_categoria INT,
-    id_producto INT,
-    PRIMARY KEY (id_categoria, id_producto),
-    FOREIGN KEY (id_categoria) REFERENCES Categoria(id_categoria) ON DELETE CASCADE,
-    FOREIGN KEY (id_producto) REFERENCES Producto(id_producto) ON DELETE CASCADE
+    id_categoria INT NOT NULL FOREIGN KEY REFERENCES Categoria(id_categoria) ON DELETE CASCADE,
+    id_producto INT NOT NULL FOREIGN KEY REFERENCES Producto(id_producto) ON DELETE CASCADE,
+    CONSTRAINT PK_Pertenecer PRIMARY KEY (id_categoria, id_producto)
 );
+END;
+GO
 
--- Tabla Detalle_Proveedor (productos suministrados por proveedor)
+-- Tabla Detalle_Proveedor
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Detalle_Proveedor') AND type = N'U')
+BEGIN
 CREATE TABLE Detalle_Proveedor (
-    id_detalle INT PRIMARY KEY AUTO_INCREMENT,
-    id_proveedor INT NOT NULL,
-    id_producto INT NOT NULL,
-    FOREIGN KEY (id_proveedor) REFERENCES Proveedor(id_proveedor) ON DELETE CASCADE,
-    FOREIGN KEY (id_producto) REFERENCES Producto(id_producto) ON DELETE CASCADE
+    id_detalle INT IDENTITY(1,1) PRIMARY KEY,
+    id_proveedor INT NOT NULL FOREIGN KEY REFERENCES Proveedor(id_proveedor) ON DELETE CASCADE,
+    id_producto INT NOT NULL FOREIGN KEY REFERENCES Producto(id_producto) ON DELETE CASCADE
 );
+END;
+GO
 
 -- Tabla Plato
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Plato') AND type = N'U')
+BEGIN
 CREATE TABLE Plato (
-    id_plato INT PRIMARY KEY AUTO_INCREMENT,
+    id_plato INT IDENTITY(1,1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     precio DECIMAL(10, 2) NOT NULL,
-    descripcion TEXT
+    descripcion VARCHAR(MAX)
 );
+END;
+GO
 
--- Tabla Plato_Producto (relación platos con productos e ingredientes)
+-- Tabla Plato_Producto
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Plato_Producto') AND type = N'U')
+BEGIN
 CREATE TABLE Plato_Producto (
-    id_plato INT,
-    id_producto INT,
+    id_plato INT NOT NULL FOREIGN KEY REFERENCES Plato(id_plato) ON DELETE CASCADE,
+    id_producto INT NOT NULL FOREIGN KEY REFERENCES Producto(id_producto) ON DELETE CASCADE,
     cantidad INT NOT NULL CHECK (cantidad > 0),
-    PRIMARY KEY (id_plato, id_producto),
-    FOREIGN KEY (id_plato) REFERENCES Plato(id_plato) ON DELETE CASCADE,
-    FOREIGN KEY (id_producto) REFERENCES Producto(id_producto) ON DELETE CASCADE
+    CONSTRAINT PK_Plato_Producto PRIMARY KEY (id_plato, id_producto)
 );
+END;
+GO
 
 -- Tabla Venta
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Venta') AND type = N'U')
+BEGIN
 CREATE TABLE Venta (
-    id_venta INT PRIMARY KEY AUTO_INCREMENT,
-    fecha_venta DATETIME DEFAULT CURRENT_TIMESTAMP,
-    id_usuario INT,
-    metodo_pago ENUM('efectivo', 'tarjeta', 'transferencia') NOT NULL,
-    monto_total DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario) ON DELETE SET NULL
+    id_venta INT IDENTITY(1,1) PRIMARY KEY,
+    fecha_venta DATETIME2 DEFAULT SYSUTCDATETIME(),
+    id_usuario INT NULL FOREIGN KEY REFERENCES Usuario(id_usuario) ON DELETE SET NULL,
+    metodo_pago VARCHAR(20) NOT NULL FOREIGN KEY REFERENCES MetodoPago(metodo_pago),
+    monto_total DECIMAL(10, 2) NOT NULL
 );
+END;
+GO
 
 -- Tabla Detalle_Venta
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Detalle_Venta') AND type = N'U')
+BEGIN
 CREATE TABLE Detalle_Venta (
-    id_detalle INT PRIMARY KEY AUTO_INCREMENT,
-    id_venta INT,
-    id_producto INT,
+    id_detalle INT IDENTITY(1,1) PRIMARY KEY,
+    id_venta INT NOT NULL FOREIGN KEY REFERENCES Venta(id_venta) ON DELETE CASCADE,
+    id_producto INT NOT NULL FOREIGN KEY REFERENCES Producto(id_producto) ON DELETE NO ACTION,
     cantidad INT NOT NULL CHECK (cantidad > 0),
     precio_unitario DECIMAL(10, 2) NOT NULL,
-    subtotal DECIMAL(10, 2) AS (cantidad * precio_unitario) STORED,
-    FOREIGN KEY (id_venta) REFERENCES Venta(id_venta) ON DELETE CASCADE,
-    FOREIGN KEY (id_producto) REFERENCES Producto(id_producto) ON DELETE RESTRICT
+    subtotal AS (cantidad * precio_unitario) PERSISTED
 );
+END;
+GO
 
 -- Tabla Movimiento_Inventario
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Movimiento_Inventario') AND type = N'U')
+BEGIN
 CREATE TABLE Movimiento_Inventario (
-    id_movimiento INT PRIMARY KEY AUTO_INCREMENT,
-    id_producto INT NOT NULL,
-    fecha_movimiento DATETIME DEFAULT CURRENT_TIMESTAMP,
-    tipo_movimiento ENUM('entrada', 'salida') NOT NULL,
-    cantidad INT NOT NULL CHECK (cantidad > 0),
-    FOREIGN KEY (id_producto) REFERENCES Producto(id_producto) ON DELETE CASCADE
+    id_movimiento INT IDENTITY(1,1) PRIMARY KEY,
+    id_producto INT NOT NULL FOREIGN KEY REFERENCES Producto(id_producto) ON DELETE CASCADE,
+    fecha_movimiento DATETIME2 DEFAULT SYSUTCDATETIME(),
+    tipo_movimiento VARCHAR(20) NOT NULL FOREIGN KEY REFERENCES TipoMovimiento(tipo_movimiento),
+    cantidad INT NOT NULL CHECK (cantidad > 0)
 );
+END;
+GO
 
 -- Tabla Cliente
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Cliente') AND type = N'U')
+BEGIN
 CREATE TABLE Cliente (
-    id_cliente     INT PRIMARY KEY AUTO_INCREMENT,
-    dni            VARCHAR(8) NOT NULL,
-    nombre         VARCHAR(50) NOT NULL,
-    apellido       VARCHAR(50) NOT NULL,
-    telefono       VARCHAR(15),
-    email          VARCHAR(100),
-    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    id_cliente INT IDENTITY(1,1) PRIMARY KEY,
+    dni CHAR(8) NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
+    apellido VARCHAR(50) NOT NULL,
+    telefono VARCHAR(15),
+    email VARCHAR(100),
+    fecha_registro DATETIME2 DEFAULT SYSUTCDATETIME()
 );
+END;
+GO
 
 -- Tabla Reserva
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Reserva') AND type = N'U')
+BEGIN
 CREATE TABLE Reserva (
-    id_reserva INT PRIMARY KEY AUTO_INCREMENT,
-    id_cliente INT,
+    id_reserva INT IDENTITY(1,1) PRIMARY KEY,
+    id_cliente INT NULL FOREIGN KEY REFERENCES Cliente(id_cliente) ON DELETE SET NULL,
     fecha_reserva DATETIME NOT NULL,
     numero_personas INT NOT NULL CHECK (numero_personas > 0),
-    estado ENUM('confirmada', 'cancelada', 'completada') DEFAULT 'confirmada',
-    FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente) ON DELETE SET NULL
+    estado VARCHAR(20) NOT NULL FOREIGN KEY REFERENCES EstadoReserva(estado) DEFAULT 'confirmada'
 );
+END;
+GO
 
 -- Tabla Mesa
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Mesa') AND type = N'U')
+BEGIN
 CREATE TABLE Mesa (
-    id_mesa INT PRIMARY KEY AUTO_INCREMENT,
+    id_mesa INT IDENTITY(1,1) PRIMARY KEY,
     numero_mesa INT NOT NULL UNIQUE,
     capacidad INT NOT NULL CHECK (capacidad > 0),
-    estado ENUM('disponible', 'ocupada', 'reservada') DEFAULT 'disponible'
+    estado VARCHAR(20) NOT NULL FOREIGN KEY REFERENCES EstadoMesa(estado) DEFAULT 'disponible'
 );
+END;
+GO
 
--- tabla Mesa y sus platos
+-- Tabla Mesa_Plato
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Mesa_Plato') AND type = N'U')
+BEGIN
 CREATE TABLE Mesa_Plato (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    id_mesa INT NOT NULL,
-    id_plato INT NOT NULL,
-    cantidad INT NOT NULL DEFAULT 1,
-    FOREIGN KEY (id_mesa) REFERENCES Mesa(id_mesa) ON DELETE CASCADE,
-    FOREIGN KEY (id_plato) REFERENCES Plato(id_plato) ON DELETE CASCADE
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    id_mesa INT NOT NULL FOREIGN KEY REFERENCES Mesa(id_mesa) ON DELETE CASCADE,
+    id_plato INT NOT NULL FOREIGN KEY REFERENCES Plato(id_plato) ON DELETE CASCADE,
+    cantidad INT NOT NULL DEFAULT 1
 );
+END;
+GO
 
--- Tabla Mesa_Unida (unión de mesas)
+-- Tabla Mesa_Unida
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Mesa_Unida') AND type = N'U')
+BEGIN
 CREATE TABLE Mesa_Unida (
-    id_unida INT PRIMARY KEY AUTO_INCREMENT,
-    id_mesa_principal INT,
-    id_mesa_secundaria INT,
-    FOREIGN KEY (id_mesa_principal) REFERENCES Mesa(id_mesa) ON DELETE CASCADE,
-    FOREIGN KEY (id_mesa_secundaria) REFERENCES Mesa(id_mesa) ON DELETE CASCADE,
-    UNIQUE (id_mesa_principal, id_mesa_secundaria)
+    id_unida INT IDENTITY(1,1) PRIMARY KEY,
+    id_mesa_principal INT NOT NULL FOREIGN KEY REFERENCES Mesa(id_mesa) ON DELETE CASCADE,
+    id_mesa_secundaria INT NOT NULL FOREIGN KEY REFERENCES Mesa(id_mesa) ON DELETE CASCADE,
+    CONSTRAINT UQ_Mesa_Unida UNIQUE (id_mesa_principal, id_mesa_secundaria)
 );
+END;
+GO
 
--- Tabla Historial_Precio (historial cambios precio productos)
+-- Historial_Precio
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Historial_Precio') AND type = N'U')
+BEGIN
 CREATE TABLE Historial_Precio (
-    id_historial INT PRIMARY KEY AUTO_INCREMENT,
-    id_producto INT NOT NULL,
+    id_historial INT IDENTITY(1,1) PRIMARY KEY,
+    id_producto INT NOT NULL FOREIGN KEY REFERENCES Producto(id_producto) ON DELETE CASCADE,
     precio DECIMAL(10, 2) NOT NULL,
-    fecha_cambio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_producto) REFERENCES Producto(id_producto) ON DELETE CASCADE
+    fecha_cambio DATETIME2 DEFAULT SYSUTCDATETIME()
 );
+END;
+GO
 
--- Tabla Promocion
+-- Promocion
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Promocion') AND type = N'U')
+BEGIN
 CREATE TABLE Promocion (
-    id_promocion INT PRIMARY KEY AUTO_INCREMENT,
+    id_promocion INT IDENTITY(1,1) PRIMARY KEY,
     descripcion VARCHAR(100) NOT NULL,
-    tipo ENUM('porcentaje', 'monto_fijo') NOT NULL,
+    tipo VARCHAR(20) NOT NULL FOREIGN KEY REFERENCES TipoPromocion(tipo),
     valor DECIMAL(10, 2) NOT NULL,
     fecha_inicio DATE,
     fecha_fin DATE
 );
+END;
+GO
 
--- Tabla Actividad (registro acciones usuarios)
+-- Actividad
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Actividad') AND type = N'U')
+BEGIN
 CREATE TABLE Actividad (
-    id_actividad INT PRIMARY KEY AUTO_INCREMENT,
-    id_usuario INT,
-    descripcion TEXT NOT NULL,
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario) ON DELETE SET NULL
+    id_actividad INT IDENTITY(1,1) PRIMARY KEY,
+    id_usuario INT NULL FOREIGN KEY REFERENCES Usuario(id_usuario) ON DELETE SET NULL,
+    descripcion VARCHAR(MAX) NOT NULL,
+    fecha DATETIME2 DEFAULT SYSUTCDATETIME()
 );
+END;
+GO
 
--- Tabla Notificacion (notificaciones internas)
+-- Notificacion
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Notificacion') AND type = N'U')
+BEGIN
 CREATE TABLE Notificacion (
-    id_notificacion INT PRIMARY KEY AUTO_INCREMENT,
-    mensaje TEXT NOT NULL,
-    estado ENUM('leído', 'no_leído') DEFAULT 'no_leído',
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    id_notificacion INT IDENTITY(1,1) PRIMARY KEY,
+    mensaje VARCHAR(MAX) NOT NULL,
+    estado VARCHAR(20) NOT NULL CHECK (estado IN ('leído','no_leído')) DEFAULT 'no_leído',
+    fecha DATETIME2 DEFAULT SYSUTCDATETIME()
 );
+END;
+GO
 
+-- Pedido
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Pedido') AND type = N'U')
+BEGIN
 CREATE TABLE Pedido (
-    id_pedido INT PRIMARY KEY AUTO_INCREMENT,
-    tipo ENUM('delivery', 'para_llevar') NOT NULL,
-    id_cliente INT,
-    direccion_entrega TEXT, -- Solo para delivery
-    estado ENUM('pendiente', 'en_preparacion', 'en_camino', 'entregado', 'cancelado') DEFAULT 'pendiente',
-    fecha_pedido DATETIME DEFAULT CURRENT_TIMESTAMP,
-    id_venta INT,
-    FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente) ON DELETE SET NULL,
-    FOREIGN KEY (id_venta) REFERENCES Venta(id_venta) ON DELETE SET NULL
+    id_pedido INT IDENTITY(1,1) PRIMARY KEY,
+    tipo VARCHAR(20) NOT NULL FOREIGN KEY REFERENCES TipoPedido(tipo),
+    id_cliente INT NULL FOREIGN KEY REFERENCES Cliente(id_cliente) ON DELETE SET NULL,
+    direccion_entrega VARCHAR(MAX),
+    estado VARCHAR(20) NOT NULL FOREIGN KEY REFERENCES EstadoPedido(estado) DEFAULT 'pendiente',
+    fecha_pedido DATETIME2 DEFAULT SYSUTCDATETIME(),
+    id_venta INT NULL FOREIGN KEY REFERENCES Venta(id_venta) ON DELETE SET NULL
 );
+END;
+GO
 
+-- Pedido_Plato
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Pedido_Plato') AND type = N'U')
+BEGIN
 CREATE TABLE Pedido_Plato (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    id_pedido INT NOT NULL,
-    id_plato INT NOT NULL,
-    cantidad INT NOT NULL DEFAULT 1,
-    FOREIGN KEY (id_pedido) REFERENCES Pedido(id_pedido) ON DELETE CASCADE,
-    FOREIGN KEY (id_plato) REFERENCES Plato(id_plato) ON DELETE CASCADE
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    id_pedido INT NOT NULL FOREIGN KEY REFERENCES Pedido(id_pedido) ON DELETE CASCADE,
+    id_plato INT NOT NULL FOREIGN KEY REFERENCES Plato(id_plato) ON DELETE CASCADE,
+    cantidad INT NOT NULL DEFAULT 1
 );
-
+END;
+GO
 
 -- Índices para performance
 CREATE INDEX idx_producto_categoria ON Producto(id_categoria);
@@ -224,164 +338,4 @@ CREATE INDEX idx_detalle_venta_producto ON Detalle_Venta(id_producto);
 CREATE INDEX idx_movimiento_producto ON Movimiento_Inventario(id_producto);
 CREATE INDEX idx_historial_precio_producto ON Historial_Precio(id_producto);
 CREATE INDEX idx_actividad_usuario ON Actividad(id_usuario);
-
--- Inserts de ejemplo para Restaurante El Dorado
--- Tabla Usuario
-INSERT INTO Usuario (nombre, apellido, rol, clave) VALUES
-('Carlos', 'González', 'admin', 'hashpassword1'),
-('Ana', 'Martínez', 'cajero', 'hashpassword2'),
-('Luis', 'Fernández', 'cocinero', 'hashpassword3'),
-('Marta', 'Ramírez', 'cocinero', 'hashpassword4'),
-('Javier', 'Torres', 'admin', 'hashpassword5');
-
--- Tabla Proveedor
-INSERT INTO Proveedor (nombre, contacto, telefono, email, direccion) VALUES
-('Proveedor Norte', 'Luis Pérez', '555-1234', 'norte@proveedor.com', 'Av. Central 123'),
-('Distribuciones Sur', 'Ana Ruiz', '555-5678', 'sur@distribuciones.com', 'Calle Sur 456'),
-('Suministros XYZ', 'Carlos López', '555-9101', 'xyz@suministros.com', 'Zona Industrial 789'),
-('Importadora ABC', 'María García', '555-1122', 'abc@importadora.com', 'Parque Industrial 321'),
-('Logística Rápida', 'Jorge Fernández', '555-3344', 'rapida@logistica.com', 'Av. Logística 654');
-
--- Tabla Categoria
-INSERT INTO Categoria (nombre_categoria, descripcion) VALUES
-('Bebidas', 'Bebidas frías y calientes'),
-('Entradas', 'Entradas y aperitivos'),
-('Platos Fuertes', 'Platos principales'),
-('Postres', 'Dulces y postres'),
-('Especiales', 'Ofertas y menús especiales');
-
--- Tabla Producto
-INSERT INTO Producto (nombre, stock_actual, stock_minimo, precio_unitario, unidad_medida, id_categoria, descripcion) VALUES
-('Coca Cola 500ml', 100, 10, 1.50, 'unidad', 1, 'Bebida carbonatada'),
-('Papas Fritas', 50, 5, 2.00, 'ración', 2, 'Papas fritas crujientes'),
-('Pollo Asado', 30, 3, 8.00, 'porción', 3, 'Pollo entero asado'),
-('Flan de Vainilla', 20, 2, 3.50, 'porción', 4, 'Flan de postre clásico'),
-('Menú Diario', 15, 1, 10.00, 'menú', 5, 'Menú con entrada, plato y postre');
-
--- Tabla Pertenecer
-INSERT INTO Pertenecer (id_categoria, id_producto) VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4),
-(5, 5);
-
--- Tabla Detalle_Proveedor
-INSERT INTO Detalle_Proveedor (id_proveedor, id_producto) VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4),
-(5, 5);
-
--- Tabla Plato
-INSERT INTO Plato (nombre, precio, descripcion) VALUES
-('Combo Pollo', 12.00, 'Pollo asado con papas fritas y bebida'),
-('Ensalada Mixta', 7.50, 'Ensalada fresca con aderezo'),
-('Sándwich de Jamón', 5.00, 'Sándwich con jamón, queso y vegetales'),
-('Postre del Día', 4.00, 'Postre casero según disponibilidad'),
-('Menú Ejecutivo', 15.00, 'Entrada, plato fuerte y postre');
-
--- Tabla Plato_Producto
-INSERT INTO Plato_Producto (id_plato, id_producto, cantidad) VALUES
-(1, 3, 1),  -- Combo Pollo incluye Pollo Asado
-(1, 2, 1),  -- Combo Pollo incluye Papas Fritas
-(1, 1, 1),  -- Combo Pollo incluye Coca Cola
-(5, 2, 1),  -- Menú Ejecutivo incluye Papas Fritas
-(5, 3, 1);  -- Menú Ejecutivo incluye Pollo Asado
-
--- Tabla Cliente
-INSERT INTO Cliente (dni, nombre, apellido, telefono, email) VALUES
-('12345678', 'Luis', 'Gómez', '555-6789', 'luis.gomez@mail.com'),
-('12345679', 'Maria', 'López', '555-4321', 'maria.lopez@mail.com'),
-('12345610', 'Pedro', 'Jiménez', '555-8765', 'pedro.jimenez@mail.com'),
-('12345611', 'Sofia', 'Mendoza', '555-3456', 'sofia.mendoza@mail.com'),
-('12345612', 'Jorge', 'Ramirez', '555-9876', 'jorge.ramirez@mail.com');
-
--- Tabla Venta
-INSERT INTO Venta (id_usuario, metodo_pago, monto_total) VALUES
-(1, 'efectivo', 12.00),  -- Carlos González
-(2, 'tarjeta', 7.50),    -- Ana Martínez
-(3, 'transferencia', 15.00),  -- Luis Fernández
-(1, 'tarjeta', 10.00),   -- Carlos González
-(2, 'efectivo', 4.00);    -- Ana Martínez
-
--- Tabla Detalle_Venta
-INSERT INTO Detalle_Venta (id_venta, id_producto, cantidad, precio_unitario) VALUES
-(1, 3, 1, 8.00),  -- Venta 1 incluye Pollo Asado
-(1, 2, 1, 2.00),  -- Venta 1 incluye Papas Fritas
-(1, 1, 1, 1.50),  -- Venta 1 incluye Coca Cola
-(2, 2, 1, 7.50),  -- Venta 2 incluye Ensalada Mixta
-(3, 5, 1, 15.00); -- Venta 3 incluye Menú Ejecutivo
-
--- Tabla Movimiento_Inventario
-INSERT INTO Movimiento_Inventario (id_producto, tipo_movimiento, cantidad) VALUES
-(1, 'entrada', 50),  -- Coca Cola
-(2, 'entrada', 30),  -- Papas Fritas
-(3, 'entrada', 20),  -- Pollo Asado
-(4, 'entrada', 15),  -- Flan de Vainilla
-(5, 'entrada', 10);  -- Menú Diario
-
--- Tabla Reserva
-INSERT INTO Reserva (id_cliente, fecha_reserva, numero_personas, estado) VALUES
-(1, '2024-07-10 20:00:00', 4, 'confirmada'),  -- Luis Gómez
-(2, '2024-07-11 19:00:00', 2, 'confirmada'),  -- María López
-(3, '2024-07-12 18:30:00', 6, 'cancelada'),   -- Pedro Jiménez
-(4, '2024-07-13 21:00:00', 3, 'completada'),   -- Sofía Mendoza
-(5, '2024-07-14 17:00:00', 5, 'confirmada');   -- Jorge Ramírez
-
--- Tabla Mesa
-INSERT INTO Mesa (numero_mesa, capacidad, estado) VALUES
-(1, 4, 'disponible'),
-(2, 2, 'ocupada'),
-(3, 6, 'reservada'),
-(4, 4, 'disponible'),
-(5, 8, 'ocupada');
-
--- Tabla Mesa_Unida
-INSERT INTO Mesa_Unida (id_mesa_principal, id_mesa_secundaria) VALUES
-(1, 4),  -- Mesa 1 unida con Mesa 4
-(2, 3),  -- Mesa 2 unida con Mesa 3
-(5, 1);  -- Mesa 5 unida con Mesa 1
-
--- Tabla Historial_Precio
-INSERT INTO Historial_Precio (id_producto, precio) VALUES
-(1, 1.50),  -- Coca Cola
-(2, 2.00),  -- Papas Fritas
-(3, 8.00),  -- Pollo Asado
-(4, 3.50),  -- Flan de Vainilla
-(5, 10.00); -- Menú Diario
-
--- Tabla Promocion
-INSERT INTO Promocion (descripcion, tipo, valor, fecha_inicio, fecha_fin) VALUES
-('Descuento 10% en Bebidas', 'porcentaje', 10.00, '2024-07-01', '2024-07-31'),
-('2x1 en Postres', 'monto_fijo', 3.50, '2024-07-05', '2024-07-10'),
-('Descuento 5% en eventos especiales', 'porcentaje', 5.00, '2024-07-01', '2024-07-15'),
-('Oferta Menú Ejecutivo', 'monto_fijo', 2.00, '2024-07-01', '2024-08-01'),
-('Promoción Verano', 'porcentaje', 15.00, '2024-06-01', '2024-08-31');
-
--- Tabla Actividad
-INSERT INTO Actividad (id_usuario, descripcion) VALUES
-(1, 'Inicio de sesión'),
-(2, 'Creó una venta'),
-(3, 'Registro de movimiento de inventario'),
-(4, 'Modificó producto'),
-(5, 'Actualizó perfil de usuario');
-
--- Tabla Notificacion
-INSERT INTO Notificacion (mensaje, estado) VALUES
-('Inventario bajo en Papas Fritas', 'no_leído'),
-('Reserva confirmada para 4 personas en mesa 1', 'leído'),
-('Nuevo usuario creado: Marta Ramírez', 'no_leído'),
-('Promoción 2x1 activa en postres', 'leído'),
-('Actualización de menú diario', 'no_leído');
-
--- mesas con platos pedidos (Mesa_Plato)
-INSERT INTO Mesa_Plato (id_mesa, id_plato, cantidad) VALUES
-(1, 1, 2), -- Mesa 1: 2 x Combo Pollo
-(1, 4, 1), -- Mesa 1: 1 x Flan Casero
-(2, 2, 1), -- Mesa 2: 1 x Ensalada Mixta
-(3, 5, 3), -- Mesa 3: 3 x Menú Ejecutivo
-(4, 3, 2), -- Mesa 4: 2 x Sándwich de Jamón y Queso
-(5, 1, 1), -- Mesa 5: 1 x Combo Pollo
-(5, 5, 2); -- Mesa 5: 2 x Menú Ejecutivo
+GO
