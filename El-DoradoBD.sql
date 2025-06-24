@@ -112,11 +112,12 @@ CREATE TABLE Movimiento_Inventario (
 
 -- Tabla Cliente
 CREATE TABLE Cliente (
-    id_cliente INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(50) NOT NULL,
-    apellido VARCHAR(50) NOT NULL,
-    telefono VARCHAR(15),
-    email VARCHAR(100),
+    id_cliente     INT PRIMARY KEY AUTO_INCREMENT,
+    dni            VARCHAR(8) NOT NULL,
+    nombre         VARCHAR(50) NOT NULL,
+    apellido       VARCHAR(50) NOT NULL,
+    telefono       VARCHAR(15),
+    email          VARCHAR(100),
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -136,6 +137,16 @@ CREATE TABLE Mesa (
     numero_mesa INT NOT NULL UNIQUE,
     capacidad INT NOT NULL CHECK (capacidad > 0),
     estado ENUM('disponible', 'ocupada', 'reservada') DEFAULT 'disponible'
+);
+
+-- tabla Mesa y sus platos
+CREATE TABLE Mesa_Plato (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_mesa INT NOT NULL,
+    id_plato INT NOT NULL,
+    cantidad INT NOT NULL DEFAULT 1,
+    FOREIGN KEY (id_mesa) REFERENCES Mesa(id_mesa) ON DELETE CASCADE,
+    FOREIGN KEY (id_plato) REFERENCES Plato(id_plato) ON DELETE CASCADE
 );
 
 -- Tabla Mesa_Unida (unión de mesas)
@@ -183,6 +194,28 @@ CREATE TABLE Notificacion (
     estado ENUM('leído', 'no_leído') DEFAULT 'no_leído',
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE Pedido (
+    id_pedido INT PRIMARY KEY AUTO_INCREMENT,
+    tipo ENUM('delivery', 'para_llevar') NOT NULL,
+    id_cliente INT,
+    direccion_entrega TEXT, -- Solo para delivery
+    estado ENUM('pendiente', 'en_preparacion', 'en_camino', 'entregado', 'cancelado') DEFAULT 'pendiente',
+    fecha_pedido DATETIME DEFAULT CURRENT_TIMESTAMP,
+    id_venta INT,
+    FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente) ON DELETE SET NULL,
+    FOREIGN KEY (id_venta) REFERENCES Venta(id_venta) ON DELETE SET NULL
+);
+
+CREATE TABLE Pedido_Plato (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_pedido INT NOT NULL,
+    id_plato INT NOT NULL,
+    cantidad INT NOT NULL DEFAULT 1,
+    FOREIGN KEY (id_pedido) REFERENCES Pedido(id_pedido) ON DELETE CASCADE,
+    FOREIGN KEY (id_plato) REFERENCES Plato(id_plato) ON DELETE CASCADE
+);
+
 
 -- Índices para performance
 CREATE INDEX idx_producto_categoria ON Producto(id_categoria);
@@ -258,12 +291,12 @@ INSERT INTO Plato_Producto (id_plato, id_producto, cantidad) VALUES
 (5, 3, 1);  -- Menú Ejecutivo incluye Pollo Asado
 
 -- Tabla Cliente
-INSERT INTO Cliente (nombre, apellido, telefono, email) VALUES
-('Luis', 'Gómez', '555-6789', 'luis.gomez@mail.com'),
-('María', 'López', '555-4321', 'maria.lopez@mail.com'),
-('Pedro', 'Jiménez', '555-8765', 'pedro.jimenez@mail.com'),
-('Sofía', 'Mendoza', '555-3456', 'sofia.mendoza@mail.com'),
-('Jorge', 'Ramirez', '555-9876', 'jorge.ramirez@mail.com');
+INSERT INTO Cliente (dni, nombre, apellido, telefono, email) VALUES
+('12345678', 'Luis', 'Gómez', '555-6789', 'luis.gomez@mail.com'),
+('12345679', 'Maria', 'López', '555-4321', 'maria.lopez@mail.com'),
+('12345610', 'Pedro', 'Jiménez', '555-8765', 'pedro.jimenez@mail.com'),
+('12345611', 'Sofia', 'Mendoza', '555-3456', 'sofia.mendoza@mail.com'),
+('12345612', 'Jorge', 'Ramirez', '555-9876', 'jorge.ramirez@mail.com');
 
 -- Tabla Venta
 INSERT INTO Venta (id_usuario, metodo_pago, monto_total) VALUES
@@ -342,16 +375,6 @@ INSERT INTO Notificacion (mensaje, estado) VALUES
 ('Nuevo usuario creado: Marta Ramírez', 'no_leído'),
 ('Promoción 2x1 activa en postres', 'leído'),
 ('Actualización de menú diario', 'no_leído');
-
--- tabla Mesa y sus platos
-CREATE TABLE Mesa_Plato (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    id_mesa INT NOT NULL,
-    id_plato INT NOT NULL,
-    cantidad INT NOT NULL DEFAULT 1,
-    FOREIGN KEY (id_mesa) REFERENCES Mesa(id_mesa) ON DELETE CASCADE,
-    FOREIGN KEY (id_plato) REFERENCES Plato(id_plato) ON DELETE CASCADE
-)
 
 -- mesas con platos pedidos (Mesa_Plato)
 INSERT INTO Mesa_Plato (id_mesa, id_plato, cantidad) VALUES
