@@ -304,32 +304,31 @@ CREATE TABLE Notificacion (
 END;
 GO
 
--- Pedido
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Pedido') AND type = N'U')
-BEGIN
 CREATE TABLE Pedido (
-    id_pedido INT IDENTITY(1,1) PRIMARY KEY,
-    tipo VARCHAR(20) NOT NULL FOREIGN KEY REFERENCES TipoPedido(tipo),
-    id_cliente INT NULL FOREIGN KEY REFERENCES Cliente(id_cliente) ON DELETE SET NULL,
-    direccion_entrega VARCHAR(MAX),
-    estado VARCHAR(20) NOT NULL FOREIGN KEY REFERENCES EstadoPedido(estado) DEFAULT 'pendiente',
-    fecha_pedido DATETIME2 DEFAULT SYSUTCDATETIME(),
-    id_venta INT NULL FOREIGN KEY REFERENCES Venta(id_venta) ON DELETE SET NULL
+    id_pedido INT PRIMARY KEY IDENTITY(1,1),
+    id_cliente INT NOT NULL,
+    tipo VARCHAR(20) CHECK (tipo IN ('delivery', 'llevar')),
+    estado VARCHAR(50) NOT NULL,
+    fecha_pedido DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente) ON DELETE SET NULL
 );
-END;
-GO
 
--- Pedido_Plato
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Pedido_Plato') AND type = N'U')
-BEGIN
-CREATE TABLE Pedido_Plato (
-    id INT IDENTITY(1,1) PRIMARY KEY,
-    id_pedido INT NOT NULL FOREIGN KEY REFERENCES Pedido(id_pedido) ON DELETE CASCADE,
-    id_plato INT NOT NULL FOREIGN KEY REFERENCES Plato(id_plato) ON DELETE CASCADE,
-    cantidad INT NOT NULL DEFAULT 1
+CREATE TABLE PedidoDelivery (
+    id_pedido INT PRIMARY KEY,
+    direccion_entrega TEXT NOT NULL,
+    FOREIGN KEY (id_pedido) REFERENCES Pedido(id_pedido) ON DELETE CASCADE
 );
-END;
-GO
+
+CREATE TABLE Pedido_Plato (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    id_pedido INT NOT NULL,
+    id_plato INT NOT NULL,
+    cantidad INT NOT NULL CHECK (cantidad > 0),
+    FOREIGN KEY (id_pedido) REFERENCES Pedido(id_pedido) ON DELETE CASCADE,
+    FOREIGN KEY (id_plato) REFERENCES Plato(id_plato) ON DELETE CASCADE
+);
+
+  
 
 -- Índices para performance
 CREATE INDEX idx_producto_categoria ON Producto(id_categoria);
