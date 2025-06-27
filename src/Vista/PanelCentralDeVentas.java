@@ -1,14 +1,17 @@
 package VISTA;
 import ConexionSQL.Conexion; 
+import Controlador.ControladorPedidosTablas;
 import java.awt.BorderLayout;
 import java.sql.SQLException;
 import javax.swing.JPanel;
 import java.sql.Connection;
 import DAO.MesaDAO;
-
+import javax.swing.JOptionPane;
+import Vista.TablaDePEDIDOSDElivery;
+import Vista.TablaDePEDIDOS;
+import javax.swing.table.DefaultTableModel;
 public class PanelCentralDeVentas extends javax.swing.JPanel {
-
-    
+ 
     private MesaDAO mesadao;
     private Conexion conexion;
     public PanelCentralDeVentas() {
@@ -17,8 +20,6 @@ public class PanelCentralDeVentas extends javax.swing.JPanel {
         mesadao = new MesaDAO(conexion.Conectar());  
     }
 
-    
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -37,14 +38,14 @@ public class PanelCentralDeVentas extends javax.swing.JPanel {
         jpMes.setLayout(jpMesLayout);
         jpMesLayout.setHorizontalGroup(
             jpMesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 850, Short.MAX_VALUE)
+            .addGap(0, 960, Short.MAX_VALUE)
         );
         jpMesLayout.setVerticalGroup(
             jpMesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 520, Short.MAX_VALUE)
         );
 
-        add(jpMes, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 90, 850, 520));
+        add(jpMes, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 90, 960, 520));
 
         jPanel2.setBackground(new java.awt.Color(102, 102, 102));
 
@@ -89,7 +90,7 @@ public class PanelCentralDeVentas extends javax.swing.JPanel {
                 .addComponent(jButtonDelivery, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(86, 86, 86)
                 .addComponent(jButtonParaLlevar)
-                .addContainerGap(221, Short.MAX_VALUE))
+                .addContainerGap(331, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -102,19 +103,45 @@ public class PanelCentralDeVentas extends javax.swing.JPanel {
                 .addGap(20, 20, 20))
         );
 
-        add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 850, 90));
+        add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 960, 90));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnMesasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMesasActionPerformed
-      // ShowJpanel(new VentaMesas()); 
+      try {
+        VentaMesas panelVentaMesas = new VentaMesas(conexion.Conectar());
+        ShowJpanel(panelVentaMesas);
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, "Error al cargar las mesas: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        ex.printStackTrace();
+    }
     }//GEN-LAST:event_btnMesasActionPerformed
 
     private void jButtonParaLlevarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonParaLlevarActionPerformed
-        ShowJpanel(new VentaParallevar());
+     ConexionSQL.Conexion conexionBD = new ConexionSQL.Conexion();
+    Connection connection = conexionBD.Conectar();
+
+    if (connection != null) {
+        TablaDePEDIDOS panelPedidosLlevar = new TablaDePEDIDOS(connection);
+        ShowJpanel(panelPedidosLlevar); // ← Aquí lo muestras dentro de jpMes
+    } else {
+        JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_jButtonParaLlevarActionPerformed
 
     private void jButtonDeliveryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeliveryActionPerformed
-       // ShowJpanel(new VentaDelivery());
+     // Importar tu clase de conexión
+    ConexionSQL.Conexion conexionBD = new ConexionSQL.Conexion();
+    
+    // Obtener la conexión
+    Connection connection = conexionBD.Conectar();
+    
+    if (connection != null) {
+        // Crear e instanciar la ventana TablaDePEDIDOSDElivery
+        TablaDePEDIDOSDElivery ventanaDelivery = new TablaDePEDIDOSDElivery(connection);
+        ShowJpanel(ventanaDelivery); // ← Aquí lo muestras dentro de jpMes
+    } else {
+        JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_jButtonDeliveryActionPerformed
 
 

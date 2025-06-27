@@ -1,7 +1,7 @@
-package VISTA;
+package Vista;
 
 import ConexionSQL.Conexion; // Asegúrate de que esta clase maneje la conexión a SQL Server
-import Controlador.DescripcionDeLaMesasController;
+import Controlador.DescripcionDeliveryController;
 import javax.swing.table.DefaultTableModel;
 import java.sql.Connection;
 import javax.swing.JOptionPane;
@@ -9,64 +9,78 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 
-public class DescripcionDeLaMesas extends JPanel {
-    private DescripcionDeLaMesasController controller;
+public class DescripcionAgregacionDePedidoDelivery extends JPanel {
     private Connection connection;
+    private DescripcionDeliveryController controller;
     
-    public DescripcionDeLaMesas(Connection connection,int numeroMesa) {
-        this.controller = new DescripcionDeLaMesasController(connection, numeroMesa, this);
-        initComponents();
-        controller.inicializar();
+    public DescripcionAgregacionDePedidoDelivery(Connection connection) {
+        this.connection = connection;
+        this.controller = new DescripcionDeliveryController(connection, this);
+        initComponents(); // Inicializa los componentes visuales
+        controller.inicializar(); // Cargar datos iniciales
     }
-
-public void actualizarTabla(DefaultTableModel modelo) {
-        jTablelListaDeLosPedidos.setModel(modelo);
+       
+    public void actualizarTabla(DefaultTableModel modelo) {
+        jTablelListaDeLosPedidosDeliveryCLiente.setModel(modelo);
     }
     
     public void mostrarMensaje(String mensaje) {
         JOptionPane.showMessageDialog(this, mensaje);
     }
+    
     public String getDni() {
         return textDni.getText();
     }
+    
     public String getCantidad() {
         return textCantidad.getText();
     }
+    
     public String getPlatilloSeleccionado() {
         return (String) jComboBoxDeBusquedaDePlatillos.getSelectedItem();
     }
+    
     public String getTipoDePago() {
         return (String) jComboBoxTipoDePago.getSelectedItem();
     }
      
-   public void setMontoACobrar(String monto) {
+    public void setMontoACobrar(String monto) {
         jTextFieldMontoACobrar.setText(monto);
     }
+    
     public void setVuelto(String vuelto) {
         jTextFieldVuelto.setText(vuelto);
     }
+    
     public String getMontoDePago() {
         return jTextFieldMontoDePago.getText();
     }
+    
     public DefaultTableModel getModeloTablaPedidos() {
-        return (DefaultTableModel) jTablelListaDeLosPedidos.getModel();
+        return (DefaultTableModel) jTablelListaDeLosPedidosDeliveryCLiente.getModel();
     }
+    
     public void setModeloTablaPedidos(DefaultTableModel modelo) {
-        jTablelListaDeLosPedidos.setModel(modelo);
-        jTablelListaDeLosPedidos.repaint();
+        jTablelListaDeLosPedidosDeliveryCLiente.setModel(modelo);
+        jTablelListaDeLosPedidosDeliveryCLiente.repaint();
     }
+    
     public String getTipoDeComprobante() {
         return (String) jComboBoxTipoDeComprobante.getSelectedItem();
     }
+    
     public void setTextNombre(String nombre) {
         textNombre.setText(nombre);
     }
+    
     public void setIGV(String igv) {
         jTextFieldIGV.setText(igv);
     }
+    
     public void setResultadoDescuento(String descuento) {
         jTextFieldResultadoDescuento.setText(descuento);
     }
+    
     public void setTotalDeVenta(String total) {
         jTextFieldTotalDeVenta.setText(total);
     }
@@ -76,8 +90,6 @@ public void actualizarTabla(DefaultTableModel modelo) {
     private void initComponents() {
 
         jButton4 = new javax.swing.JButton();
-        jButtonMesas = new javax.swing.JButton();
-        jLabelVENTA = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -91,18 +103,18 @@ public void actualizarTabla(DefaultTableModel modelo) {
         textNombre = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTablelListaDeLosPedidos = new javax.swing.JTable();
-        jButtonAgregarAListaDeLosPedidos = new javax.swing.JButton();
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         textCantidad = new javax.swing.JTextField();
         jComboBoxDeBusquedaDePlatillos = new javax.swing.JComboBox<>();
         jLabel18 = new javax.swing.JLabel();
-        jButtonEliminarDeListaDePedidos = new javax.swing.JButton();
         jLabel19 = new javax.swing.JLabel();
         jComboBox4 = new javax.swing.JComboBox<>();
+        jButtonAgregarAListaDeLosPedido_Plato = new javax.swing.JButton();
+        jButtonEliminarDeListaDePedido_Plato = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTablelListaDeLosPedidosDeliveryCLiente = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -121,20 +133,12 @@ public void actualizarTabla(DefaultTableModel modelo) {
         jButtoRegistrarVenta = new javax.swing.JButton();
         jLabel20 = new javax.swing.JLabel();
         jTextFieldResultadoDescuento = new javax.swing.JTextField();
+        jLabelDELIVERY = new javax.swing.JLabel();
+        jButtonDELIVERY = new javax.swing.JButton();
 
         jButton4.setText("jButton4");
 
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jButtonMesas.setBackground(new java.awt.Color(51, 51, 51));
-        jButtonMesas.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 18)); // NOI18N
-        jButtonMesas.setForeground(new java.awt.Color(255, 255, 255));
-        jButtonMesas.setText("Mesas");
-        add(jButtonMesas, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 20, -1, -1));
-
-        jLabelVENTA.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 18)); // NOI18N
-        jLabelVENTA.setText("MESAS");
-        add(jLabelVENTA, new org.netbeans.lib.awtextra.AbsoluteConstraints(392, 45, -1, -1));
 
         jPanel2.setBackground(new java.awt.Color(204, 204, 204));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -179,7 +183,45 @@ public void actualizarTabla(DefaultTableModel modelo) {
         jLabel6.setText("Lista de los pedidos");
         jPanel3.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, -1, -1));
 
-        jTablelListaDeLosPedidos.setModel(new javax.swing.table.DefaultTableModel(
+        jLabel15.setText("Registro de venta");
+        jPanel3.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, -1, -1));
+
+        jLabel16.setText("Platillo:");
+        jPanel3.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, -1, -1));
+
+        jLabel17.setText("Cantidad:");
+        jPanel3.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, 60, -1));
+        jPanel3.add(textCantidad, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 90, 140, -1));
+
+        jComboBoxDeBusquedaDePlatillos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jPanel3.add(jComboBoxDeBusquedaDePlatillos, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 50, 140, -1));
+        jPanel3.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 50, -1, -1));
+
+        jLabel19.setText("Tipo de venta:");
+        jPanel3.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 50, -1, -1));
+
+        jComboBox4.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jPanel3.add(jComboBox4, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 80, -1, -1));
+
+        jButtonAgregarAListaDeLosPedido_Plato.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButtonAgregarAListaDeLosPedido_Plato.setText("Agregar");
+        jButtonAgregarAListaDeLosPedido_Plato.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAgregarAListaDeLosPedido_PlatoActionPerformed(evt);
+            }
+        });
+        jPanel3.add(jButtonAgregarAListaDeLosPedido_Plato, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 20, -1, -1));
+
+        jButtonEliminarDeListaDePedido_Plato.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButtonEliminarDeListaDePedido_Plato.setText("Eliminar");
+        jButtonEliminarDeListaDePedido_Plato.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEliminarDeListaDePedido_PlatoActionPerformed(evt);
+            }
+        });
+        jPanel3.add(jButtonEliminarDeListaDePedido_Plato, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 20, -1, -1));
+
+        jTablelListaDeLosPedidosDeliveryCLiente.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -201,47 +243,9 @@ public void actualizarTabla(DefaultTableModel modelo) {
                 return types [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTablelListaDeLosPedidos);
+        jScrollPane1.setViewportView(jTablelListaDeLosPedidosDeliveryCLiente);
 
         jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 580, 190));
-
-        jButtonAgregarAListaDeLosPedidos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonAgregarAListaDeLosPedidos.setText("Agregar");
-        jButtonAgregarAListaDeLosPedidos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonAgregarAListaDeLosPedidosActionPerformed(evt);
-            }
-        });
-        jPanel3.add(jButtonAgregarAListaDeLosPedidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 20, -1, -1));
-
-        jLabel15.setText("Registro de venta");
-        jPanel3.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, -1, -1));
-
-        jLabel16.setText("Platillo:");
-        jPanel3.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, -1, -1));
-
-        jLabel17.setText("Cantidad:");
-        jPanel3.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, 60, -1));
-        jPanel3.add(textCantidad, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 90, 140, -1));
-
-        jComboBoxDeBusquedaDePlatillos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel3.add(jComboBoxDeBusquedaDePlatillos, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 50, 140, -1));
-        jPanel3.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 50, -1, -1));
-
-        jButtonEliminarDeListaDePedidos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonEliminarDeListaDePedidos.setText("Eliminar");
-        jButtonEliminarDeListaDePedidos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonEliminarDeListaDePedidosActionPerformed(evt);
-            }
-        });
-        jPanel3.add(jButtonEliminarDeListaDePedidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 20, -1, -1));
-
-        jLabel19.setText("Tipo de venta:");
-        jPanel3.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 50, -1, -1));
-
-        jComboBox4.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel3.add(jComboBox4, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 80, -1, -1));
 
         add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 260, 600, 370));
 
@@ -311,10 +315,20 @@ public void actualizarTabla(DefaultTableModel modelo) {
         jPanel1.add(jTextFieldResultadoDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 350, 120, -1));
 
         add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 90, 230, 540));
+
+        jLabelDELIVERY.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 18)); // NOI18N
+        jLabelDELIVERY.setText("DELIVERY");
+        add(jLabelDELIVERY, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 40, -1, -1));
+
+        jButtonDELIVERY.setBackground(new java.awt.Color(51, 51, 51));
+        jButtonDELIVERY.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 18)); // NOI18N
+        jButtonDELIVERY.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonDELIVERY.setText("DELIVERY");
+        add(jButtonDELIVERY, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 20, -1, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtoRegistrarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtoRegistrarVentaActionPerformed
-        controller.registrarVenta();
+     controller.registrarVenta();
     }//GEN-LAST:event_jButtoRegistrarVentaActionPerformed
 
     private void jButtonAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAtrasActionPerformed
@@ -326,14 +340,6 @@ public void actualizarTabla(DefaultTableModel modelo) {
         controller.buscarClientePorDNI();
     }//GEN-LAST:event_jButtonBuscarCLIENTEActionPerformed
 
-    private void jButtonAgregarAListaDeLosPedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgregarAListaDeLosPedidosActionPerformed
-        controller.agregarPedido();
-    }//GEN-LAST:event_jButtonAgregarAListaDeLosPedidosActionPerformed
-
-    private void jButtonEliminarDeListaDePedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarDeListaDePedidosActionPerformed
-        controller.eliminarPedido();
-    }//GEN-LAST:event_jButtonEliminarDeListaDePedidosActionPerformed
-
     private void jTextFieldVueltoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldVueltoKeyReleased
          controller.calcularVuelto();
     }//GEN-LAST:event_jTextFieldVueltoKeyReleased
@@ -342,14 +348,23 @@ public void actualizarTabla(DefaultTableModel modelo) {
         controller.actualizarTotales();
     }//GEN-LAST:event_jTextFieldDescuentoKeyReleased
 
+    private void jButtonAgregarAListaDeLosPedido_PlatoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgregarAListaDeLosPedido_PlatoActionPerformed
+        controller.agregarPedido();
+    }//GEN-LAST:event_jButtonAgregarAListaDeLosPedido_PlatoActionPerformed
+
+    private void jButtonEliminarDeListaDePedido_PlatoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarDeListaDePedido_PlatoActionPerformed
+       int filaSeleccionada = jTablelListaDeLosPedidosDeliveryCLiente.getSelectedRow();
+        controller.eliminarPedido(filaSeleccionada);
+    }//GEN-LAST:event_jButtonEliminarDeListaDePedido_PlatoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButtoRegistrarVenta;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButtonAgregarAListaDeLosPedidos;
+    private javax.swing.JButton jButtonAgregarAListaDeLosPedido_Plato;
     public javax.swing.JButton jButtonAtras;
     public javax.swing.JButton jButtonBuscarCLIENTE;
-    private javax.swing.JButton jButtonEliminarDeListaDePedidos;
-    private javax.swing.JButton jButtonMesas;
+    private javax.swing.JButton jButtonDELIVERY;
+    private javax.swing.JButton jButtonEliminarDeListaDePedido_Plato;
     private javax.swing.JComboBox<String> jComboBox4;
     public javax.swing.JComboBox<String> jComboBoxDeBusquedaDePlatillos;
     public javax.swing.JComboBox<String> jComboBoxTipoDeComprobante;
@@ -373,12 +388,12 @@ public void actualizarTabla(DefaultTableModel modelo) {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JLabel jLabelVENTA;
+    private javax.swing.JLabel jLabelDELIVERY;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    public javax.swing.JTable jTablelListaDeLosPedidos;
+    private javax.swing.JTable jTablelListaDeLosPedidosDeliveryCLiente;
     public javax.swing.JTextField jTextFieldDescuento;
     public javax.swing.JTextField jTextFieldIGV;
     public javax.swing.JTextField jTextFieldMontoACobrar;

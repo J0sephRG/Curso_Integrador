@@ -1,31 +1,34 @@
-package Vista;
 
-import Controlador.ControladorPedidos;
-import Interface.Pedido;
-import Modelo.PedidoLlevar;
+package Vista;
+import Controlador.ControladorPedidosTablas;
+import Modelo.Interface.Pedido;
+import Modelo.PedidosLlevar.PedidoLlevar;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
+import Vista.DescripcionAgregacionDePedioLLevar;
 
-/** @author Miguel*/
-public class TablaDePEDIDOS extends javax.swing.JFrame {
-    private final ControladorPedidos controlador;
-    private final DefaultTableModel modeloTabla; 
+public class TablaDePEDIDOS extends javax.swing.JPanel {
+
+    private static final String TIPO_LLEVAR = "PARA LLEVAR";
+
+    private final ControladorPedidosTablas controlador;
+    private final DefaultTableModel modeloTabla;
     
     public TablaDePEDIDOS(Connection connection) {
-        initComponents();
-        controlador = new ControladorPedidos(connection);
+    initComponents();
+    controlador = new ControladorPedidosTablas(connection);
         modeloTabla = (DefaultTableModel) jTablePedidosLlevar.getModel();
         cargarPedidos();
-    }
+}
 
     private void cargarPedidos() {
         try {
             List<Pedido> pedidos = controlador.listarPedidosPorTipo("PARA LLEVAR");
-            modeloTabla.setRowCount(0); // Limpiar la tabla
+            modeloTabla.setRowCount(0); // Limpiar tabla
             for (Pedido pedido : pedidos) {
                 modeloTabla.addRow(new Object[]{
                     pedido.getId(),
@@ -35,9 +38,11 @@ public class TablaDePEDIDOS extends javax.swing.JFrame {
                 });
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar pedidos: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error al cargar pedidos: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }*/
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -47,8 +52,7 @@ public class TablaDePEDIDOS extends javax.swing.JFrame {
         jButtonAgregarPedidoLLEVAR = new javax.swing.JButton();
         jButtonEliminarPedidoLLEVAR = new javax.swing.JButton();
         jButtonMODIFICARPedidoLLEVAR = new javax.swing.JButton();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        jButtonATRAS = new javax.swing.JButton();
 
         jScrollPanePedidosLlevar.setViewportView(jTablePedidosLlevar);
 
@@ -91,88 +95,167 @@ public class TablaDePEDIDOS extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        jButtonATRAS.setBackground(new java.awt.Color(51, 51, 51));
+        jButtonATRAS.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 14)); // NOI18N
+        jButtonATRAS.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonATRAS.setText("ATRAS");
+        jButtonATRAS.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonATRASActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPanePedidosLlevar, javax.swing.GroupLayout.PREFERRED_SIZE, 537, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(571, 571, 571)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButtonEliminarPedidoLLEVAR, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
-                        .addGap(23, 23, 23))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButtonAgregarPedidoLLEVAR, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButtonMODIFICARPedidoLLEVAR, javax.swing.GroupLayout.DEFAULT_SIZE, 229, Short.MAX_VALUE)
-                        .addContainerGap())))
+                    .addComponent(jButtonATRAS, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jButtonEliminarPedidoLLEVAR, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonAgregarPedidoLLEVAR, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonMODIFICARPedidoLLEVAR, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)))
+                .addContainerGap(27, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jScrollPanePedidosLlevar, javax.swing.GroupLayout.PREFERRED_SIZE, 534, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(266, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPanePedidosLlevar, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(92, 92, 92)
                 .addComponent(jButtonAgregarPedidoLLEVAR, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(62, 62, 62)
+                .addGap(52, 52, 52)
                 .addComponent(jButtonEliminarPedidoLLEVAR, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(53, 53, 53)
+                .addGap(26, 26, 26)
                 .addComponent(jButtonMODIFICARPedidoLLEVAR, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(101, 101, 101))
+                .addGap(35, 35, 35)
+                .addComponent(jButtonATRAS, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(84, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jScrollPanePedidosLlevar, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
-
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonAgregarPedidoLLEVARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgregarPedidoLLEVARActionPerformed
-    
-        // Aquí puedes abrir un formulario para agregar un nuevo pedido
-        PedidoLlevar nuevoPedido = new PedidoLlevar(0, 1, "PENDIENTE", new Timestamp(System.currentTimeMillis()));
-        try {
-            controlador.agregarPedido(nuevoPedido);
-            cargarPedidos(); // Recargar la tabla
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al agregar pedido: " + e.getMessage());
-        } 
+        // Crear una nueva instancia de DescripcionAgregacionDePedidoLLevar
+        DescripcionAgregacionDePedioLLevar descripcionAgregacion = 
+        new DescripcionAgregacionDePedioLLevar(controlador.getConnection(), 0);
+        JFrame frame = new JFrame();
+        frame.setContentPane(descripcionAgregacion);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
     }//GEN-LAST:event_jButtonAgregarPedidoLLEVARActionPerformed
 
-    private void jButtonEliminarPedidoLLEVARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarPedidoLLEVARActionPerformed        
+    private void jButtonEliminarPedidoLLEVARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarPedidoLLEVARActionPerformed
+
         int filaSeleccionada = jTablePedidosLlevar.getSelectedRow();
-        if (filaSeleccionada != -1) {
-            int idPedido = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un pedido para eliminar.", "Atención", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int idPedido = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "¿Está seguro que desea eliminar el pedido seleccionado?",
+            "Confirmar eliminación",
+            JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
             try {
                 controlador.eliminarPedido(idPedido, "PARA LLEVAR");
-                cargarPedidos(); // Recargar la tabla
+                cargarPedidos();
+                JOptionPane.showMessageDialog(this, "Pedido eliminado exitosamente.");
             } catch (SQLException e) {
-                JOptionPane.showMessageDialog(this, "Error al eliminar pedido: " + e.getMessage());
+                JOptionPane.showMessageDialog(this, "Error al eliminar pedido: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "Seleccione un pedido para eliminar.");
         }
     }//GEN-LAST:event_jButtonEliminarPedidoLLEVARActionPerformed
 
     private void jButtonMODIFICARPedidoLLEVARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMODIFICARPedidoLLEVARActionPerformed
         int filaSeleccionada = jTablePedidosLlevar.getSelectedRow();
-        if (filaSeleccionada != -1) {
-            int id = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un pedido para modificar", "Atención", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int id = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
+        try {
             Pedido pedido = controlador.buscarPedidoPorId(id, "PARA LLEVAR");
-            if (pedido != null) {
-                pedido.setEstado("MODIFICADO");
-                controlador.actualizarPedido(pedido);
-                cargarPedidos();
-                JOptionPane.showMessageDialog(this, "Pedido modificado");
+            if (pedido == null) {
+                JOptionPane.showMessageDialog(this, "Pedido no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "Seleccione un pedido para modificar");
+            PedidoLlevar pedidoEditable = (PedidoLlevar) pedido;
+            PedidoLlevar pedidoModificado = mostrarDialogoPedido(pedidoEditable);
+            if (pedidoModificado != null) {
+                controlador.actualizarPedido(pedidoModificado);
+                cargarPedidos();
+                JOptionPane.showMessageDialog(this, "Pedido modificado exitosamente.");
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al modificar pedido: " + e.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jButtonMODIFICARPedidoLLEVARActionPerformed
 
+    private void jButtonATRASActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonATRASActionPerformed
+       // Cerrar o esconder esta ventana o panel
+        SwingUtilities.getWindowAncestor(this).dispose();
+    }//GEN-LAST:event_jButtonATRASActionPerformed
 
+    private PedidoLlevar mostrarDialogoPedido(PedidoLlevar pedidoExistente) {
+        JTextField txtIdCliente = new JTextField();
+        JTextField txtEstado = new JTextField();
+        if (pedidoExistente != null) {
+            txtIdCliente.setText(String.valueOf(pedidoExistente.getIdCliente()));
+            txtEstado.setText(pedidoExistente.getEstado());
+        }
+        Object[] message = {
+            "ID Cliente:", txtIdCliente,
+            "Estado:", txtEstado
+        };
+        int option = JOptionPane.showConfirmDialog(this, message,
+                pedidoExistente == null ? "Agregar Pedido Para Llevar" : "Modificar Pedido Para Llevar",
+                JOptionPane.OK_CANCEL_OPTION);
+        
+        if (option == JOptionPane.OK_OPTION) {
+            try {
+                int idCliente = Integer.parseInt(txtIdCliente.getText().trim());
+                String estado = txtEstado.getText().trim();
+                Timestamp fechaPedido = pedidoExistente != null ? 
+                    pedidoExistente.getFechaPedido() : new Timestamp(System.currentTimeMillis());
+                if (estado.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Por favor, complete todos los campos.", 
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                    return null;
+                }
+                if (pedidoExistente == null) {
+                    return new PedidoLlevar(0, idCliente, estado, fechaPedido);
+                } else {
+                    pedidoExistente.setIdCliente(idCliente);
+                    pedidoExistente.setEstado(estado);
+                    pedidoExistente.setFechaPedido(fechaPedido);
+                    return pedidoExistente;
+                }
+                } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, 
+                    "ID Cliente debe ser un número válido.", 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+                return null;
+            }
+        }
+        return null;
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonATRAS;
     private javax.swing.JButton jButtonAgregarPedidoLLEVAR;
     private javax.swing.JButton jButtonEliminarPedidoLLEVAR;
     private javax.swing.JButton jButtonMODIFICARPedidoLLEVAR;

@@ -1,7 +1,7 @@
-package VISTA;
+package Vista;
 
 import ConexionSQL.Conexion; // Asegúrate de que esta clase maneje la conexión a SQL Server
-import Controlador.DescripcionDeLaMesasController;
+import Controlador.DescripcionPedidoLlevarController;
 import javax.swing.table.DefaultTableModel;
 import java.sql.Connection;
 import javax.swing.JOptionPane;
@@ -9,18 +9,19 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 
-public class DescripcionDeLaMesas extends JPanel {
-    private DescripcionDeLaMesasController controller;
+public class DescripcionAgregacionDePedioLLevar extends JPanel {
     private Connection connection;
+    private DescripcionPedidoLlevarController controller;
     
-    public DescripcionDeLaMesas(Connection connection,int numeroMesa) {
-        this.controller = new DescripcionDeLaMesasController(connection, numeroMesa, this);
-        initComponents();
-        controller.inicializar();
+    public DescripcionAgregacionDePedioLLevar(Connection connection,int numeroMesa) {
+         this.connection = connection;
+        this.controller = new DescripcionPedidoLlevarController(connection, this);
+        initComponents(); // Inicializa los componentes visuales
+        controller.inicializar(); // Cargar datos iniciales
     }
 
 public void actualizarTabla(DefaultTableModel modelo) {
-        jTablelListaDeLosPedidos.setModel(modelo);
+        jTablelListaDeLosPedidoLLevar.setModel(modelo);
     }
     
     public void mostrarMensaje(String mensaje) {
@@ -49,11 +50,11 @@ public void actualizarTabla(DefaultTableModel modelo) {
         return jTextFieldMontoDePago.getText();
     }
     public DefaultTableModel getModeloTablaPedidos() {
-        return (DefaultTableModel) jTablelListaDeLosPedidos.getModel();
+        return (DefaultTableModel) jTablelListaDeLosPedidoLLevar.getModel();
     }
     public void setModeloTablaPedidos(DefaultTableModel modelo) {
-        jTablelListaDeLosPedidos.setModel(modelo);
-        jTablelListaDeLosPedidos.repaint();
+        jTablelListaDeLosPedidoLLevar.setModel(modelo);
+        jTablelListaDeLosPedidoLLevar.repaint();
     }
     public String getTipoDeComprobante() {
         return (String) jComboBoxTipoDeComprobante.getSelectedItem();
@@ -77,7 +78,7 @@ public void actualizarTabla(DefaultTableModel modelo) {
 
         jButton4 = new javax.swing.JButton();
         jButtonMesas = new javax.swing.JButton();
-        jLabelVENTA = new javax.swing.JLabel();
+        jLabelPedidosParaLlevar = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -92,15 +93,15 @@ public void actualizarTabla(DefaultTableModel modelo) {
         jPanel3 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTablelListaDeLosPedidos = new javax.swing.JTable();
-        jButtonAgregarAListaDeLosPedidos = new javax.swing.JButton();
+        jTablelListaDeLosPedidoLLevar = new javax.swing.JTable();
+        jButtonAgregarAListaDeLosPedidoLLevar = new javax.swing.JButton();
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         textCantidad = new javax.swing.JTextField();
         jComboBoxDeBusquedaDePlatillos = new javax.swing.JComboBox<>();
         jLabel18 = new javax.swing.JLabel();
-        jButtonEliminarDeListaDePedidos = new javax.swing.JButton();
+        jButtonEliminarDeListaDePedidoLlevar = new javax.swing.JButton();
         jLabel19 = new javax.swing.JLabel();
         jComboBox4 = new javax.swing.JComboBox<>();
         jPanel1 = new javax.swing.JPanel();
@@ -132,9 +133,9 @@ public void actualizarTabla(DefaultTableModel modelo) {
         jButtonMesas.setText("Mesas");
         add(jButtonMesas, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 20, -1, -1));
 
-        jLabelVENTA.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 18)); // NOI18N
-        jLabelVENTA.setText("MESAS");
-        add(jLabelVENTA, new org.netbeans.lib.awtextra.AbsoluteConstraints(392, 45, -1, -1));
+        jLabelPedidosParaLlevar.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 18)); // NOI18N
+        jLabelPedidosParaLlevar.setText("Pedidos Para LLevar");
+        add(jLabelPedidosParaLlevar, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 40, 220, -1));
 
         jPanel2.setBackground(new java.awt.Color(204, 204, 204));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -179,7 +180,7 @@ public void actualizarTabla(DefaultTableModel modelo) {
         jLabel6.setText("Lista de los pedidos");
         jPanel3.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, -1, -1));
 
-        jTablelListaDeLosPedidos.setModel(new javax.swing.table.DefaultTableModel(
+        jTablelListaDeLosPedidoLLevar.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -201,18 +202,18 @@ public void actualizarTabla(DefaultTableModel modelo) {
                 return types [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTablelListaDeLosPedidos);
+        jScrollPane1.setViewportView(jTablelListaDeLosPedidoLLevar);
 
         jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 580, 190));
 
-        jButtonAgregarAListaDeLosPedidos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonAgregarAListaDeLosPedidos.setText("Agregar");
-        jButtonAgregarAListaDeLosPedidos.addActionListener(new java.awt.event.ActionListener() {
+        jButtonAgregarAListaDeLosPedidoLLevar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButtonAgregarAListaDeLosPedidoLLevar.setText("Agregar");
+        jButtonAgregarAListaDeLosPedidoLLevar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonAgregarAListaDeLosPedidosActionPerformed(evt);
+                jButtonAgregarAListaDeLosPedidoLLevarActionPerformed(evt);
             }
         });
-        jPanel3.add(jButtonAgregarAListaDeLosPedidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 20, -1, -1));
+        jPanel3.add(jButtonAgregarAListaDeLosPedidoLLevar, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 20, -1, -1));
 
         jLabel15.setText("Registro de venta");
         jPanel3.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, -1, -1));
@@ -228,14 +229,14 @@ public void actualizarTabla(DefaultTableModel modelo) {
         jPanel3.add(jComboBoxDeBusquedaDePlatillos, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 50, 140, -1));
         jPanel3.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 50, -1, -1));
 
-        jButtonEliminarDeListaDePedidos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonEliminarDeListaDePedidos.setText("Eliminar");
-        jButtonEliminarDeListaDePedidos.addActionListener(new java.awt.event.ActionListener() {
+        jButtonEliminarDeListaDePedidoLlevar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButtonEliminarDeListaDePedidoLlevar.setText("Eliminar");
+        jButtonEliminarDeListaDePedidoLlevar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonEliminarDeListaDePedidosActionPerformed(evt);
+                jButtonEliminarDeListaDePedidoLlevarActionPerformed(evt);
             }
         });
-        jPanel3.add(jButtonEliminarDeListaDePedidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 20, -1, -1));
+        jPanel3.add(jButtonEliminarDeListaDePedidoLlevar, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 20, -1, -1));
 
         jLabel19.setText("Tipo de venta:");
         jPanel3.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 50, -1, -1));
@@ -314,7 +315,7 @@ public void actualizarTabla(DefaultTableModel modelo) {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtoRegistrarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtoRegistrarVentaActionPerformed
-        controller.registrarVenta();
+      controller.registrarVenta();
     }//GEN-LAST:event_jButtoRegistrarVentaActionPerformed
 
     private void jButtonAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAtrasActionPerformed
@@ -326,29 +327,30 @@ public void actualizarTabla(DefaultTableModel modelo) {
         controller.buscarClientePorDNI();
     }//GEN-LAST:event_jButtonBuscarCLIENTEActionPerformed
 
-    private void jButtonAgregarAListaDeLosPedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgregarAListaDeLosPedidosActionPerformed
+    private void jButtonAgregarAListaDeLosPedidoLLevarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgregarAListaDeLosPedidoLLevarActionPerformed
         controller.agregarPedido();
-    }//GEN-LAST:event_jButtonAgregarAListaDeLosPedidosActionPerformed
+    }//GEN-LAST:event_jButtonAgregarAListaDeLosPedidoLLevarActionPerformed
 
-    private void jButtonEliminarDeListaDePedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarDeListaDePedidosActionPerformed
-        controller.eliminarPedido();
-    }//GEN-LAST:event_jButtonEliminarDeListaDePedidosActionPerformed
+    private void jButtonEliminarDeListaDePedidoLlevarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarDeListaDePedidoLlevarActionPerformed
+        int filaSeleccionada = jTablelListaDeLosPedidoLLevar.getSelectedRow();
+        controller.eliminarPedido(filaSeleccionada);
+    }//GEN-LAST:event_jButtonEliminarDeListaDePedidoLlevarActionPerformed
 
     private void jTextFieldVueltoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldVueltoKeyReleased
-         controller.calcularVuelto();
+        controller.calcularVuelto();
     }//GEN-LAST:event_jTextFieldVueltoKeyReleased
 
     private void jTextFieldDescuentoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldDescuentoKeyReleased
-        controller.actualizarTotales();
+      controller.actualizarTotales();
     }//GEN-LAST:event_jTextFieldDescuentoKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButtoRegistrarVenta;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButtonAgregarAListaDeLosPedidos;
+    private javax.swing.JButton jButtonAgregarAListaDeLosPedidoLLevar;
     public javax.swing.JButton jButtonAtras;
     public javax.swing.JButton jButtonBuscarCLIENTE;
-    private javax.swing.JButton jButtonEliminarDeListaDePedidos;
+    private javax.swing.JButton jButtonEliminarDeListaDePedidoLlevar;
     private javax.swing.JButton jButtonMesas;
     private javax.swing.JComboBox<String> jComboBox4;
     public javax.swing.JComboBox<String> jComboBoxDeBusquedaDePlatillos;
@@ -373,12 +375,12 @@ public void actualizarTabla(DefaultTableModel modelo) {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JLabel jLabelVENTA;
+    private javax.swing.JLabel jLabelPedidosParaLlevar;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    public javax.swing.JTable jTablelListaDeLosPedidos;
+    public javax.swing.JTable jTablelListaDeLosPedidoLLevar;
     public javax.swing.JTextField jTextFieldDescuento;
     public javax.swing.JTextField jTextFieldIGV;
     public javax.swing.JTextField jTextFieldMontoACobrar;
