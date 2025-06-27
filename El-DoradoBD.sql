@@ -243,16 +243,15 @@ END;
 GO
 
 -- Tabla Mesa_Unida
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Mesa_Unida') AND type = N'U')
-BEGIN
 CREATE TABLE Mesa_Unida (
     id_unida INT IDENTITY(1,1) PRIMARY KEY,
-    id_mesa_principal INT NOT NULL FOREIGN KEY REFERENCES Mesa(id_mesa) ON DELETE CASCADE,
-    id_mesa_secundaria INT NOT NULL FOREIGN KEY REFERENCES Mesa(id_mesa) ON DELETE CASCADE,
+    id_mesa_principal INT NOT NULL,
+    id_mesa_secundaria INT NOT NULL,
+    CONSTRAINT FK_Mesa_Principal FOREIGN KEY (id_mesa_principal) REFERENCES Mesa(id_mesa) ON DELETE CASCADE,
+    CONSTRAINT FK_Mesa_Secundaria FOREIGN KEY (id_mesa_secundaria) REFERENCES Mesa(id_mesa) ON DELETE NO ACTION,
     CONSTRAINT UQ_Mesa_Unida UNIQUE (id_mesa_principal, id_mesa_secundaria)
 );
-END;
-GO
+
 
 -- Historial_Precio
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Historial_Precio') AND type = N'U')
@@ -310,8 +309,9 @@ CREATE TABLE Pedido (
     tipo VARCHAR(20) CHECK (tipo IN ('delivery', 'llevar')),
     estado VARCHAR(50) NOT NULL,
     fecha_pedido DATETIME DEFAULT GETDATE(),
-    FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente) ON DELETE SET NULL
+    FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente) ON DELETE CASCADE
 );
+
 
 CREATE TABLE PedidoDelivery (
     id_pedido INT PRIMARY KEY,
@@ -338,3 +338,91 @@ CREATE INDEX idx_movimiento_producto ON Movimiento_Inventario(id_producto);
 CREATE INDEX idx_historial_precio_producto ON Historial_Precio(id_producto);
 CREATE INDEX idx_actividad_usuario ON Actividad(id_usuario);
 GO
+
+--INSERTS
+SELECT * FROM Pedido;
+
+INSERT INTO Usuario (nombre, apellido, rol, clave)
+VALUES 
+('Juan', 'Pérez', 'admin', '1234'),
+('Ana', 'García', 'cajero', 'abc123'),
+('Luis', 'Mendoza', 'cocinero', 'pass123');
+
+INSERT INTO Pedido (id_cliente, tipo, estado)
+VALUES 
+(1, 'llevar', 'pendiente'),
+(2, 'llevar', 'en_preparacion');
+
+INSERT INTO Pedido (id_cliente, tipo, estado)
+VALUES 
+(3, 'delivery', 'pendiente'),
+(1, 'delivery', 'en_camino');
+
+INSERT INTO PedidoDelivery (id_pedido, direccion_entrega)
+VALUES 
+(3, 'Av. Los Robles 123, Lima'),
+(4, 'Calle Falsa 456, Arequipa');
+
+INSERT INTO Mesa (numero_mesa, capacidad, estado)
+VALUES
+    (1, 4, 'disponible'),
+    (2, 4, 'disponible'),
+    (3, 2, 'disponible'),
+    (4, 6, 'disponible'),
+    (5, 2, 'disponible'),
+    (6, 4, 'disponible'),
+    (7, 6, 'disponible'),
+    (8, 4, 'disponible'),
+    (9, 2, 'disponible'),
+    (10, 6, 'disponible');
+
+
+INSERT INTO Categoria (nombre_categoria, descripcion)
+VALUES 
+('Pizzas', 'Platos principales de pizza'),
+('Bebidas', 'Bebidas frías y calientes'),
+('Postres', 'Dulces y postres'),
+('Pasta', 'Comidas basadas en pasta'),
+('Ensaladas', 'Platos frescos y saludables');
+
+INSERT INTO Producto (nombre, stock_actual, stock_minimo, precio_unitario, unidad_medida, id_categoria, descripcion)
+VALUES 
+('Mozzarella', 50, 10, 1.5, 'kg', 1, 'Queso mozzarella para pizzas'),
+('Pepsi', 100, 20, 1.2, 'l', 2, 'Bebida gaseosa en lata'),
+('Tiramisú', 30, 5, 4.5, 'porción', 3, 'Postre italiano tradicional'),
+('Espagueti', 200, 50, 2.3, 'kg', 4, 'Pasta italiana tipo espagueti'),
+('Lechuga', 80, 10, 0.5, 'unidad', 5, 'Lechuga fresca para ensaladas');
+
+INSERT INTO Pertenecer (id_categoria, id_producto)
+VALUES 
+(1, 1), -- Producto 'Mozzarella' pertenece a 'Pizzas'
+(2, 2), -- Producto 'Pepsi' pertenece a 'Bebidas'
+(3, 3), -- Producto 'Tiramisú' pertenece a 'Postres'
+(4, 4), -- Producto 'Espagueti' pertenece a 'Pasta'
+(5, 5); -- Producto 'Lechuga' pertenece a 'Ensaladas'
+
+INSERT INTO Plato (nombre, precio, descripcion)
+VALUES 
+('Pizza Margarita', 18.00, 'Pizza clásica con tomate y albahaca'),
+('Espagueti Carbonara', 15.00, 'Pasta en salsa cremosa de huevo y panceta'),
+('Ensalada César', 12.00, 'Ensalada fresca con pollo y aderezo César'),
+('Tiramisu', 6.00, 'Postre italiano con café y cacao'),
+('Lasaña', 20.00, 'Pasta al horno con carne y salsa bechamel');
+
+INSERT INTO Plato_Producto (id_plato, id_producto, cantidad)
+VALUES 
+(1, 1, 150), -- Pizza Margarita usa 150g de Mozzarella
+(2, 4, 200), -- Espagueti Carbonara usa 200g de Espagueti
+(3, 5, 50),  -- Ensalada César usa 50g de Lechuga
+(4, 3, 1),   -- Tiramisu usa 1 porción de Tiramisu
+(5, 4, 250); -- Lasaña usa 250g de Espagueti
+
+INSERT INTO Cliente (dni, nombre, apellido, telefono, email)
+VALUES 
+('12345678', 'Juan', 'Pérez', '987654321', 'juan.perez@email.com'),
+('87654321', 'Lucía', 'Gómez', '912345678', 'lucia.gomez@email.com'),
+('12398745', 'Ana', 'Sánchez', '998877665', 'ana.sanchez@email.com'),
+('45612398', 'Carlos', 'López', '987123654', 'carlos.lopez@email.com'),
+('78945612', 'Maria', 'Martínez', '963852741', 'maria.martinez@email.com');
+
+
