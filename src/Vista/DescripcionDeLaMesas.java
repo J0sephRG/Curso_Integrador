@@ -13,8 +13,8 @@ public class DescripcionDeLaMesas extends JPanel {
     private DescripcionDeLaMesasController controller;
     private Connection connection;
     
-    public DescripcionDeLaMesas(Connection connection,int numeroMesa) {
-        this.controller = new DescripcionDeLaMesasController(connection, numeroMesa, this);
+    public DescripcionDeLaMesas(Connection connection, int numeroMesa, int usuarioActualId) {
+         this.controller = new DescripcionDeLaMesasController(connection, numeroMesa, this, usuarioActualId);
         initComponents();
         controller.inicializar();
     }
