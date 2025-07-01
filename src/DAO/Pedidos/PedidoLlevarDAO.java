@@ -46,7 +46,7 @@ public class PedidoLlevarDAO implements PedidoDAO {
             }
 
             // Insertar los detalles en la tabla Pedido_Llevar
-            String sqlDetalle = "INSERT INTO PedidoLlevar (id_pedido) VALUES (?)";
+            String sqlDetalle = "INSERT INTO Pedido (id_pedido) VALUES (?)";
             try (PreparedStatement stmtDetalle = connection.prepareStatement(sqlDetalle)) {
                 stmtDetalle.setInt(1, pl.getId());
                 stmtDetalle.executeUpdate();
@@ -60,7 +60,7 @@ public class PedidoLlevarDAO implements PedidoDAO {
     @Override
     public List<Pedido> listarTodos() throws SQLException {
         List<Pedido> pedidos = new ArrayList<>();
-        String sql = "SELECT * FROM Pedido p JOIN PedidoLlevar pl ON p.id_pedido = pl.id_pedido";
+        String sql = "SELECT * FROM Pedido WHERE tipo = 'llevar'";
 
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -108,7 +108,7 @@ public class PedidoLlevarDAO implements PedidoDAO {
 
     @Override
     public Pedido buscarPorId(int id) throws SQLException {
-        String sql = "SELECT * FROM Pedido p JOIN PedidoLlevar pl ON p.id_pedido = pl.id_pedido WHERE p.id_pedido = ?";
+        String sql = "SELECT * FROM Pedido WHERE id_pedido = ? AND tipo = 'llevar'";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
