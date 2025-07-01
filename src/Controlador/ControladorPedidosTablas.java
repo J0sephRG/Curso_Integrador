@@ -44,7 +44,7 @@ public class ControladorPedidosTablas {
     public void eliminarPedido(int id, String tipoPedido) throws SQLException {
         if (tipoPedido.equalsIgnoreCase("DELIVERY")) {
             deliveryDAO.eliminar(id);
-        } else if (tipoPedido.equalsIgnoreCase("PARA LLEVAR")) {
+        } else if (tipoPedido.equalsIgnoreCase("llevar")) {
             llevarDAO.eliminar(id);
         } else {
             throw new IllegalArgumentException("Tipo de pedido no reconocido");
@@ -54,7 +54,7 @@ public class ControladorPedidosTablas {
     public Pedido buscarPedidoPorId(int id, String tipoPedido) throws SQLException {
         if (tipoPedido.equalsIgnoreCase("DELIVERY")) {
             return deliveryDAO.buscarPorId(id);
-        } else if (tipoPedido.equalsIgnoreCase("PARA LLEVAR")) {
+        } else if (tipoPedido.equalsIgnoreCase("llevar")) {
             return llevarDAO.buscarPorId(id);
         } else {
             throw new IllegalArgumentException("Tipo de pedido no reconocido");
@@ -64,7 +64,7 @@ public class ControladorPedidosTablas {
     public List<Pedido> listarPedidosPorTipo(String tipoPedido) throws SQLException {
         if (tipoPedido.equalsIgnoreCase("DELIVERY")) {
             return deliveryDAO.listarTodos();
-        } else if (tipoPedido.equalsIgnoreCase("PARA LLEVAR")) {
+        } else if (tipoPedido.equalsIgnoreCase("llevar")) {
             return llevarDAO.listarTodos();
         } else {
             throw new IllegalArgumentException("Tipo de pedido no reconocido");
@@ -74,5 +74,4 @@ public class ControladorPedidosTablas {
     public Connection getConnection() {
         return this.connection;
     }
-
 }

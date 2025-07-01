@@ -27,11 +27,13 @@ public class DescripcionDeLaMesasController {
     private final PlatoDAO platoDAO;
     private final ClienteDAO clienteDAO;
     private final VentaDAO ventaDAO;
-
-    public DescripcionDeLaMesasController(Connection connection, int mesaNumber, DescripcionDeLaMesas vista) {
+    private final int usuarioActualId;
+    
+    public DescripcionDeLaMesasController(Connection connection, int mesaNumber, DescripcionDeLaMesas vista, int usuarioActualId) {
         this.connection = connection;
         this.mesaNumber = mesaNumber;
         this.vista = vista;
+        this.usuarioActualId = usuarioActualId;
         this.mesaPlatoDAO = new MesaPlatoDAO(connection);
         this.platoDAO = new PlatoDAO(connection);
         this.clienteDAO = new ClienteDAO(connection);
@@ -193,7 +195,7 @@ public class DescripcionDeLaMesasController {
             Venta venta = new Venta(
                     0,
                     new Timestamp(System.currentTimeMillis()),
-                    1, //TODO: reemplazar por usuario actual
+                    usuarioActualId,
                     vista.getTipoDePago(),
                     new BigDecimal(vista.jTextFieldTotalDeVenta.getText())
             );
