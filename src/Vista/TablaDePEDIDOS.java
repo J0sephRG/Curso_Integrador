@@ -13,7 +13,7 @@ import Vista.DescripcionAgregacionDePedioLLevar;
 
 public class TablaDePEDIDOS extends javax.swing.JPanel {
 
-    private static final String TIPO_LLEVAR = "PARA LLEVAR";
+    private static final String TIPO_LLEVAR = "llevar";
 
     private final ControladorPedidosTablas controlador;
     private final DefaultTableModel modeloTabla;
@@ -27,7 +27,7 @@ public class TablaDePEDIDOS extends javax.swing.JPanel {
 
     private void cargarPedidos() {
         try {
-            List<Pedido> pedidos = controlador.listarPedidosPorTipo("PARA LLEVAR");
+            List<Pedido> pedidos = controlador.listarPedidosPorTipo("llevar");
             modeloTabla.setRowCount(0); // Limpiar tabla
             for (Pedido pedido : pedidos) {
                 modeloTabla.addRow(new Object[]{
@@ -169,7 +169,7 @@ public class TablaDePEDIDOS extends javax.swing.JPanel {
             JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             try {
-                controlador.eliminarPedido(idPedido, "PARA LLEVAR");
+                controlador.eliminarPedido(idPedido, "llevar");
                 cargarPedidos();
                 JOptionPane.showMessageDialog(this, "Pedido eliminado exitosamente.");
             } catch (SQLException e) {
@@ -187,7 +187,7 @@ public class TablaDePEDIDOS extends javax.swing.JPanel {
         }
         int id = (int) modeloTabla.getValueAt(filaSeleccionada, 0);
         try {
-            Pedido pedido = controlador.buscarPedidoPorId(id, "PARA LLEVAR");
+            Pedido pedido = controlador.buscarPedidoPorId(id, "llevar");
             if (pedido == null) {
                 JOptionPane.showMessageDialog(this, "Pedido no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -253,6 +253,7 @@ public class TablaDePEDIDOS extends javax.swing.JPanel {
             }
         }
         return null;
+        
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonATRAS;
