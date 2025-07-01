@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.Connection;
 import java.sql.SQLException;
+import Modelo.Usuario;
+import Seguridad.Sesion;
 
 public class VentaMesas extends javax.swing.JPanel {
     
@@ -257,7 +259,8 @@ public class VentaMesas extends javax.swing.JPanel {
     }
    
 private void abrirDescripcionDeLaMesa(int numeroMesa) {
-    DescripcionDeLaMesas panelDescripcion = new DescripcionDeLaMesas(connection, numeroMesa);
+    int usuarioActualId = Sesion.getUsuarioActual().getId_usuario(); // o como manejes tu sesión
+    DescripcionDeLaMesas panelDescripcion = new DescripcionDeLaMesas(connection, numeroMesa, usuarioActualId);
     JFrame frame = new JFrame("Descripción Mesa " + numeroMesa);
     frame.setContentPane(panelDescripcion);
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

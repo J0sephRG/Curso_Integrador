@@ -5,6 +5,7 @@
 package Vista;
 
 import ConexionSQL.Conexion;
+import DAO.UsuarioDAO;
 import com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialLighterIJTheme;
 import javax.swing.JOptionPane;
@@ -13,6 +14,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import Utils.AESUtil;
+import Modelo.Usuario;
 /**
  *
  * @author JOSEPH ROJAS
@@ -201,32 +203,29 @@ int intentos;
     private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
  private void ingresar() {
-          String usuario = txtUsuario.getText();
-    String password = new String(txtContraseña.getPassword());
+    String nombre = txtUsuario.getText();
+    String clave = new String(txtContraseña.getPassword());
 
     ConexionSQL.Conexion conect = new Conexion();
     Connection conn = conect.Conectar();
 
     if (conn != null) {
         try {
-            // Consulta SQL que verifica que el usuario y la contraseña coincidan
-            String sql = "SELECT * FROM Usuario WHERE nombre = ? AND clave = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, usuario);
-            ps.setString(2, password);
-            ResultSet rs = ps.executeQuery();
+            UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
+            Usuario usuario = usuarioDAO.obtenerPorNombreYClave(nombre, clave);
 
-            // Si se encontró una coincidencia
-            if (rs.next()) {
-                dispose();  // Cierra el login
-                JOptionPane.showMessageDialog(null, "Bienvenido", "Mensaje de bienvenida", JOptionPane.INFORMATION_MESSAGE);
-                Menu dash = new Menu();  // Abre el menú principal
+            if (usuario != null) {
+                Seguridad.Sesion.setUsuarioActual(usuario);
+
+                dispose(); // Cierra el login
+                JOptionPane.showMessageDialog(null, "Bienvenido " + usuario.getNombre(), "Acceso", JOptionPane.INFORMATION_MESSAGE);
+                Menu dash = new Menu();  // Ventana principal
                 dash.setVisible(true);
             } else {
                 intentos++;
                 if (intentos >= 3) {
-                    JOptionPane.showMessageDialog(null, "Has excedido el número de intentos para ingresar al sistema", "Error", JOptionPane.ERROR_MESSAGE);
-                    System.exit(0);  // Cierra la aplicación después de 3 intentos fallidos
+                    JOptionPane.showMessageDialog(null, "Has excedido el número de intentos", "Error", JOptionPane.ERROR_MESSAGE);
+                    System.exit(0);
                 } else {
                     JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos. Quedan " + (3 - intentos) + " intentos.");
                     txtUsuario.setText("");
@@ -237,10 +236,10 @@ int intentos;
 
             conn.close();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error de consulta: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error de base de datos: " + e.getMessage());
         }
     } else {
         JOptionPane.showMessageDialog(null, "No se pudo conectar a la base de datos.");
     }
- }
+}
 }
