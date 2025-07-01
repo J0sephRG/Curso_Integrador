@@ -13,6 +13,31 @@ public class UsuarioDAO {
         this.connection = connection;
     }
     
+    public Usuario obtenerPorNombreYClave(String nombre, String clave) throws SQLException {
+    String query = "SELECT * FROM Usuario WHERE nombre = ? AND clave = ?";
+    Usuario usuario = null;
+
+    try (PreparedStatement statement = connection.prepareStatement(query)) {
+        statement.setString(1, nombre);
+        statement.setString(2, clave);
+        try (ResultSet rs = statement.executeQuery()) {
+            if (rs.next()) {
+                usuario = new Usuario(
+                    rs.getInt("id_usuario"),
+                    rs.getString("nombre"),
+                    rs.getString("apellido"),
+                    rs.getString("rol"),
+                    rs.getString("clave"),
+                    rs.getTimestamp("fecha_creacion")
+                );
+            }
+        }
+    }
+
+    return usuario;
+}
+   
+    
     public void agregarUsuario(Usuario usuario) throws SQLException {
         String query = "INSERT INTO Usuario(nombre, apellido, rol, clave) VALUES (?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
