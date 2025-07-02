@@ -20,7 +20,7 @@ public class DescripcionAgregacionDePedidoDelivery extends JPanel {
     
     public DescripcionAgregacionDePedidoDelivery(Connection connection, TablaDePEDIDOSDElivery vistaPrincipal) {
         this.connection = connection;
-        this.vistaPrincipal = vistaPrincipal; // ✅ Mover aquí primero
+        this.vistaPrincipal = vistaPrincipal; 
 
         // Obtener el usuario actual desde la sesión
         Usuario usuario = Seguridad.Sesion.getUsuarioActual();
@@ -36,7 +36,7 @@ public class DescripcionAgregacionDePedidoDelivery extends JPanel {
         controller.inicializar();
 
         if (this.vistaPrincipal != null) {
-            this.vistaPrincipal.actualizarTablaPedidos(); // ✅ Ya no lanza NullPointerException
+            this.vistaPrincipal.actualizarTablaPedidos(); 
         }
     }
        

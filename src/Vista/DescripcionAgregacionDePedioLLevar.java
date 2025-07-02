@@ -10,6 +10,7 @@ import javax.swing.SwingUtilities;
 import Seguridad.Sesion;
 import Modelo.Usuario;
 
+
 public class DescripcionAgregacionDePedioLLevar extends JPanel {
     private Connection connection;
     private DescripcionPedidoLlevarController controller;
@@ -23,7 +24,7 @@ public class DescripcionAgregacionDePedioLLevar extends JPanel {
         throw new IllegalStateException("No hay un usuario en sesión.");
     }
 
-    this.usuarioActualId = usuario.getId_usuario(); // Asegúrate de que `getId()` exista
+    this.usuarioActualId = usuario.getId_usuario(); 
     this.controller = new DescripcionPedidoLlevarController(connection, this);
     initComponents();
     controller.inicializar();

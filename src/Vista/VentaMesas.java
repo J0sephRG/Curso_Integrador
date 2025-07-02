@@ -1,16 +1,24 @@
 package VISTA;
 
 import ConexionSQL.Conexion; // Asegúrate de que esta clase maneje la conexión a SQL Server
+import DAO.MesaUnidaDAO;
 import javax.swing.*;
 import java.awt.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import Modelo.Usuario;
+import Modelo.VENTAenMesa.MesaUnida;
 import Seguridad.Sesion;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 public class VentaMesas extends javax.swing.JPanel {
-    
-    private Connection connection; // Conexión a BD, de ser necesaria para futuras operaciones
+    private Integer idMesaPrincipal = null;
+    private Integer idMesaSecundaria = null;
+    private Connection connection; 
     
     public VentaMesas(Connection connection) throws SQLException {
         this.connection = connection; // Usar la conexión pasada como parámetro
@@ -37,6 +45,7 @@ public class VentaMesas extends javax.swing.JPanel {
         Mesa10Boton = new javax.swing.JButton();
         jButtonFinalizarTurno = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        botonConfirmarUnion = new javax.swing.JButton();
 
         jpMesas.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -142,6 +151,13 @@ public class VentaMesas extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 18)); // NOI18N
         jLabel1.setText("MESAS");
 
+        botonConfirmarUnion.setText("Confirmar Unión");
+        botonConfirmarUnion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonConfirmarUnionActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jpMesasLayout = new javax.swing.GroupLayout(jpMesas);
         jpMesas.setLayout(jpMesasLayout);
         jpMesasLayout.setHorizontalGroup(
@@ -149,7 +165,9 @@ public class VentaMesas extends javax.swing.JPanel {
             .addGroup(jpMesasLayout.createSequentialGroup()
                 .addGroup(jpMesasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jpMesasLayout.createSequentialGroup()
-                        .addGap(400, 400, 400)
+                        .addGap(59, 59, 59)
+                        .addComponent(botonConfirmarUnion)
+                        .addGap(266, 266, 266)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jpMesasLayout.createSequentialGroup()
                         .addGap(40, 40, 40)
@@ -191,9 +209,15 @@ public class VentaMesas extends javax.swing.JPanel {
         jpMesasLayout.setVerticalGroup(
             jpMesasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpMesasLayout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(50, 50, 50)
+                .addGroup(jpMesasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jpMesasLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(50, 50, 50))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpMesasLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(botonConfirmarUnion)
+                        .addGap(31, 31, 31)))
                 .addGroup(jpMesasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(Mesa1Boton)
                     .addComponent(Mesa2Boton)
@@ -307,19 +331,25 @@ private void abrirDescripcionDeLaMesa(int numeroMesa) {
     }
    
     private void Mesa1BotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Mesa1BotonActionPerformed
+
         abrirDescripcionDeLaMesa(1);
+
     }//GEN-LAST:event_Mesa1BotonActionPerformed
 
     private void Mesa2BotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Mesa2BotonActionPerformed
+
         abrirDescripcionDeLaMesa(2);
+        
     }//GEN-LAST:event_Mesa2BotonActionPerformed
 
     private void Mesa3BotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Mesa3BotonActionPerformed
         abrirDescripcionDeLaMesa(3);
+
     }//GEN-LAST:event_Mesa3BotonActionPerformed
 
     private void Mesa4BotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Mesa4BotonActionPerformed
          abrirDescripcionDeLaMesa(4);
+
     }//GEN-LAST:event_Mesa4BotonActionPerformed
 
     private void Mesa5BotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Mesa5BotonActionPerformed
@@ -347,14 +377,22 @@ private void abrirDescripcionDeLaMesa(int numeroMesa) {
     }//GEN-LAST:event_Mesa10BotonActionPerformed
 
     private void jButtonUnirMesasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUnirMesasActionPerformed
-        // TODO add your handling code here:
+        // Paso 1: Muestra mensaje de selección
+    JOptionPane.showMessageDialog(this, "Por favor, selecciona las mesas que deseas unir.");
+    
+    // Paso 1: Muestra mensaje de selección
+    JOptionPane.showMessageDialog(this, "Por favor, selecciona las mesas que deseas unir.");
+    
     }//GEN-LAST:event_jButtonUnirMesasActionPerformed
 
     private void jButtonTransferirMesasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTransferirMesasActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonTransferirMesasActionPerformed
 
-    
+    private void botonConfirmarUnionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonConfirmarUnionActionPerformed
+         
+    }//GEN-LAST:event_botonConfirmarUnionActionPerformed
+
    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Mesa10Boton;
@@ -367,6 +405,7 @@ private void abrirDescripcionDeLaMesa(int numeroMesa) {
     private javax.swing.JButton Mesa7Boton;
     private javax.swing.JButton Mesa8Boton;
     private javax.swing.JButton Mesa9Boton;
+    private javax.swing.JButton botonConfirmarUnion;
     private javax.swing.JButton jButtonFinalizarTurno;
     private javax.swing.JButton jButtonTransferirMesas;
     private javax.swing.JButton jButtonUnirMesas;
