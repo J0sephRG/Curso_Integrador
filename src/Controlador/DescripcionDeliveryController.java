@@ -2,11 +2,14 @@ package Controlador;
 
 import Vista.DescripcionAgregacionDePedidoDelivery;
 import DAO.ClienteDAO;
+import DAO.Pedidos.PedidoDeliveryDAO;
 import DAO.PlatoDAO;
 import DAO.VentaDAO;
 import Modelo.Cliente;
 import Modelo.DetalleVenta;
+import Modelo.PedidosDelivery.PedidoDelivery;
 import Modelo.Plato;
+import Modelo.Usuario;
 import Modelo.Venta;
 
 import javax.swing.table.DefaultTableModel;
@@ -25,16 +28,20 @@ public class DescripcionDeliveryController {
     private final ClienteDAO clienteDAO;
     private final VentaDAO ventaDAO;
     private final List<DetalleVenta> listaPedidos;
+    private final int usuarioActualId;
+    private final PedidoDeliveryDAO pedidoDeliveryDAO;
     
-
     public DescripcionDeliveryController(Connection connection, DescripcionAgregacionDePedidoDelivery vista) {
-        this.connection = connection;
-        this.vista = vista;
-        this.platoDAO = new PlatoDAO(connection);
-        this.clienteDAO = new ClienteDAO(connection);
-        this.ventaDAO = new VentaDAO(connection);
-        this.listaPedidos = new ArrayList<>();
-    }
+    this.connection = connection;
+    this.vista = vista;
+    Usuario usuario = Seguridad.Sesion.getUsuarioActual();
+    this.usuarioActualId = (usuario != null) ? usuario.getId_usuario() : -1; // Manejo por si no hay usuario logueado
+    this.platoDAO = new PlatoDAO(connection);
+    this.clienteDAO = new ClienteDAO(connection);
+    this.ventaDAO = new VentaDAO(connection);
+    this.listaPedidos = new ArrayList<>();
+    this.pedidoDeliveryDAO = new PedidoDeliveryDAO(connection); 
+}
 
     public void inicializar() {
         cargarComboPlatillos();
@@ -180,26 +187,74 @@ public class DescripcionDeliveryController {
         }
     }
 
-    public void registrarVenta() {
-        try {
-            Venta venta = new Venta(
-                    0,
-                    new Timestamp(System.currentTimeMillis()),
-                    1, //TODO: reemplazar por usuario actual
-                    vista.getTipoDePago(),
-                    new BigDecimal(vista.jTextFieldTotalDeVenta.getText())
-            );
-            ventaDAO.agregarVenta(venta);
-            for (DetalleVenta detalle : listaPedidos) {
-                detalle.setId_venta(venta.getId_venta());
-                ventaDAO.agregarDetalleVenta(detalle);
-            }
-            listaPedidos.clear();
-            actualizarTabla();
-            actualizarTotales();
-            vista.mostrarMensaje("Venta registrada exitosamente.");
-        } catch (SQLException e) {
-            vista.mostrarMensaje("Error al registrar la venta: " + e.getMessage());
+public void registrarVenta() {
+    try {
+        BigDecimal totalVenta = new BigDecimal(vista.jTextFieldTotalDeVenta.getText().trim());
+        Venta venta = new Venta(
+            new Timestamp(System.currentTimeMillis()),
+            usuarioActualId,
+            vista.getTipoDePago(),
+            totalVenta
+        );
+
+        int idVentaGenerado = ventaDAO.agregarVenta(venta);
+        if (idVentaGenerado <= 0) {
+            vista.mostrarMensaje("No se pudo registrar la venta.");
+            return;
         }
+
+        venta.setId_venta(idVentaGenerado);
+
+        for (DetalleVenta detalle : listaPedidos) {
+            detalle.setId_venta(idVentaGenerado);
+            ventaDAO.agregarDetalleVenta(detalle);
+        }
+
+        vista.mostrarMensaje("Venta registrada correctamente.");
+        listaPedidos.clear();
+        actualizarTabla();
+        actualizarTotales();
+
+    } catch (SQLException e) {
+        vista.mostrarMensaje("Error de base de datos al registrar la venta: " + e.getMessage());
+    } catch (NumberFormatException e) {
+        vista.mostrarMensaje("Formato numérico inválido: " + e.getMessage());
     }
+}
+
+    public void registrarPedidoDelivery() {
+    try {
+        String dni = vista.getDni();
+        String direccionEntrega = vista.getDireccionEntrega(); // Asume que tienes un método en la vista para esto
+        String estado = "pendiente"; // Puedes ajustar según tu lógica
+        Timestamp fechaPedido = new Timestamp(System.currentTimeMillis());
+
+        List<Cliente> clientes = clienteDAO.listarClientes();
+        Optional<Cliente> clienteOpt = clientes.stream()
+                .filter(c -> c.getDni().equals(dni))
+                .findFirst();
+
+        if (!clienteOpt.isPresent()) {
+            vista.mostrarMensaje("Cliente no encontrado. Verifica el DNI.");
+            return;
+        }
+
+        int idCliente = clienteOpt.get().getId_cliente();
+
+        // Crear objeto PedidoDelivery con ID 0 porque será autogenerado
+        PedidoDelivery pedido = new PedidoDelivery(0, idCliente, direccionEntrega, estado, fechaPedido);
+
+        // Insertar en base de datos
+        pedidoDeliveryDAO.insertar(pedido);
+
+        vista.mostrarMensaje("Pedido Delivery registrado con ID: " + pedido.getId());
+
+    } catch (SQLException e) {
+        vista.mostrarMensaje("Error al registrar el pedido: " + e.getMessage());
+    } catch (Exception e) {
+        vista.mostrarMensaje("Error inesperado: " + e.getMessage());
+    }
+}
+
+
 }

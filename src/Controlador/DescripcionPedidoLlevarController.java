@@ -2,13 +2,14 @@ package Controlador;
 
 import Vista.DescripcionAgregacionDePedioLLevar;
 import DAO.ClienteDAO;
+import DAO.Pedidos.PedidoLlevarDAO;
 import DAO.PlatoDAO;
 import DAO.VentaDAO;
 import Modelo.Cliente;
 import Modelo.DetalleVenta;
+import Modelo.PedidosLlevar.PedidoLlevar;
 import Modelo.Plato;
 import Modelo.Venta;
-
 import javax.swing.table.DefaultTableModel;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -17,6 +18,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import Seguridad.Sesion;
+import Modelo.Usuario;
+
 
 public class DescripcionPedidoLlevarController {
     private final Connection connection;
@@ -25,15 +30,26 @@ public class DescripcionPedidoLlevarController {
     private final ClienteDAO clienteDAO;
     private final VentaDAO ventaDAO;
     private final List<DetalleVenta> listaPedidos;
-
+    private final int usuarioActualId;
+    private final PedidoLlevarDAO pedidoLlevarDAO;
+    
     public DescripcionPedidoLlevarController(Connection connection, DescripcionAgregacionDePedioLLevar vista) {
-        this.connection = connection;
-        this.vista = vista;
-        this.platoDAO = new PlatoDAO(connection);
-        this.clienteDAO = new ClienteDAO(connection);
-        this.ventaDAO = new VentaDAO(connection);
-        this.listaPedidos = new ArrayList<>();
+    this.connection = connection;
+    this.vista = vista;
+
+    Usuario usuario = Sesion.getUsuarioActual();
+    if (usuario == null) {
+        throw new IllegalStateException("No hay un usuario en sesión.");
     }
+
+    this.usuarioActualId = usuario.getId_usuario(); // Asumiendo que `Usuario` tiene `getId()`
+    this.platoDAO = new PlatoDAO(connection);
+    this.clienteDAO = new ClienteDAO(connection);
+    this.ventaDAO = new VentaDAO(connection);
+    this.listaPedidos = new ArrayList<>(); 
+    this.pedidoLlevarDAO = new PedidoLlevarDAO(connection);
+    }
+
 
     public void inicializar() {
         cargarComboPlatillos();
@@ -179,26 +195,89 @@ public class DescripcionPedidoLlevarController {
         }
     }
 
-    public void registrarVenta() {
+   public void registrarVenta() {
+    try {
+        // Validación de ID de usuario
+        if (usuarioActualId <= 0) {
+            vista.mostrarMensaje("ID de usuario inválido. No se puede registrar la venta.");
+            return;
+        }
+
+        // Crear la venta sin ID (el ID será generado por la base de datos)
+        BigDecimal totalVenta = new BigDecimal(vista.jTextFieldTotalDeVenta.getText().trim());
+        if (totalVenta.compareTo(BigDecimal.ZERO) <= 0) {
+            vista.mostrarMensaje("El total de la venta debe ser mayor a cero.");
+            return;
+        }
+
+        Venta venta = new Venta(
+            new Timestamp(System.currentTimeMillis()), // Fecha y hora actual
+            usuarioActualId, // ID del usuario que realiza la venta
+            vista.getTipoDePago(), // Tipo de pago
+            totalVenta // Monto total de la venta
+        );
+
+        // Registrar la venta y obtener el ID generado por la BD
+        int idVentaGenerado = ventaDAO.agregarVenta(venta);
+        if (idVentaGenerado <= 0) {
+            vista.mostrarMensaje("No se pudo registrar la venta.");
+            return;
+        }
+        venta.setId_venta(idVentaGenerado); // Asignar el ID generado
+
+        // Registrar los detalles de la venta
+        for (DetalleVenta detalle : listaPedidos) {
+            // Asegurarse de que cada detalle tenga el ID de venta actualizado
+            detalle.setId_venta(idVentaGenerado);
+            ventaDAO.agregarDetalleVenta(detalle);
+        }
+
+
+        vista.mostrarMensaje("Venta registrada correctamente.");
+
+    } catch (SQLException e) {
+        vista.mostrarMensaje("Error al registrar la venta: " + e.getMessage());
+        e.printStackTrace(); // Puedes removerlo en producción
+    } catch (NumberFormatException e) {
+        vista.mostrarMensaje("El total de la venta no es un valor válido.");
+        e.printStackTrace(); // Puedes removerlo en producción
+    }
+}
+
+    public void registrarPedidollevar() {
         try {
-            Venta venta = new Venta(
-                    0,
-                    new Timestamp(System.currentTimeMillis()),
-                    1, //TODO: reemplazar por usuario actual
-                    vista.getTipoDePago(),
-                    new BigDecimal(vista.jTextFieldTotalDeVenta.getText())
-            );
-            ventaDAO.agregarVenta(venta);
-            for (DetalleVenta detalle : listaPedidos) {
-                detalle.setId_venta(venta.getId_venta());
-                ventaDAO.agregarDetalleVenta(detalle);
+            // Obtener y validar el DNI
+            String dni = vista.getDni().trim();
+            if (dni.isEmpty()) {
+                vista.mostrarMensaje("Debe ingresar un DNI.");
+                return;
             }
-            listaPedidos.clear();
-            actualizarTabla();
-            actualizarTotales();
-            vista.mostrarMensaje("Venta registrada exitosamente.");
+
+            Optional<Cliente> clienteOpt = clienteDAO.listarClientes().stream()
+                    .filter(c -> c.getDni().equals(dni))
+                    .findFirst();
+
+            if (!clienteOpt.isPresent()) {
+                vista.mostrarMensaje("Cliente no encontrado.");
+                return;
+            }
+
+            Cliente cliente = clienteOpt.get();
+
+            // Crear el pedido usando el constructor que ya tienes
+            /*Timestamp fechaActual = new Timestamp(System.currentTimeMillis());*/
+            PedidoLlevar pedido = new PedidoLlevar(0, cliente.getId_cliente(), "pendiente", new Timestamp(System.currentTimeMillis()));
+
+            // Insertar el pedido
+            pedidoLlevarDAO.insertar(pedido);
+
+            vista.mostrarMensaje("Pedido para llevar registrado con ID: " + pedido.getId());
+
         } catch (SQLException e) {
-            vista.mostrarMensaje("Error al registrar la venta: " + e.getMessage());
+            vista.mostrarMensaje("Error al registrar el pedido: " + e.getMessage());
+            e.printStackTrace();
         }
     }
+
+
 }
