@@ -9,7 +9,7 @@ import Modelo.Cliente;
 import Modelo.DetalleVenta;
 import Modelo.Plato;
 import Modelo.Venta;
-import javax.swing.*;
+import Seguridad.Sesion;  // Asegúrate de importar la clase Sesion
 import javax.swing.table.DefaultTableModel;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -27,13 +27,12 @@ public class DescripcionDeLaMesasController {
     private final PlatoDAO platoDAO;
     private final ClienteDAO clienteDAO;
     private final VentaDAO ventaDAO;
-    private final int usuarioActualId;
-    
-    public DescripcionDeLaMesasController(Connection connection, int mesaNumber, DescripcionDeLaMesas vista, int usuarioActualId) {
+
+    // Constructor actualizado sin el parámetro usuarioActualId
+    public DescripcionDeLaMesasController(Connection connection, int mesaNumber, DescripcionDeLaMesas vista) {
         this.connection = connection;
         this.mesaNumber = mesaNumber;
         this.vista = vista;
-        this.usuarioActualId = usuarioActualId;
         this.mesaPlatoDAO = new MesaPlatoDAO(connection);
         this.platoDAO = new PlatoDAO(connection);
         this.clienteDAO = new ClienteDAO(connection);
@@ -192,28 +191,43 @@ public class DescripcionDeLaMesasController {
 
     public void registrarVenta() {
         try {
+            // Obtener el ID del usuario desde la sesión
+            int usuarioActualId = Sesion.getUsuarioActual().getId_usuario();
+
+            // Crear venta sin ID (lo genera la BD)
             Venta venta = new Venta(
-                    0,
                     new Timestamp(System.currentTimeMillis()),
                     usuarioActualId,
                     vista.getTipoDePago(),
                     new BigDecimal(vista.jTextFieldTotalDeVenta.getText())
             );
-            ventaDAO.agregarVenta(venta);
+
+            // Insertar venta y obtener ID generado
+            int idVentaGenerado = ventaDAO.agregarVenta(venta);
+            if (idVentaGenerado <= 0) {
+                vista.mostrarMensaje("No se pudo registrar la venta.");
+                return;
+            }
+            venta.setId_venta(idVentaGenerado);
+
+            // Registrar detalles de la venta
             for (int i = 0; i < vista.jTablelListaDeLosPedidos.getRowCount(); i++) {
                 int idProducto = (int) vista.jTablelListaDeLosPedidos.getValueAt(i, 0);
                 int cantidad = (int) vista.jTablelListaDeLosPedidos.getValueAt(i, 2);
                 BigDecimal precioUnitario = (BigDecimal) vista.jTablelListaDeLosPedidos.getValueAt(i, 3);
+
                 DetalleVenta detalle = new DetalleVenta(
                         0,
-                        venta.getId_venta(),
+                        idVentaGenerado,
                         idProducto,
                         cantidad,
                         precioUnitario,
                         precioUnitario.multiply(BigDecimal.valueOf(cantidad))
                 );
+
                 ventaDAO.agregarDetalleVenta(detalle);
             }
+
             mesaPlatoDAO.limpiarMesa(mesaNumber);
             recargarPedidos();
             vista.mostrarMensaje("Venta registrada correctamente.");
