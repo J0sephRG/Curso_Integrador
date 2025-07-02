@@ -19,16 +19,30 @@ public class VentaDAO {
         this.conn = conn;
     }
 
-    public void agregarVenta(Venta venta) throws SQLException {
-        String query = "INSERT INTO Venta(fecha_venta, id_usuario, metodo_pago, monto_total) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement statement = conn.prepareStatement(query)) { // Cambiado 'connection' a 'conn'
-            statement.setTimestamp(1, venta.getFecha_venta());
-            statement.setObject(2, venta.getId_usuario());
-            statement.setString(3, venta.getMetodo_pago());
-            statement.setBigDecimal(4, venta.getMonto_total());
-            statement.executeUpdate();
+    public int agregarVenta(Venta venta) throws SQLException {
+    String query = "INSERT INTO Venta(fecha_venta, id_usuario, metodo_pago, monto_total) VALUES (?, ?, ?, ?)";
+    int idGenerado = -1;
+
+    try (PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        statement.setTimestamp(1, venta.getFecha_venta());
+        statement.setObject(2, venta.getId_usuario());
+        statement.setString(3, venta.getMetodo_pago());
+        statement.setBigDecimal(4, venta.getMonto_total());
+
+        int filasAfectadas = statement.executeUpdate();
+
+        if (filasAfectadas > 0) {
+            try (ResultSet rs = statement.getGeneratedKeys()) {
+                if (rs.next()) {
+                    idGenerado = rs.getInt(1);
+                }
+            }
         }
     }
+
+    return idGenerado;
+}
+
 
     public void agregarDetalleVenta(DetalleVenta detalle) throws SQLException {
         String query = "INSERT INTO Detalle_Venta(id_venta, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)";
@@ -50,7 +64,7 @@ public class VentaDAO {
             statement.setInt(1, id_venta);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
-                venta = new Venta(rs.getInt("id_venta"), 
+                venta = new Venta(
                                   rs.getTimestamp("fecha_venta"),
                                   rs.getObject("id_usuario", Integer.class), 
                                   rs.getString("metodo_pago"),
@@ -66,7 +80,7 @@ public class VentaDAO {
         try (PreparedStatement statement = conn.prepareStatement(query); // Cambiado 'connection' a 'conn'
              ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
-                ventas.add(new Venta(rs.getInt("id_venta"), 
+                ventas.add(new Venta( 
                                      rs.getTimestamp("fecha_venta"),
                                      rs.getObject("id_usuario", Integer.class), 
                                      rs.getString("metodo_pago"),
@@ -105,7 +119,7 @@ public class VentaDAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     ventas.add(new Venta(
-                        rs.getInt("id_venta"),
+                        
                         rs.getTimestamp("fecha_venta"),
                         rs.getObject("id_usuario", Integer.class),
                         rs.getString("metodo_pago"),
