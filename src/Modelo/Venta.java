@@ -13,14 +13,13 @@ public class Venta {
     // Constructor, Getters y Setters
 
 
-    public Venta(int id_venta, Timestamp fecha_venta, Integer id_usuario, String metodo_pago, BigDecimal monto_total) {
-        this.id_venta = id_venta;
-        this.fecha_venta = fecha_venta;
-        this.id_usuario = id_usuario;
-        this.metodo_pago = metodo_pago;
-        this.monto_total = monto_total;
-    }
-
+  // Constructor sin ID (para inserciones)
+public Venta(Timestamp fecha_venta, Integer id_usuario, String metodo_pago, BigDecimal monto_total) {
+    this.fecha_venta = fecha_venta;
+    this.id_usuario = id_usuario;
+    this.metodo_pago = metodo_pago;
+    this.monto_total = monto_total;
+}
 
     public int getId_venta() {
         return id_venta;
