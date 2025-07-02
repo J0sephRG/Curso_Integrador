@@ -5,6 +5,8 @@ import DAO.Pedidos.PedidoDAO;
 import DAO.Pedidos.PedidoDeliveryDAO;
 import DAO.Pedidos.PedidoLlevarDAO;
 import Modelo.Interface.Pedido;
+import Modelo.Usuario;
+import Seguridad.Sesion;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -22,6 +24,20 @@ public class ControladorPedidosTablas {
     }
 
     public void agregarPedido(Pedido pedido) throws SQLException {
+        // Obtener el usuario actual desde la sesión
+        Usuario usuarioActual = Sesion.getUsuarioActual();
+        
+        // Verificar si el usuario está autenticado
+        if (usuarioActual == null) {
+            throw new IllegalStateException("No hay un usuario autenticado.");
+        }
+
+        // Aquí podrías agregar más validaciones basadas en el usuario (por ejemplo, permisos)
+        if (!usuarioActual.getRol().equals("admin")) {
+            throw new IllegalArgumentException("El usuario no tiene permisos para agregar un pedido.");
+        }
+
+        // Proceder con el agregar pedido si el usuario tiene permisos
         if (pedido instanceof Modelo.PedidosDelivery.PedidoDelivery) {
             deliveryDAO.insertar(pedido);
         } else if (pedido instanceof Modelo.PedidosLlevar.PedidoLlevar) {
@@ -32,6 +48,20 @@ public class ControladorPedidosTablas {
     }
 
     public void actualizarPedido(Pedido pedido) throws SQLException {
+        // Obtener el usuario actual desde la sesión
+        Usuario usuarioActual = Sesion.getUsuarioActual();
+        
+        // Verificar si el usuario está autenticado
+        if (usuarioActual == null) {
+            throw new IllegalStateException("No hay un usuario autenticado.");
+        }
+
+        // Validación de permisos para actualizar el pedido
+        if (!usuarioActual.getRol().equals("admin")) {
+            throw new IllegalArgumentException("El usuario no tiene permisos para actualizar un pedido.");
+        }
+
+        // Actualizar el pedido si el usuario tiene permisos
         if (pedido instanceof Modelo.PedidosDelivery.PedidoDelivery) {
             deliveryDAO.actualizar(pedido);
         } else if (pedido instanceof Modelo.PedidosLlevar.PedidoLlevar) {
@@ -42,6 +72,20 @@ public class ControladorPedidosTablas {
     }
 
     public void eliminarPedido(int id, String tipoPedido) throws SQLException {
+        // Obtener el usuario actual desde la sesión
+        Usuario usuarioActual = Sesion.getUsuarioActual();
+        
+        // Verificar si el usuario está autenticado
+        if (usuarioActual == null) {
+            throw new IllegalStateException("No hay un usuario autenticado.");
+        }
+
+        // Validación de permisos para eliminar el pedido
+        if (!usuarioActual.getRol().equals("admin")) {
+            throw new IllegalArgumentException("El usuario no tiene permisos para eliminar un pedido.");
+        }
+
+        // Eliminar el pedido si el usuario tiene permisos
         if (tipoPedido.equalsIgnoreCase("DELIVERY")) {
             deliveryDAO.eliminar(id);
         } else if (tipoPedido.equalsIgnoreCase("llevar")) {

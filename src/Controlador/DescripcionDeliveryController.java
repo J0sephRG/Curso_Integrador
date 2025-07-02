@@ -1,5 +1,4 @@
 package Controlador;
-
 import Vista.DescripcionAgregacionDePedidoDelivery;
 import DAO.ClienteDAO;
 import DAO.Pedidos.PedidoDeliveryDAO;
@@ -47,7 +46,6 @@ public class DescripcionDeliveryController {
         cargarComboPlatillos();
         cargarTipoPagoYComprobante();
     }
-
     private void cargarComboPlatillos() {
         try {
             List<Plato> platos = platoDAO.listarPlatos();
