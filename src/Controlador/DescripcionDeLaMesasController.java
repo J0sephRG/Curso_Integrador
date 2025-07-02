@@ -9,7 +9,7 @@ import Modelo.Cliente;
 import Modelo.DetalleVenta;
 import Modelo.Plato;
 import Modelo.Venta;
-import Seguridad.Sesion;  // Asegúrate de importar la clase Sesion
+import Seguridad.Sesion;  
 import javax.swing.table.DefaultTableModel;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import apiclientes.ApiClienteService;
+import apiclientes.ApiClienteServiceImpl;
+
 public class DescripcionDeLaMesasController {
     private final Connection connection;
     private final int mesaNumber;
@@ -27,7 +30,8 @@ public class DescripcionDeLaMesasController {
     private final PlatoDAO platoDAO;
     private final ClienteDAO clienteDAO;
     private final VentaDAO ventaDAO;
-
+    private ApiClienteService apiService;
+    
     // Constructor actualizado sin el parámetro usuarioActualId
     public DescripcionDeLaMesasController(Connection connection, int mesaNumber, DescripcionDeLaMesas vista) {
         this.connection = connection;
@@ -37,6 +41,7 @@ public class DescripcionDeLaMesasController {
         this.platoDAO = new PlatoDAO(connection);
         this.clienteDAO = new ClienteDAO(connection);
         this.ventaDAO = new VentaDAO(connection);
+        apiService = new ApiClienteServiceImpl();
     }
 
     public void inicializar() {
@@ -85,7 +90,31 @@ public class DescripcionDeLaMesasController {
         vista.jComboBoxTipoDeComprobante.addItem("Boleta Simple");
     }
 
+    
     public void buscarClientePorDNI() {
+    String dni = vista.getDni();
+
+    if (dni == null || dni.trim().length() != 8) {
+        vista.mostrarMensaje("El DNI debe tener 8 dígitos.");
+        return;
+    }
+
+    try {
+        ApiClienteService api = new ApiClienteServiceImpl();
+        String nombre = api.obtenerNombrePorDni(dni);
+
+        if (nombre != null && !nombre.isEmpty()) {
+            vista.setTextNombre(nombre);
+        } else {
+            vista.mostrarMensaje("No se encontró el cliente con DNI: " + dni);
+        }
+    } catch (Exception e) {
+        vista.mostrarMensaje("Error al consultar el DNI: " + e.getMessage());
+        e.printStackTrace();
+    }
+}
+    
+   /*public void buscarClientePorDNI() {
         String dni = vista.getDni();
         try {
             List<Cliente> clientes = clienteDAO.listarClientes();
@@ -101,7 +130,7 @@ public class DescripcionDeLaMesasController {
         } catch (SQLException e) {
             vista.mostrarMensaje("Error al buscar cliente: " + e.getMessage());
         }
-    }
+    }*/
 
     public void agregarPedido() {
         try {
