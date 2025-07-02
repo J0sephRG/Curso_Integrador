@@ -18,6 +18,30 @@ public class MesaUnidaDAO {
     }
 
     public void agregarMesaUnida(MesaUnida mesaUnida) throws SQLException {
+    String query = "INSERT INTO Mesa_Unida(id_mesa_principal, id_mesa_secundaria) VALUES (?, ?)";
+    try (PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        if (mesaUnida.getId_mesa_principal() != null) {
+            statement.setInt(1, mesaUnida.getId_mesa_principal());
+        } else {
+            statement.setNull(1, Types.INTEGER);
+        }
+        if (mesaUnida.getId_mesa_secundaria() != null) {
+            statement.setInt(2, mesaUnida.getId_mesa_secundaria());
+        } else {
+            statement.setNull(2, Types.INTEGER);
+        }
+        statement.executeUpdate();
+
+        // Obtener el id_unida generado
+        try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+                mesaUnida.setId_unida(generatedKeys.getInt(1)); // Establecer el id_unida generado
+            }
+        }
+    }
+}
+    
+   /* public void agregarMesaUnida(MesaUnida mesaUnida) throws SQLException {
         String query = "INSERT INTO Mesa_Unida(id_mesa_principal, id_mesa_secundaria) VALUES (?, ?)";
         try (PreparedStatement statement = conn.prepareStatement(query)) { // Cambiado 'connection' a 'conn'
             if (mesaUnida.getId_mesa_principal() != null) {
@@ -32,7 +56,7 @@ public class MesaUnidaDAO {
             }
             statement.executeUpdate();
         }
-    }
+    }*/
 
     public MesaUnida obtenerMesaUnida(int id_unida) throws SQLException {
         String query = "SELECT * FROM Mesa_Unida WHERE id_unida = ?";
@@ -41,7 +65,7 @@ public class MesaUnidaDAO {
             statement.setInt(1, id_unida);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
-                mesaUnida = new MesaUnida(rs.getInt("id_unida"),
+                mesaUnida = new MesaUnida(/*rs.getInt("id_unida"),*/
                                           (Integer) rs.getObject("id_mesa_principal"),
                                           (Integer) rs.getObject("id_mesa_secundaria"));
             }
@@ -55,7 +79,7 @@ public class MesaUnidaDAO {
         try (PreparedStatement statement = conn.prepareStatement(query); // Cambiado 'connection' a 'conn'
              ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
-                lista.add(new MesaUnida(rs.getInt("id_unida"),
+                lista.add(new MesaUnida(/*rs.getInt("id_unida"),*/
                                         (Integer) rs.getObject("id_mesa_principal"),
                                         (Integer) rs.getObject("id_mesa_secundaria")));
             }
