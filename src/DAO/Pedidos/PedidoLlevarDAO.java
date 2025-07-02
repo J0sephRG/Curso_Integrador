@@ -2,7 +2,6 @@
 miguel
  */
 package DAO.Pedidos;
-
 import java.sql.*;
 import Modelo.PedidosLlevar.PedidoLlevar;
 import Modelo.Interface.Pedido;
@@ -17,45 +16,35 @@ public class PedidoLlevarDAO implements PedidoDAO {
     }
 
     @Override
-    public void insertar(Pedido pedido) throws SQLException {
-        if (!(pedido instanceof PedidoLlevar pl)) {
-            throw new IllegalArgumentException("El pedido no es un PedidoLlevar");
-        }
-
-        // Insertar en la tabla Pedido
-        String sqlPedido = "INSERT INTO Pedido (id_cliente, tipo, estado, fecha_pedido) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement stmtPedido = connection.prepareStatement(sqlPedido, Statement.RETURN_GENERATED_KEYS)) {
-            stmtPedido.setInt(1, pl.getIdCliente());
-            stmtPedido.setString(2, "llevar");
-            stmtPedido.setString(3, pl.getEstado());
-            stmtPedido.setTimestamp(4, pl.getFechaPedido());
-
-            int affectedRows = stmtPedido.executeUpdate();
-
-            if (affectedRows == 0) {
-                throw new SQLException("Error al insertar pedido en la tabla Pedido");
+        public void insertar(Pedido pedido) throws SQLException {
+            if (!(pedido instanceof PedidoLlevar pl)) {
+                throw new IllegalArgumentException("El pedido no es un PedidoLlevar");
             }
 
-            // Obtener el ID generado del pedido
-            try (ResultSet generatedKeys = stmtPedido.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    pl.setId(generatedKeys.getInt(1)); // Asignar el ID del pedido
-                } else {
-                    throw new SQLException("Error al obtener ID generado");
+            String sqlPedido = "INSERT INTO Pedido (id_cliente, tipo, estado, fecha_pedido) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement stmtPedido = connection.prepareStatement(sqlPedido, Statement.RETURN_GENERATED_KEYS)) {
+                stmtPedido.setInt(1, pl.getIdCliente());
+                stmtPedido.setString(2, "llevar");
+                stmtPedido.setString(3, pl.getEstado());
+                stmtPedido.setTimestamp(4, pl.getFechaPedido());
+
+                int affectedRows = stmtPedido.executeUpdate();
+                if (affectedRows == 0) {
+                    throw new SQLException("Error al insertar pedido en la tabla Pedido");
                 }
-            }
 
-            // Insertar los detalles en la tabla Pedido_Llevar
-            String sqlDetalle = "INSERT INTO Pedido (id_pedido) VALUES (?)";
-            try (PreparedStatement stmtDetalle = connection.prepareStatement(sqlDetalle)) {
-                stmtDetalle.setInt(1, pl.getId());
-                stmtDetalle.executeUpdate();
-            }
+                try (ResultSet generatedKeys = stmtPedido.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        pl.setId(generatedKeys.getInt(1));
+                    } else {
+                        throw new SQLException("Error al obtener ID generado");
+                    }
+                }
 
-        } catch (SQLException e) {
-            throw new SQLException("Error al insertar el pedido: " + e.getMessage());
+            } catch (SQLException e) {
+                throw new SQLException("Error al insertar el pedido: " + e.getMessage());
+            }
         }
-    }
 
     @Override
     public List<Pedido> listarTodos() throws SQLException {
