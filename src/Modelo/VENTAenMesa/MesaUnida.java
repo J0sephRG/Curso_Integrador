@@ -6,8 +6,8 @@ public class MesaUnida {
     private Integer id_mesa_secundaria; // Puede ser null
     // Constructor, Getters y Setters
 
-    public MesaUnida(int id_unida, Integer id_mesa_principal, Integer id_mesa_secundaria) {
-        this.id_unida = id_unida;
+    public MesaUnida( Integer id_mesa_principal, Integer id_mesa_secundaria) {
+        
         this.id_mesa_principal = id_mesa_principal;
         this.id_mesa_secundaria = id_mesa_secundaria;
     }
