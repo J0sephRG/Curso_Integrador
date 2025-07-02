@@ -21,7 +21,10 @@ import Modelo.Usuario;
  */
 public class Login extends javax.swing.JFrame {
 int intentos;
+
+
     public Login() {
+        
         initComponents();
         this.setLocationRelativeTo(null);
     }
@@ -215,11 +218,11 @@ int intentos;
             Usuario usuario = usuarioDAO.obtenerPorNombreYClave(nombre, clave);
 
             if (usuario != null) {
-                Seguridad.Sesion.setUsuarioActual(usuario);
-
+                Seguridad.Sesion.setUsuarioActual(usuario); // ✅ Guarda el usuario
                 dispose(); // Cierra el login
                 JOptionPane.showMessageDialog(null, "Bienvenido " + usuario.getNombre(), "Acceso", JOptionPane.INFORMATION_MESSAGE);
-                Menu dash = new Menu();  // Ventana principal
+
+                Menu dash = new Menu(); // ✅ Ya no necesitas pasar el ID
                 dash.setVisible(true);
             } else {
                 intentos++;
@@ -242,4 +245,5 @@ int intentos;
         JOptionPane.showMessageDialog(null, "No se pudo conectar a la base de datos.");
     }
 }
+
 }

@@ -7,14 +7,25 @@ import java.sql.Connection;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-
+import Seguridad.Sesion;  // Importar la clase Sesion
 
 public class DescripcionDeLaMesas extends JPanel {
     private DescripcionDeLaMesasController controller;
     private Connection connection;
     
-    public DescripcionDeLaMesas(Connection connection, int numeroMesa, int usuarioActualId) {
-         this.controller = new DescripcionDeLaMesasController(connection, numeroMesa, this, usuarioActualId);
+     // Modificamos el constructor para que utilice la clase Sesion
+    public DescripcionDeLaMesas(Connection connection, int numeroMesa) {
+        // Aquí obtenemos el usuario actual desde la clase Sesion
+        int usuarioActualId = Sesion.getUsuarioActual() != null ? Sesion.getUsuarioActual().getId_usuario() : -1;
+        
+        // Si no hay un usuario activo, mostrar un mensaje de error
+        if (usuarioActualId == -1) {
+            JOptionPane.showMessageDialog(this, "No hay un usuario activo. Por favor, inicie sesión.");
+            SwingUtilities.getWindowAncestor(this).dispose(); // Cerrar la ventana si no hay sesión
+            return;
+        }
+
+        this.controller = new DescripcionDeLaMesasController(connection, numeroMesa, this);
         initComponents();
         controller.inicializar();
     }

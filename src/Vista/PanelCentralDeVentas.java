@@ -14,6 +14,8 @@ public class PanelCentralDeVentas extends javax.swing.JPanel {
  
     private MesaDAO mesadao;
     private Conexion conexion;
+
+    
     public PanelCentralDeVentas() {
         initComponents();
         conexion = new Conexion();  
@@ -117,12 +119,14 @@ public class PanelCentralDeVentas extends javax.swing.JPanel {
     }//GEN-LAST:event_btnMesasActionPerformed
 
     private void jButtonParaLlevarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonParaLlevarActionPerformed
-     ConexionSQL.Conexion conexionBD = new ConexionSQL.Conexion();
+    ConexionSQL.Conexion conexionBD = new ConexionSQL.Conexion();
     Connection connection = conexionBD.Conectar();
 
     if (connection != null) {
-        TablaDePEDIDOS panelPedidosLlevar = new TablaDePEDIDOS(connection);
-        ShowJpanel(panelPedidosLlevar); // ← Aquí lo muestras dentro de jpMes
+        int usuarioActualId = Seguridad.Sesion.getUsuarioActual().getId_usuario();
+            TablaDePEDIDOS panelParaLlevar = new TablaDePEDIDOS(connection);
+
+        ShowJpanel(panelParaLlevar);
     } else {
         JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
     }
@@ -136,8 +140,11 @@ public class PanelCentralDeVentas extends javax.swing.JPanel {
     Connection connection = conexionBD.Conectar();
     
     if (connection != null) {
+     
         // Crear e instanciar la ventana TablaDePEDIDOSDElivery
-        TablaDePEDIDOSDElivery ventanaDelivery = new TablaDePEDIDOSDElivery(connection);
+        int usuarioActualId = Seguridad.Sesion.getUsuarioActual().getId_usuario();
+            TablaDePEDIDOSDElivery ventanaDelivery = new TablaDePEDIDOSDElivery(connection);
+
         ShowJpanel(ventanaDelivery); // ← Aquí lo muestras dentro de jpMes
     } else {
         JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);

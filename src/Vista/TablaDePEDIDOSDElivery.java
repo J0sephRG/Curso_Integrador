@@ -12,16 +12,19 @@ import java.sql.Timestamp;
 import java.util.List;
 import Vista.DescripcionAgregacionDePedidoDelivery;
 import java.awt.BorderLayout;
+import Seguridad.Sesion;
 /**
  *
  * @author Miguel
  */
 public class TablaDePEDIDOSDElivery extends javax.swing.JPanel {
-private final ControladorPedidosTablas controlador;
+    private final ControladorPedidosTablas controlador;
     private final DefaultTableModel modeloTabla;
 
+    
     public TablaDePEDIDOSDElivery(Connection connection) {
         initComponents();
+
         controlador = new ControladorPedidosTablas(connection);
         modeloTabla = (DefaultTableModel) jTablePedidosDelivery.getModel();
         cargarPedidos();
@@ -45,6 +48,11 @@ private final ControladorPedidosTablas controlador;
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    public void actualizarTablaPedidos() {
+    cargarPedidos();
+}
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -149,14 +157,21 @@ private final ControladorPedidosTablas controlador;
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonAgregarPedidoDeliveryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgregarPedidoDeliveryActionPerformed
-        // Crear una nueva instancia de DescripcionAgregacionDePedidoDelivery
-        DescripcionAgregacionDePedidoDelivery descripcionAgregacionDePedidoDelivery = new DescripcionAgregacionDePedidoDelivery(controlador.getConnection());
-        // Mostrar la nueva ventana
-        JFrame frame = new JFrame();
-        frame.setContentPane(descripcionAgregacionDePedidoDelivery);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
+            // Obtener la conexión (ya tienes esto)
+            Connection connection = controlador.getConnection();
+
+            // Crear la instancia de DescripcionAgregacionDePedidoDelivery pasando ambos parámetros
+            DescripcionAgregacionDePedidoDelivery descripcionPanel = 
+                new DescripcionAgregacionDePedidoDelivery(connection, this);
+
+            // Crear el JFrame para mostrar el panel
+            JFrame frame = new JFrame("Agregar Pedido Delivery");
+            frame.setContentPane(descripcionPanel);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+
     }//GEN-LAST:event_jButtonAgregarPedidoDeliveryActionPerformed
 
     private void jButtonEliminarPedidoDeliveryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarPedidoDeliveryActionPerformed
@@ -283,4 +298,6 @@ private final ControladorPedidosTablas controlador;
     private javax.swing.JScrollPane jScrollPanePedidosDelivery;
     private javax.swing.JTable jTablePedidosDelivery;
     // End of variables declaration//GEN-END:variables
+
+    
 }

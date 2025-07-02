@@ -16,13 +16,13 @@ import javax.swing.JPanel;
  */
 public class Menu extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Menu
-     */
+
     public Menu() {
-        initComponents();
-        this.setLocationRelativeTo(null);
-    }
+    initComponents();
+    this.setLocationRelativeTo(null);
+        }
+
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -158,7 +158,8 @@ public class Menu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVentasActionPerformed
-        ShowJpanel(new PanelCentralDeVentas());
+        int usuarioActualId = Seguridad.Sesion.getUsuarioActual().getId_usuario();
+    ShowJpanel(new PanelCentralDeVentas());
     }//GEN-LAST:event_btnVentasActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -209,11 +210,9 @@ public class Menu extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Menu().setVisible(true);
-            }
-        });
+        java.awt.EventQueue.invokeLater(() -> {
+        new Menu().setVisible(true); // Cambia el 1 por el ID real del usuario
+    });
     }
 
     

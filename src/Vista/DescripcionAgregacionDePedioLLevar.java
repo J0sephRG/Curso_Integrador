@@ -1,24 +1,34 @@
 package Vista;
 
-import ConexionSQL.Conexion; // Asegúrate de que esta clase maneje la conexión a SQL Server
+import ConexionSQL.Conexion; 
 import Controlador.DescripcionPedidoLlevarController;
 import javax.swing.table.DefaultTableModel;
 import java.sql.Connection;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-
+import Seguridad.Sesion;
+import Modelo.Usuario;
 
 public class DescripcionAgregacionDePedioLLevar extends JPanel {
     private Connection connection;
     private DescripcionPedidoLlevarController controller;
+    private final int usuarioActualId;
     
-    public DescripcionAgregacionDePedioLLevar(Connection connection,int numeroMesa) {
-         this.connection = connection;
-        this.controller = new DescripcionPedidoLlevarController(connection, this);
-        initComponents(); // Inicializa los componentes visuales
-        controller.inicializar(); // Cargar datos iniciales
+    public DescripcionAgregacionDePedioLLevar(Connection connection) {
+    this.connection = connection;
+
+    Usuario usuario = Sesion.getUsuarioActual();
+    if (usuario == null) {
+        throw new IllegalStateException("No hay un usuario en sesión.");
     }
+
+    this.usuarioActualId = usuario.getId_usuario(); // Asegúrate de que `getId()` exista
+    this.controller = new DescripcionPedidoLlevarController(connection, this);
+    initComponents();
+    controller.inicializar();
+}
+
 
 public void actualizarTabla(DefaultTableModel modelo) {
         jTablelListaDeLosPedidoLLevar.setModel(modelo);
@@ -122,6 +132,7 @@ public void actualizarTabla(DefaultTableModel modelo) {
         jButtoRegistrarVenta = new javax.swing.JButton();
         jLabel20 = new javax.swing.JLabel();
         jTextFieldResultadoDescuento = new javax.swing.JTextField();
+        jButtoRegistrarPedido = new javax.swing.JButton();
 
         jButton4.setText("jButton4");
 
@@ -296,20 +307,29 @@ public void actualizarTabla(DefaultTableModel modelo) {
                 jButtonAtrasActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonAtras, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 490, 70, -1));
+        jPanel1.add(jButtonAtras, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 470, 70, -1));
 
         jButtoRegistrarVenta.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtoRegistrarVenta.setText("Registrar");
+        jButtoRegistrarVenta.setText("Registrar Venta");
         jButtoRegistrarVenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtoRegistrarVentaActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtoRegistrarVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 490, -1, -1));
+        jPanel1.add(jButtoRegistrarVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 410, -1, -1));
 
         jLabel20.setText("Descuento Aplicado");
         jPanel1.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 330, -1, -1));
         jPanel1.add(jTextFieldResultadoDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 350, 120, -1));
+
+        jButtoRegistrarPedido.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButtoRegistrarPedido.setText("Registrar Pedido");
+        jButtoRegistrarPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtoRegistrarPedidoActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButtoRegistrarPedido, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 470, -1, -1));
 
         add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 90, 230, 540));
     }// </editor-fold>//GEN-END:initComponents
@@ -344,7 +364,12 @@ public void actualizarTabla(DefaultTableModel modelo) {
       controller.actualizarTotales();
     }//GEN-LAST:event_jTextFieldDescuentoKeyReleased
 
+    private void jButtoRegistrarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtoRegistrarPedidoActionPerformed
+        controller.registrarPedidollevar();
+    }//GEN-LAST:event_jButtoRegistrarPedidoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JButton jButtoRegistrarPedido;
     public javax.swing.JButton jButtoRegistrarVenta;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButtonAgregarAListaDeLosPedidoLLevar;

@@ -6,18 +6,38 @@ import javax.swing.table.DefaultTableModel;
 import java.sql.Connection;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import Modelo.Usuario;
+import Seguridad.Sesion;
 
 
 public class DescripcionAgregacionDePedidoDelivery extends JPanel {
     private Connection connection;
     private DescripcionDeliveryController controller;
+    private TablaDePEDIDOSDElivery vistaPrincipal;
+    private int usuarioActualId;
     
-    public DescripcionAgregacionDePedidoDelivery(Connection connection) {
+    public DescripcionAgregacionDePedidoDelivery(Connection connection, TablaDePEDIDOSDElivery vistaPrincipal) {
         this.connection = connection;
+        this.vistaPrincipal = vistaPrincipal; // ✅ Mover aquí primero
+
+        // Obtener el usuario actual desde la sesión
+        Usuario usuario = Seguridad.Sesion.getUsuarioActual();
+        if (usuario != null) {
+            this.usuarioActualId = usuario.getId_usuario();
+        } else {
+            this.usuarioActualId = -1;
+            JOptionPane.showMessageDialog(this, "No hay un usuario autenticado en sesión.");
+        }
+
         this.controller = new DescripcionDeliveryController(connection, this);
-        initComponents(); // Inicializa los componentes visuales
-        controller.inicializar(); // Cargar datos iniciales
+        initComponents();
+        controller.inicializar();
+
+        if (this.vistaPrincipal != null) {
+            this.vistaPrincipal.actualizarTablaPedidos(); // ✅ Ya no lanza NullPointerException
+        }
     }
        
     public void actualizarTabla(DefaultTableModel modelo) {
@@ -85,6 +105,22 @@ public class DescripcionAgregacionDePedidoDelivery extends JPanel {
         jTextFieldTotalDeVenta.setText(total);
     }
     
+    public JTable getTablaPedidos() {
+    return jTablelListaDeLosPedidosDeliveryCLiente;
+    }
+
+    public String getTotalVenta() {
+        return jTextFieldTotalDeVenta.getText();
+    }
+
+    public String getMetodoPago() {
+        return (String) jComboBoxTipoDePago.getSelectedItem();
+    }
+
+    public String getDireccionEntrega() {
+    return jTextFieldDireccionEntrega.getText().trim();
+}
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -110,11 +146,11 @@ public class DescripcionAgregacionDePedidoDelivery extends JPanel {
         jComboBoxDeBusquedaDePlatillos = new javax.swing.JComboBox<>();
         jLabel18 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
-        jComboBox4 = new javax.swing.JComboBox<>();
         jButtonAgregarAListaDeLosPedido_Plato = new javax.swing.JButton();
         jButtonEliminarDeListaDePedido_Plato = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTablelListaDeLosPedidosDeliveryCLiente = new javax.swing.JTable();
+        jTextFieldDireccionEntrega = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -133,6 +169,7 @@ public class DescripcionAgregacionDePedidoDelivery extends JPanel {
         jButtoRegistrarVenta = new javax.swing.JButton();
         jLabel20 = new javax.swing.JLabel();
         jTextFieldResultadoDescuento = new javax.swing.JTextField();
+        jButtoRegistrarPedido = new javax.swing.JButton();
         jLabelDELIVERY = new javax.swing.JLabel();
         jButtonDELIVERY = new javax.swing.JButton();
 
@@ -197,11 +234,8 @@ public class DescripcionAgregacionDePedidoDelivery extends JPanel {
         jPanel3.add(jComboBoxDeBusquedaDePlatillos, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 50, 140, -1));
         jPanel3.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 50, -1, -1));
 
-        jLabel19.setText("Tipo de venta:");
-        jPanel3.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 50, -1, -1));
-
-        jComboBox4.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel3.add(jComboBox4, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 80, -1, -1));
+        jLabel19.setText("DIRECCION:");
+        jPanel3.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 70, 70, -1));
 
         jButtonAgregarAListaDeLosPedido_Plato.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButtonAgregarAListaDeLosPedido_Plato.setText("Agregar");
@@ -246,6 +280,7 @@ public class DescripcionAgregacionDePedidoDelivery extends JPanel {
         jScrollPane1.setViewportView(jTablelListaDeLosPedidosDeliveryCLiente);
 
         jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 580, 190));
+        jPanel3.add(jTextFieldDireccionEntrega, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 70, 140, -1));
 
         add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 260, 600, 370));
 
@@ -299,20 +334,29 @@ public class DescripcionAgregacionDePedidoDelivery extends JPanel {
                 jButtonAtrasActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtonAtras, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 490, 70, -1));
+        jPanel1.add(jButtonAtras, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 480, 70, -1));
 
         jButtoRegistrarVenta.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtoRegistrarVenta.setText("Registrar");
+        jButtoRegistrarVenta.setText("Registrar Venta");
         jButtoRegistrarVenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtoRegistrarVentaActionPerformed(evt);
             }
         });
-        jPanel1.add(jButtoRegistrarVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 490, -1, -1));
+        jPanel1.add(jButtoRegistrarVenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 430, -1, -1));
 
         jLabel20.setText("Descuento Aplicado");
         jPanel1.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 330, -1, -1));
         jPanel1.add(jTextFieldResultadoDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 350, 120, -1));
+
+        jButtoRegistrarPedido.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButtoRegistrarPedido.setText("Registrar Pedido");
+        jButtoRegistrarPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtoRegistrarPedidoActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButtoRegistrarPedido, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 480, -1, -1));
 
         add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 90, 230, 540));
 
@@ -357,7 +401,12 @@ public class DescripcionAgregacionDePedidoDelivery extends JPanel {
         controller.eliminarPedido(filaSeleccionada);
     }//GEN-LAST:event_jButtonEliminarDeListaDePedido_PlatoActionPerformed
 
+    private void jButtoRegistrarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtoRegistrarPedidoActionPerformed
+        controller.registrarPedidoDelivery();
+    }//GEN-LAST:event_jButtoRegistrarPedidoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JButton jButtoRegistrarPedido;
     public javax.swing.JButton jButtoRegistrarVenta;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButtonAgregarAListaDeLosPedido_Plato;
@@ -365,7 +414,6 @@ public class DescripcionAgregacionDePedidoDelivery extends JPanel {
     public javax.swing.JButton jButtonBuscarCLIENTE;
     private javax.swing.JButton jButtonDELIVERY;
     private javax.swing.JButton jButtonEliminarDeListaDePedido_Plato;
-    private javax.swing.JComboBox<String> jComboBox4;
     public javax.swing.JComboBox<String> jComboBoxDeBusquedaDePlatillos;
     public javax.swing.JComboBox<String> jComboBoxTipoDeComprobante;
     public javax.swing.JComboBox<String> jComboBoxTipoDePago;
@@ -393,8 +441,9 @@ public class DescripcionAgregacionDePedidoDelivery extends JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTablelListaDeLosPedidosDeliveryCLiente;
+    public javax.swing.JTable jTablelListaDeLosPedidosDeliveryCLiente;
     public javax.swing.JTextField jTextFieldDescuento;
+    private javax.swing.JTextField jTextFieldDireccionEntrega;
     public javax.swing.JTextField jTextFieldIGV;
     public javax.swing.JTextField jTextFieldMontoACobrar;
     public javax.swing.JTextField jTextFieldMontoDePago;
