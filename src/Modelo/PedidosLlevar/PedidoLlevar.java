@@ -9,6 +9,38 @@ public class PedidoLlevar extends PedidoBase {
         super(id, idCliente, estado, fechaPedido);
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Timestamp getFechaPedido() {
+        return fechaPedido;
+    }
+
+    public void setFechaPedido(Timestamp fechaPedido) {
+        this.fechaPedido = fechaPedido;
+    }
+
     @Override
     public String getDireccionEntrega() {
         return "RECOGER EN TIENDA";
