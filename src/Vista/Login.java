@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import Utils.AESUtil;
+import Vista.RegUsuaurio;
 import Modelo.Usuario;
 /**
  *
@@ -131,6 +132,11 @@ int intentos;
         btnCuenta.setForeground(new java.awt.Color(255, 255, 255));
         btnCuenta.setText("Crear Usuario");
         btnCuenta.setBorder(null);
+        btnCuenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCuentaActionPerformed(evt);
+            }
+        });
         jPanel1.add(btnCuenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(121, 450, 80, 30));
 
         jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagen/Fondo_Restaurante.png"))); // NOI18N
@@ -168,6 +174,11 @@ int intentos;
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
     ingresar();
     }//GEN-LAST:event_btnIngresarActionPerformed
+
+    private void btnCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCuentaActionPerformed
+       RegUsuaurio usuario = new RegUsuaurio();
+       usuario.setVisible(true);
+    }//GEN-LAST:event_btnCuentaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -218,11 +229,11 @@ int intentos;
             Usuario usuario = usuarioDAO.obtenerPorNombreYClave(nombre, clave);
 
             if (usuario != null) {
-                Seguridad.Sesion.setUsuarioActual(usuario); // ✅ Guarda el usuario
-                dispose(); // Cierra el login
+                Seguridad.Sesion.setUsuarioActual(usuario); 
+                dispose(); 
                 JOptionPane.showMessageDialog(null, "Bienvenido " + usuario.getNombre(), "Acceso", JOptionPane.INFORMATION_MESSAGE);
 
-                Menu dash = new Menu(); // ✅ Ya no necesitas pasar el ID
+                Menu dash = new Menu(); 
                 dash.setVisible(true);
             } else {
                 intentos++;

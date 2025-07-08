@@ -17,7 +17,7 @@ public class DescripcionAgregacionDePedioLLevar extends JPanel {
     private final int usuarioActualId;
     
     public DescripcionAgregacionDePedioLLevar(Connection connection) {
-    this.connection = connection;
+        this.connection = connection;
 
     Usuario usuario = Sesion.getUsuarioActual();
     if (usuario == null) {
@@ -28,6 +28,7 @@ public class DescripcionAgregacionDePedioLLevar extends JPanel {
     this.controller = new DescripcionPedidoLlevarController(connection, this);
     initComponents();
     controller.inicializar();
+   
 }
 
 

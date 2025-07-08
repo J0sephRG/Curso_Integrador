@@ -4,7 +4,10 @@
  */
 package Vista;
 
-import Vista.Usuario;
+import ConexionSQL.Conexion;
+import Controlador.UsuarioCont;
+import DAO.UsuarioDAO;
+import Vista.RegUsuaurio;
 
 /**
  *
@@ -15,8 +18,14 @@ public class UsAdm extends javax.swing.JPanel {
     /**
      * Creates new form UsAdm
      */
+    private UsuarioDAO usuarioDAO; 
+    private Conexion conexion;
+    
     public UsAdm() {
         initComponents();
+        conexion = new Conexion();  
+        usuarioDAO = new UsuarioDAO(conexion.Conectar());  
+        cargarDatos();
     }
 
     /**
@@ -32,7 +41,7 @@ public class UsAdm extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblUsuarios = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButtonBuscar = new javax.swing.JButton();
@@ -60,7 +69,7 @@ public class UsAdm extends javax.swing.JPanel {
         jPanel3.setForeground(new java.awt.Color(51, 51, 51));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblUsuarios.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null, null, null, null, null},
@@ -71,7 +80,7 @@ public class UsAdm extends javax.swing.JPanel {
                 "ID", "Nombre", "Apellido", "Rol", "DNI", "Sexo", "Telefono", "Fecha Nacimiento", "E-mail", "Direccion", "Fecha Contrato"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblUsuarios);
 
         jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 830, 310));
 
@@ -155,7 +164,7 @@ public class UsAdm extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButtonNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNuevoActionPerformed
-        Usuario us = new Usuario();
+        RegUsuaurio us = new RegUsuaurio();
         us.setVisible(true);
     }//GEN-LAST:event_jButtonNuevoActionPerformed
 
@@ -171,7 +180,12 @@ public class UsAdm extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tblUsuarios;
     private javax.swing.JTextField textBuscar;
     // End of variables declaration//GEN-END:variables
+
+    private void cargarDatos() {
+        UsuarioCont cont = new UsuarioCont(usuarioDAO,tblUsuarios);
+        cont.cargarUsuarios(tblUsuarios, usuarioDAO);
+    }
 }

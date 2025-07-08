@@ -92,7 +92,7 @@ public class Menu extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 800, 40, 40));
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 800, 50, 50));
 
         BtnUsuario.setBackground(new java.awt.Color(153, 153, 153));
         BtnUsuario.setText("Usuario");
@@ -116,7 +116,7 @@ public class Menu extends javax.swing.JFrame {
         });
         jPanel1.add(BtnAlmacen, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 440, 190, 44));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagen/Logo-removebg-preview.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagen/logo.png"))); // NOI18N
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 10, 120, 150));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 190, 860));
