@@ -4,10 +4,12 @@
  */
 package Vista;
 
+import Modelo.Usuario;
 import VISTA.PanelCentralDeVentas;
 import Vista.UsAdm;
 import java.awt.BorderLayout;
 import java.sql.SQLException;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -16,11 +18,12 @@ import javax.swing.JPanel;
  */
 public class Menu extends javax.swing.JFrame {
 
-
+private Usuario usuario;
     public Menu() {
-    initComponents();
-    this.setLocationRelativeTo(null);
-        }
+        this.usuario = usuario;
+        initComponents();
+        this.setLocationRelativeTo(null);
+   }
 
 
 
@@ -158,8 +161,11 @@ public class Menu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVentasActionPerformed
-        int usuarioActualId = Seguridad.Sesion.getUsuarioActual().getId_usuario();
-    ShowJpanel(new PanelCentralDeVentas());
+          if (Seguridad.Sesion.isRole("Administrador") || Seguridad.Sesion.isRole("Cajero")) {
+                ShowJpanel(new PanelCentralDeVentas());
+            } else {
+                JOptionPane.showMessageDialog(null, "Acceso denegado: Solo el administrador y el cajero.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
     }//GEN-LAST:event_btnVentasActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -167,19 +173,35 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void BtnInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnInicioActionPerformed
-        ShowJpanel(new Inicio());
+        if (Seguridad.Sesion.isRole("Administrador") || Seguridad.Sesion.isRole("Cajero")) {
+                ShowJpanel(new Inicio());
+            } else {
+                JOptionPane.showMessageDialog(null, "Acceso denegado: Solo administradores.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
     }//GEN-LAST:event_BtnInicioActionPerformed
 
     private void BtnProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnProveedorActionPerformed
-        ShowJpanel(new Proveedor());
+         if (Seguridad.Sesion.isRole("Administrador")) {
+                ShowJpanel(new Proveedor());
+            } else {
+                JOptionPane.showMessageDialog(null, "Acceso denegado: Solo administradores.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
     }//GEN-LAST:event_BtnProveedorActionPerformed
 
     private void BtnAlmacenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAlmacenActionPerformed
-        ShowJpanel(new Almacen());
+         if (Seguridad.Sesion.isRole("Administrador") || Seguridad.Sesion.isRole("Cocinero")) {
+                ShowJpanel(new Almacen());
+            } else {
+                JOptionPane.showMessageDialog(null, "Acceso denegado: Solo el administrador y  el cocinero.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
     }//GEN-LAST:event_BtnAlmacenActionPerformed
 
     private void BtnUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnUsuarioActionPerformed
-        ShowJpanel(new UsAdm());
+        if (Seguridad.Sesion.isRole("Administrador")) {
+                ShowJpanel(new UsAdm());
+            } else {
+                JOptionPane.showMessageDialog(null, "Acceso denegado: Solo administradores.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
     }//GEN-LAST:event_BtnUsuarioActionPerformed
 
     /**
@@ -238,4 +260,38 @@ public class Menu extends javax.swing.JFrame {
         cont.repaint();
 
     }
+        public void configurarPorRol(String rol) {
+        if (rol == null) {
+            JOptionPane.showMessageDialog(null, "Rol no válido: nulo. Contacte al administrador.", "Error", JOptionPane.ERROR_MESSAGE);
+            dispose();
+            new Login().setVisible(true);
+            return;
+        }
+        String rolNormalizado = rol.trim().toLowerCase();
+        switch (rolNormalizado) {
+            case "administrador":
+                    BtnUsuario.setVisible(true);
+                    BtnProveedor.setVisible(true);
+                    BtnAlmacen.setVisible(true);
+                    ShowJpanel(new JPanel());
+                break;
+            case "cajero":
+                BtnUsuario.setVisible(true);
+                BtnProveedor.setVisible(true);
+                BtnAlmacen.setVisible(true);
+                ShowJpanel(new PanelCentralDeVentas());
+                break;
+            case "cocinero":
+                BtnUsuario.setVisible(true);
+                BtnProveedor.setVisible(true);
+                BtnAlmacen.setVisible(true);
+                ShowJpanel(new Almacen());
+                break;
+            default:
+                JOptionPane.showMessageDialog(null, "Rol no válido: " + rol + ". Contacte al administrador.", "Error", JOptionPane.ERROR_MESSAGE);
+                dispose();
+                new Login().setVisible(true);
+        }
+        }
+        
 }

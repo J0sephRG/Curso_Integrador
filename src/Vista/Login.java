@@ -216,45 +216,53 @@ int intentos;
     private javax.swing.JPasswordField txtContraseña;
     private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
- private void ingresar() {
-    String nombre = txtUsuario.getText();
-    String clave = new String(txtContraseña.getPassword());
+    private void ingresar() {
+       String nombre = txtUsuario.getText().trim();
+        String clave = new String(txtContraseña.getPassword()).trim();
 
-    ConexionSQL.Conexion conect = new Conexion();
-    Connection conn = conect.Conectar();
+        // Validar campos vacíos
+        if (nombre.isEmpty() || clave.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, ingrese usuario y contraseña.", "Error", JOptionPane.ERROR_MESSAGE);
+            txtUsuario.requestFocus();
+            return;
+        }
 
-    if (conn != null) {
-        try {
+        try (Connection conn = new Conexion().Conectar()) {
+            if (conn == null) {
+                JOptionPane.showMessageDialog(null, "No se pudo conectar a la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
             Usuario usuario = usuarioDAO.obtenerPorNombreYClave(nombre, clave);
 
             if (usuario != null) {
-                Seguridad.Sesion.setUsuarioActual(usuario); 
-                dispose(); 
+                Seguridad.Sesion.setUsuarioActual(usuario);
+                usuarioDAO.registrarIntento(nombre, true);
                 JOptionPane.showMessageDialog(null, "Bienvenido " + usuario.getNombre(), "Acceso", JOptionPane.INFORMATION_MESSAGE);
+                intentos = 0;
 
-                Menu dash = new Menu(); 
-                dash.setVisible(true);
+                Menu menu = new Menu();
+                menu.configurarPorRol(usuario.getRol());
+                menu.setVisible(true);
+                dispose();
             } else {
+                usuarioDAO.registrarIntento(nombre, false);
                 intentos++;
                 if (intentos >= 3) {
-                    JOptionPane.showMessageDialog(null, "Has excedido el número de intentos", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Has excedido el número de intentos.", "Error", JOptionPane.ERROR_MESSAGE);
                     System.exit(0);
                 } else {
-                    JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos. Quedan " + (3 - intentos) + " intentos.");
+                    JOptionPane.showMessageDialog(null, 
+                        "Usuario o contraseña incorrectos, o cuenta inactiva. Quedan " + (3 - intentos) + " intentos.", 
+                        "Error", JOptionPane.ERROR_MESSAGE);
                     txtUsuario.setText("");
                     txtContraseña.setText("");
                     txtUsuario.requestFocus();
                 }
             }
-
-            conn.close();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error de base de datos: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error de base de datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    } else {
-        JOptionPane.showMessageDialog(null, "No se pudo conectar a la base de datos.");
     }
-}
-
 }

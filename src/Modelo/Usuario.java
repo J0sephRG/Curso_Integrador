@@ -7,18 +7,21 @@ public class Usuario {
     private int id_usuario;
     private String nombre;
     private String apellido;
-    private String rol; // admin, cajero, cocinero
+    private String rol; 
     private String clave;
-    private Timestamp fecha_creacion;
-    // Constructor, Getters y Setters
+    private boolean activo;
 
-    public Usuario(int id_usuario, String nombre, String apellido, String rol, String clave, Timestamp fecha_creacion) {
+    public Usuario() {
+    }
+
+        
+    public Usuario(int id_usuario, String nombre, String apellido, String clave, String rol, boolean activo) {
         this.id_usuario = id_usuario;
         this.nombre = nombre;
         this.apellido = apellido;
         this.rol = rol;
         this.clave = clave;
-        this.fecha_creacion = fecha_creacion;
+        this.activo = activo;
     }
 
     public int getId_usuario() {
@@ -61,11 +64,15 @@ public class Usuario {
         this.clave = clave;
     }
 
-    public Timestamp getFecha_creacion() {
-        return fecha_creacion;
+    public boolean isActivo() {
+        return activo;
     }
 
-    public void setFecha_creacion(Timestamp fecha_creacion) {
-        this.fecha_creacion = fecha_creacion;
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
+
+    
+    
+   
 }
