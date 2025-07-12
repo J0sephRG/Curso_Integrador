@@ -42,7 +42,7 @@ public class DescripcionPedidoLlevarController {
         throw new IllegalStateException("No hay un usuario en sesión.");
     }
 
-    this.usuarioActualId = usuario.getId_usuario(); // Asumiendo que `Usuario` tiene `getId()`
+    this.usuarioActualId = usuario.getId_usuario(); 
     this.platoDAO = new PlatoDAO(connection);
     this.clienteDAO = new ClienteDAO(connection);
     this.ventaDAO = new VentaDAO(connection);
