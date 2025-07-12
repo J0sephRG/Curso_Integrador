@@ -1,6 +1,5 @@
 package Modelo;
 
-
 import java.math.BigDecimal;
 
 public class Plato {
@@ -37,7 +36,10 @@ public class Plato {
         return precio;
     }
 
-    public void setPrecio(BigDecimal precio) {
+   public void setPrecio(BigDecimal precio) {
+        if (precio.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("El precio no puede ser negativo.");
+        }
         this.precio = precio;
     }
 
