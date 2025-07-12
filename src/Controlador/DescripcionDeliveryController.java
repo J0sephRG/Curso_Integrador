@@ -10,6 +10,8 @@ import Modelo.PedidosDelivery.PedidoDelivery;
 import Modelo.Plato;
 import Modelo.Usuario;
 import Modelo.Venta;
+import apiclientes.ApiClienteService;
+import apiclientes.ApiClienteServiceImpl;
 
 import javax.swing.table.DefaultTableModel;
 import java.math.BigDecimal;
@@ -68,22 +70,27 @@ public class DescripcionDeliveryController {
     }
 
     public void buscarClientePorDNI() {
-        String dni = vista.getDni();
-        try {
-            List<Cliente> clientes = clienteDAO.listarClientes();
-            Optional<Cliente> clienteOpt = clientes.stream()
-                    .filter(c -> c.getDni().equals(dni))
-                    .findFirst();
-            if (clienteOpt.isPresent()) {
-                Cliente cliente = clienteOpt.get();
-                vista.setTextNombre(cliente.getNombre() + " " + cliente.getApellido());
-            } else {
-                vista.setTextNombre("Cliente no encontrado");
-            }
-        } catch (SQLException e) {
-            vista.mostrarMensaje("Error al buscar cliente: " + e.getMessage());
-        }
+    String dni = vista.getDni();
+
+    if (dni == null || dni.trim().length() != 8) {
+        vista.mostrarMensaje("El DNI debe tener 8 dígitos.");
+        return;
     }
+
+    try {
+        ApiClienteService api = new ApiClienteServiceImpl();
+        String nombre = api.obtenerNombrePorDni(dni);
+
+        if (nombre != null && !nombre.isEmpty()) {
+            vista.setTextNombre(nombre);
+        } else {
+            vista.mostrarMensaje("No se encontró el cliente con DNI: " + dni);
+        }
+    } catch (Exception e) {
+        vista.mostrarMensaje("Error al consultar el DNI: " + e.getMessage());
+        e.printStackTrace();
+    }
+}
 
     public void agregarPedido() {
         try {
