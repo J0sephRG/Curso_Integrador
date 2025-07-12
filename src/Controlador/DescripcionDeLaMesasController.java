@@ -32,7 +32,7 @@ public class DescripcionDeLaMesasController {
     private final ClienteDAO clienteDAO;
     private final VentaDAO ventaDAO;
     private ApiClienteService apiService;
-    // Constructor actualizado sin el parámetro usuarioActualId
+    
     public DescripcionDeLaMesasController(Connection connection, int mesaNumber, DescripcionDeLaMesas vista) {
         this.connection = connection;
         this.mesaNumber = mesaNumber;
