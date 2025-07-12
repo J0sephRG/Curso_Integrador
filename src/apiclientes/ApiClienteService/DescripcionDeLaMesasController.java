@@ -1,5 +1,5 @@
 
-import VISTA.DescripcionDeLaMesas;
+import Vista.DescripcionDeLaMesas;
 import apiclientes.ApiClienteService;
 import apiclientes.ApiClienteServiceImpl;
 import java.sql.*;
