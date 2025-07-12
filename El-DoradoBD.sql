@@ -27,7 +27,7 @@ INSERT INTO EstadoReserva VALUES ('confirmada'), ('cancelada'), ('completada');
 CREATE TABLE EstadoMesa (
     estado VARCHAR(20) PRIMARY KEY
 );
-INSERT INTO EstadoMesa VALUES ('disponible'), ('ocupada'), ('reservada');
+INSERT INTO EstadoMesa VALUES ('disponible'), ('ocupada'), ('reservada'), ('unida');
 
 CREATE TABLE TipoMovimiento (
     tipo_movimiento VARCHAR(20) PRIMARY KEY
