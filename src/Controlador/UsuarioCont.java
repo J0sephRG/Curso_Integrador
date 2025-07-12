@@ -22,7 +22,6 @@ public class UsuarioCont {
         this.usuario = usuario;
         this.tabla = tabla;
     }
-/*
     public void cargarUsuarios(JTable tabla, UsuarioDAO dao){
         DefaultTableModel modelo = new DefaultTableModel();
     modelo.setColumnIdentifiers(new String[] { "ID", "Nombre", "Apellido", "Rol" });
@@ -40,5 +39,5 @@ public class UsuarioCont {
     } catch (SQLException e) {
         e.printStackTrace();
     }
-    }*/
+    }
 }

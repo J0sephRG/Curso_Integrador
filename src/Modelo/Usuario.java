@@ -14,7 +14,6 @@ public class Usuario {
     public Usuario() {
     }
 
-        
     public Usuario(int id_usuario, String nombre, String apellido, String clave, String rol, boolean activo) {
         this.id_usuario = id_usuario;
         this.nombre = nombre;

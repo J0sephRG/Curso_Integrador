@@ -185,7 +185,7 @@ public class UsAdm extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void cargarDatos() {
-       /* UsuarioCont cont = new UsuarioCont(usuarioDAO,tblUsuarios);
-        cont.cargarUsuarios(tblUsuarios, usuarioDAO);*/
+       UsuarioCont cont = new UsuarioCont(usuarioDAO,tblUsuarios);
+        cont.cargarUsuarios(tblUsuarios, usuarioDAO);
     }
 }

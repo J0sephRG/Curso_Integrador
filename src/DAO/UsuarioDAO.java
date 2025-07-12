@@ -59,7 +59,6 @@ public class UsuarioDAO {
             statement.executeUpdate();
         }
     }
-/*
     public Usuario obtenerUsuario(int id_usuario) throws SQLException {
         String query = "SELECT * FROM Usuario WHERE id_usuario = ?";
         Usuario usuario = null;
@@ -69,13 +68,13 @@ public class UsuarioDAO {
                 if (rs.next()) {
                     usuario = new Usuario(rs.getInt("id_usuario"), rs.getString("nombre"),
                                           rs.getString("apellido"), rs.getString("rol"),
-                                          rs.getString("clave"));
+                                          rs.getString("clave"), rs.getBoolean("Avtivo"));
                 }
             }
         }
         return usuario;
     }
-*/
+    
     public void registrarIntento(String nombre, boolean exitoso) throws SQLException {
         String query = "INSERT INTO LoginLogs (Username, Exitoso) VALUES (?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -155,16 +154,20 @@ public class UsuarioDAO {
             return null;
         }
     }
-/*
-    public List<Usuario> listarUsuarios() throws SQLException {
+
+       public List<Usuario> listarUsuarios() throws SQLException {
         List<Usuario> usuarios = new ArrayList<>();
         String query = "SELECT * FROM Usuario";
         try (PreparedStatement statement = conn.prepareStatement(query);
              ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
-                usuarios.add(new Usuario(rs.getInt("id_usuario"), rs.getString("nombre"),
-                                         rs.getString("apellido"), rs.getString("rol"),
-                                         rs.getString("clave") rs.getBoolean("activo")));
+                usuarios.add(new Usuario(
+                        rs.getInt("id_usuario"), 
+                        rs.getString("nombre"),
+                        rs.getString("apellido"), 
+                        rs.getString("rol"),
+                        rs.getString("clave"),
+                        rs.getBoolean("activo")));
             }
         }
         return usuarios;
@@ -188,5 +191,5 @@ public class UsuarioDAO {
             statement.setInt(1, id_usuario);
             statement.executeUpdate();
         }
-    }*/
+    }
 }
