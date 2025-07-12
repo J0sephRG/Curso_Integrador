@@ -238,12 +238,7 @@ public void actualizarTabla(DefaultTableModel modelo) {
         jPanel3.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, 60, -1));
         jPanel3.add(textCantidad, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 90, 140, -1));
 
-        jComboBoxDeBusquedaDePlatillos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tallarin" }));
-        jComboBoxDeBusquedaDePlatillos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBoxDeBusquedaDePlatillosActionPerformed(evt);
-            }
-        });
+        jComboBoxDeBusquedaDePlatillos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jPanel3.add(jComboBoxDeBusquedaDePlatillos, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 50, 140, -1));
         jPanel3.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 50, -1, -1));
 
@@ -374,10 +369,6 @@ public void actualizarTabla(DefaultTableModel modelo) {
     private void jButtoRegistrarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtoRegistrarPedidoActionPerformed
         controller.registrarPedidollevar();
     }//GEN-LAST:event_jButtoRegistrarPedidoActionPerformed
-
-    private void jComboBoxDeBusquedaDePlatillosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxDeBusquedaDePlatillosActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxDeBusquedaDePlatillosActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButtoRegistrarPedido;

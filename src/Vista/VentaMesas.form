@@ -38,37 +38,21 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
-                          <Component id="botonConfirmarUnion" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="266" max="-2" attributes="0"/>
-                          <Component id="jLabel1" min="-2" pref="80" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" attributes="0">
-                          <EmptySpace min="40" pref="40" max="-2" attributes="0"/>
-                          <Component id="jButtonUnirMesas" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="40" pref="40" max="-2" attributes="0"/>
-                          <Component id="jButtonTransferirMesas" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="528" max="-2" attributes="0"/>
-                          <Component id="jButtonFinalizarTurno" min="-2" max="-2" attributes="0"/>
-                      </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="90" pref="90" max="-2" attributes="0"/>
-                                  <Component id="Mesa1Boton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="44" pref="44" max="-2" attributes="0"/>
-                                  <Component id="Mesa2Boton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="44" pref="44" max="-2" attributes="0"/>
-                                  <Component id="Mesa3Boton" min="-2" max="-2" attributes="0"/>
-                              </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="144" max="-2" attributes="0"/>
                                   <Component id="Mesa7Boton" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="79" max="-2" attributes="0"/>
                                   <Component id="Mesa8Boton" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="90" max="-2" attributes="0"/>
+                                  <Component id="Mesa1Boton" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="44" pref="44" max="-2" attributes="0"/>
+                                  <Component id="Mesa2Boton" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="44" pref="44" max="-2" attributes="0"/>
+                                  <Component id="Mesa3Boton" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
@@ -79,17 +63,30 @@
                                   <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
                                   <Component id="Mesa10Boton" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <Group type="102" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
                                   <Component id="Mesa4Boton" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="54" pref="54" max="-2" attributes="0"/>
-                                  <Component id="Mesa5Boton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="44" pref="44" max="-2" attributes="0"/>
-                                  <Component id="Mesa6Boton" min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="jButtonFinalizarTurno" min="-2" max="-2" attributes="0"/>
+                                      <Group type="102" attributes="0">
+                                          <Component id="Mesa5Boton" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace min="44" pref="44" max="-2" attributes="0"/>
+                                          <Component id="Mesa6Boton" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
                               </Group>
                           </Group>
                       </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="347" max="-2" attributes="0"/>
+                          <Component id="jLabel1" min="-2" pref="80" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="66" max="-2" attributes="0"/>
+                          <Component id="jButtonUnirMesas" min="-2" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
-                  <EmptySpace pref="9" max="32767" attributes="0"/>
+                  <EmptySpace pref="25" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -97,45 +94,35 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
-                          <Component id="jLabel1" min="-2" pref="30" max="-2" attributes="0"/>
-                          <EmptySpace min="50" pref="50" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="botonConfirmarUnion" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="Mesa1Boton" min="-2" max="-2" attributes="0"/>
-                      <Component id="Mesa2Boton" min="-2" max="-2" attributes="0"/>
-                      <Component id="Mesa3Boton" min="-2" max="-2" attributes="0"/>
-                      <Component id="Mesa4Boton" min="-2" max="-2" attributes="0"/>
-                      <Component id="Mesa5Boton" min="-2" max="-2" attributes="0"/>
-                      <Component id="Mesa6Boton" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace min="43" pref="43" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="Mesa8Boton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="Mesa7Boton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="Mesa9Boton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="Mesa10Boton" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace min="123" pref="123" max="-2" attributes="0"/>
-                  <Component id="jButtonUnirMesas" min="-2" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
-                          <Component id="jButtonTransferirMesas" min="-2" max="-2" attributes="0"/>
-                      </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jButtonFinalizarTurno" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel1" min="-2" pref="30" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="90" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="Mesa1Boton" min="-2" max="-2" attributes="0"/>
+                              <Component id="Mesa2Boton" min="-2" max="-2" attributes="0"/>
+                              <Component id="Mesa3Boton" min="-2" max="-2" attributes="0"/>
+                              <Component id="Mesa4Boton" min="-2" max="-2" attributes="0"/>
+                              <Component id="Mesa5Boton" min="-2" max="-2" attributes="0"/>
+                              <Component id="Mesa6Boton" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="43" pref="43" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="Mesa8Boton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="Mesa7Boton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="Mesa9Boton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="Mesa10Boton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jButtonUnirMesas" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonFinalizarTurno" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace pref="91" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -173,17 +160,9 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonUnirMesasActionPerformed"/>
           </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="jButtonTransferirMesas">
-          <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Segoe UI" size="14" style="0"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Transferir mesas"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonTransferirMesasActionPerformed"/>
-          </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+          </AuxValues>
         </Component>
         <Component class="javax.swing.JButton" name="Mesa3Boton">
           <Properties>
@@ -280,6 +259,12 @@
             </Property>
             <Property name="text" type="java.lang.String" value="Finalizar turno"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonFinalizarTurnoActionPerformed"/>
+          </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+          </AuxValues>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
@@ -288,14 +273,6 @@
             </Property>
             <Property name="text" type="java.lang.String" value="MESAS"/>
           </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="botonConfirmarUnion">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Confirmar Uni&#xf3;n"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="botonConfirmarUnionActionPerformed"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>

@@ -1,4 +1,4 @@
-package VISTA;
+package Vista;
 import ConexionSQL.Conexion; 
 import Controlador.ControladorPedidosTablas;
 import java.awt.BorderLayout;

@@ -3,28 +3,35 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package Vista;
-
 import Modelo.Usuario;
-import VISTA.PanelCentralDeVentas;
+import ConexionSQL.Conexion;
+import Vista.PanelCentralDeVentas;
 import Vista.UsAdm;
 import java.awt.BorderLayout;
+import java.sql.Connection;
 import java.sql.SQLException;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import Vista.TablaDeLosPlatos;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 
 /**
  *
  * @author JOSEPH ROJAS
  */
 public class Menu extends javax.swing.JFrame {
-
-private Usuario usuario;
+    private Connection connection; 
+    private Usuario usuario;
+    
     public Menu() {
         this.usuario = usuario;
         initComponents();
         this.setLocationRelativeTo(null);
+        Conexion conexion = new Conexion();
+        this.connection = conexion.Conectar();
    }
-
 
 
     /**
@@ -44,6 +51,7 @@ private Usuario usuario;
         BtnUsuario = new javax.swing.JButton();
         BtnAlmacen = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        BtnRegistroPlatos = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         cont = new javax.swing.JPanel();
 
@@ -95,7 +103,7 @@ private Usuario usuario;
                 jButton2ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 800, 50, 50));
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 840, 50, 50));
 
         BtnUsuario.setBackground(new java.awt.Color(153, 153, 153));
         BtnUsuario.setText("Usuario");
@@ -117,12 +125,23 @@ private Usuario usuario;
                 BtnAlmacenActionPerformed(evt);
             }
         });
-        jPanel1.add(BtnAlmacen, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 440, 190, 44));
+        jPanel1.add(BtnAlmacen, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 450, 190, 44));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagen/logo.png"))); // NOI18N
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 10, 120, 150));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 190, 860));
+        BtnRegistroPlatos.setBackground(new java.awt.Color(153, 153, 153));
+        BtnRegistroPlatos.setText("Registrar Platos");
+        BtnRegistroPlatos.setBorder(null);
+        BtnRegistroPlatos.setBorderPainted(false);
+        BtnRegistroPlatos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnRegistroPlatosActionPerformed(evt);
+            }
+        });
+        jPanel1.add(BtnRegistroPlatos, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 540, 190, 44));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 190, 910));
 
         jPanel2.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -130,14 +149,14 @@ private Usuario usuario;
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1090, Short.MAX_VALUE)
+            .addGap(0, 1220, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 50, Short.MAX_VALUE)
+            .addGap(0, 90, Short.MAX_VALUE)
         );
 
-        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, -5, 1090, 50));
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(187, -5, 1220, 90));
 
         cont.setBackground(new java.awt.Color(255, 255, 255));
         cont.setName(""); // NOI18N
@@ -147,21 +166,21 @@ private Usuario usuario;
         cont.setLayout(contLayout);
         contLayout.setHorizontalGroup(
             contLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1090, Short.MAX_VALUE)
+            .addGap(0, 1210, Short.MAX_VALUE)
         );
         contLayout.setVerticalGroup(
             contLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 820, Short.MAX_VALUE)
+            .addGap(0, 830, Short.MAX_VALUE)
         );
 
-        getContentPane().add(cont, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 40, 1090, 820));
+        getContentPane().add(cont, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 80, 1210, 830));
         cont.getAccessibleContext().setAccessibleParent(jPanel1);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVentasActionPerformed
-          if (Seguridad.Sesion.isRole("Administrador") || Seguridad.Sesion.isRole("Cajero")) {
+        if (Seguridad.Sesion.isRole("Administrador") || Seguridad.Sesion.isRole("Cajero")) {
                 ShowJpanel(new PanelCentralDeVentas());
             } else {
                 JOptionPane.showMessageDialog(null, "Acceso denegado: Solo el administrador y el cajero.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -177,7 +196,7 @@ private Usuario usuario;
     }//GEN-LAST:event_BtnInicioActionPerformed
 
     private void BtnProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnProveedorActionPerformed
-         if (Seguridad.Sesion.isRole("Administrador")) {
+        if (Seguridad.Sesion.isRole("Administrador")) {
                 ShowJpanel(new Proveedor());
             } else {
                 JOptionPane.showMessageDialog(null, "Acceso denegado: Solo administradores.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -185,7 +204,7 @@ private Usuario usuario;
     }//GEN-LAST:event_BtnProveedorActionPerformed
 
     private void BtnAlmacenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAlmacenActionPerformed
-         if (Seguridad.Sesion.isRole("Administrador") || Seguridad.Sesion.isRole("Cocinero")) {
+        if (Seguridad.Sesion.isRole("Administrador") || Seguridad.Sesion.isRole("Cocinero")) {
                 ShowJpanel(new Almacen());
             } else {
                 JOptionPane.showMessageDialog(null, "Acceso denegado: Solo el administrador y  el cocinero.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -199,6 +218,20 @@ private Usuario usuario;
                 JOptionPane.showMessageDialog(null, "Acceso denegado: Solo administradores.", "Error", JOptionPane.ERROR_MESSAGE);
             }
     }//GEN-LAST:event_BtnUsuarioActionPerformed
+
+    private void BtnRegistroPlatosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRegistroPlatosActionPerformed
+   if (connection != null) { // Verificar que la conexión no sea nula
+            TablaDeLosPlatos tablaPlatos = null; 
+       try {
+           tablaPlatos = new TablaDeLosPlatos(connection);
+       } catch (SQLException ex) {
+           Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+       }
+            ShowJpanel(tablaPlatos); 
+        } else {
+            System.out.println("Error: No se pudo establecer la conexión a la base de datos.");
+        }
+    }//GEN-LAST:event_BtnRegistroPlatosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -238,6 +271,7 @@ private Usuario usuario;
     private javax.swing.JButton BtnAlmacen;
     private javax.swing.JButton BtnInicio;
     private javax.swing.JButton BtnProveedor;
+    private javax.swing.JButton BtnRegistroPlatos;
     private javax.swing.JButton BtnUsuario;
     private javax.swing.JButton btnVentas;
     private javax.swing.JPanel cont;
@@ -247,7 +281,7 @@ private Usuario usuario;
     private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
   private void ShowJpanel(JPanel p) {
-        p.setSize(1280, 820);
+        p.setSize(3000, 2150);
         p.setLocation(0, 0);
 
         cont.removeAll();
@@ -256,7 +290,8 @@ private Usuario usuario;
         cont.repaint();
 
     }
-        public void configurarPorRol(String rol) {
+  
+  public void configurarPorRol(String rol) {
         if (rol == null) {
             JOptionPane.showMessageDialog(null, "Rol no válido: nulo. Contacte al administrador.", "Error", JOptionPane.ERROR_MESSAGE);
             dispose();

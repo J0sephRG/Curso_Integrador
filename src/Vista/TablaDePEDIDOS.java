@@ -121,12 +121,12 @@ public class TablaDePEDIDOS extends javax.swing.JPanel {
                         .addComponent(jButtonEliminarPedidoLLEVAR, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonAgregarPedidoLLEVAR, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonMODIFICARPedidoLLEVAR, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)))
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(133, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
                     .addComponent(jScrollPanePedidosLlevar, javax.swing.GroupLayout.PREFERRED_SIZE, 534, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(266, Short.MAX_VALUE)))
+                    .addContainerGap(372, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

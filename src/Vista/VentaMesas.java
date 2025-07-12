@@ -1,31 +1,64 @@
-package VISTA;
-
-import ConexionSQL.Conexion; // Asegúrate de que esta clase maneje la conexión a SQL Server
-import DAO.MesaUnidaDAO;
+package Vista;
+import ConexionSQL.Conexion;
+import DAO.MesaDAO;
+import DAO.MesaPlatoDAO;
 import javax.swing.*;
 import java.awt.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import Modelo.Usuario;
-import Modelo.VENTAenMesa.MesaUnida;
+import Modelo.VENTAenMesa.Mesa;
 import Seguridad.Sesion;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-
+import java.util.List;
+import javax.swing.SwingUtilities;
 public class VentaMesas extends javax.swing.JPanel {
-    private Integer idMesaPrincipal = null;
-    private Integer idMesaSecundaria = null;
     private Connection connection; 
-    
+
     public VentaMesas(Connection connection) throws SQLException {
-        this.connection = connection; // Usar la conexión pasada como parámetro
+        this.connection = connection;
         initComponents();
         aplicarEstiloModerno();
+        actualizarEstadoMesas(); 
     }
-    
+    // Método para actualizar visualmente los estados de las mesas
+    public void actualizarEstadoMesas() {
+        try {
+            List<Mesa> mesas = new MesaDAO(connection).listarMesas();
+            for (Mesa mesa : mesas) {
+                JButton botonMesa = obtenerBotonMesa(mesa.getNumero_mesa());
+                if (botonMesa != null) {
+                    if (mesa.getEstado().equalsIgnoreCase("ocupada")) {
+                        botonMesa.setBackground(new Color(220, 53, 69)); // Rojo
+                        botonMesa.setForeground(Color.WHITE);
+                    } else {
+                        botonMesa.setBackground(new Color(40, 167, 69)); // Verde
+                        botonMesa.setForeground(Color.WHITE);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al cargar estados de mesas: " + e.getMessage());
+        }
+    }
+
+  // Método auxiliar para obtener el botón de mesa por número
+    private JButton obtenerBotonMesa(int numeroMesa) {
+        switch (numeroMesa) {
+            case 1: return Mesa1Boton;
+            case 2: return Mesa2Boton;
+            case 3: return Mesa3Boton;
+            case 4: return Mesa4Boton;
+            case 5: return Mesa5Boton;
+            case 6: return Mesa6Boton;
+            case 7: return Mesa7Boton;
+            case 8: return Mesa8Boton;
+            case 9: return Mesa9Boton;
+            case 10: return Mesa10Boton;
+            default: return null;
+        }
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -34,7 +67,6 @@ public class VentaMesas extends javax.swing.JPanel {
         Mesa1Boton = new javax.swing.JButton();
         Mesa2Boton = new javax.swing.JButton();
         jButtonUnirMesas = new javax.swing.JButton();
-        jButtonTransferirMesas = new javax.swing.JButton();
         Mesa3Boton = new javax.swing.JButton();
         Mesa7Boton = new javax.swing.JButton();
         Mesa4Boton = new javax.swing.JButton();
@@ -45,7 +77,6 @@ public class VentaMesas extends javax.swing.JPanel {
         Mesa10Boton = new javax.swing.JButton();
         jButtonFinalizarTurno = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        botonConfirmarUnion = new javax.swing.JButton();
 
         jpMesas.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -70,14 +101,6 @@ public class VentaMesas extends javax.swing.JPanel {
         jButtonUnirMesas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonUnirMesasActionPerformed(evt);
-            }
-        });
-
-        jButtonTransferirMesas.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonTransferirMesas.setText("Transferir mesas");
-        jButtonTransferirMesas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonTransferirMesasActionPerformed(evt);
             }
         });
 
@@ -147,16 +170,14 @@ public class VentaMesas extends javax.swing.JPanel {
 
         jButtonFinalizarTurno.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButtonFinalizarTurno.setText("Finalizar turno");
+        jButtonFinalizarTurno.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonFinalizarTurnoActionPerformed(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 18)); // NOI18N
         jLabel1.setText("MESAS");
-
-        botonConfirmarUnion.setText("Confirmar Unión");
-        botonConfirmarUnion.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                botonConfirmarUnionActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jpMesasLayout = new javax.swing.GroupLayout(jpMesas);
         jpMesas.setLayout(jpMesasLayout);
@@ -165,32 +186,19 @@ public class VentaMesas extends javax.swing.JPanel {
             .addGroup(jpMesasLayout.createSequentialGroup()
                 .addGroup(jpMesasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jpMesasLayout.createSequentialGroup()
-                        .addGap(59, 59, 59)
-                        .addComponent(botonConfirmarUnion)
-                        .addGap(266, 266, 266)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jpMesasLayout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addComponent(jButtonUnirMesas))
-                    .addGroup(jpMesasLayout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addComponent(jButtonTransferirMesas)
-                        .addGap(528, 528, 528)
-                        .addComponent(jButtonFinalizarTurno))
-                    .addGroup(jpMesasLayout.createSequentialGroup()
                         .addGroup(jpMesasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jpMesasLayout.createSequentialGroup()
+                                .addGap(144, 144, 144)
+                                .addComponent(Mesa7Boton)
+                                .addGap(79, 79, 79)
+                                .addComponent(Mesa8Boton))
                             .addGroup(jpMesasLayout.createSequentialGroup()
                                 .addGap(90, 90, 90)
                                 .addComponent(Mesa1Boton)
                                 .addGap(44, 44, 44)
                                 .addComponent(Mesa2Boton)
                                 .addGap(44, 44, 44)
-                                .addComponent(Mesa3Boton))
-                            .addGroup(jpMesasLayout.createSequentialGroup()
-                                .addGap(144, 144, 144)
-                                .addComponent(Mesa7Boton)
-                                .addGap(79, 79, 79)
-                                .addComponent(Mesa8Boton)))
+                                .addComponent(Mesa3Boton)))
                         .addGap(44, 44, 44)
                         .addGroup(jpMesasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jpMesasLayout.createSequentialGroup()
@@ -201,46 +209,47 @@ public class VentaMesas extends javax.swing.JPanel {
                             .addGroup(jpMesasLayout.createSequentialGroup()
                                 .addComponent(Mesa4Boton)
                                 .addGap(54, 54, 54)
-                                .addComponent(Mesa5Boton)
-                                .addGap(44, 44, 44)
-                                .addComponent(Mesa6Boton)))))
-                .addContainerGap(9, Short.MAX_VALUE))
+                                .addGroup(jpMesasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jButtonFinalizarTurno)
+                                    .addGroup(jpMesasLayout.createSequentialGroup()
+                                        .addComponent(Mesa5Boton)
+                                        .addGap(44, 44, 44)
+                                        .addComponent(Mesa6Boton))))))
+                    .addGroup(jpMesasLayout.createSequentialGroup()
+                        .addGap(347, 347, 347)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jpMesasLayout.createSequentialGroup()
+                        .addGap(66, 66, 66)
+                        .addComponent(jButtonUnirMesas)))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         jpMesasLayout.setVerticalGroup(
             jpMesasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpMesasLayout.createSequentialGroup()
                 .addGroup(jpMesasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jpMesasLayout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(50, 50, 50))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpMesasLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(botonConfirmarUnion)
-                        .addGap(31, 31, 31)))
-                .addGroup(jpMesasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Mesa1Boton)
-                    .addComponent(Mesa2Boton)
-                    .addComponent(Mesa3Boton)
-                    .addComponent(Mesa4Boton)
-                    .addComponent(Mesa5Boton)
-                    .addComponent(Mesa6Boton))
-                .addGap(43, 43, 43)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jpMesasLayout.createSequentialGroup()
+                        .addGap(90, 90, 90)
+                        .addGroup(jpMesasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Mesa1Boton)
+                            .addComponent(Mesa2Boton)
+                            .addComponent(Mesa3Boton)
+                            .addComponent(Mesa4Boton)
+                            .addComponent(Mesa5Boton)
+                            .addComponent(Mesa6Boton))
+                        .addGap(43, 43, 43)
+                        .addGroup(jpMesasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(Mesa8Boton)
+                            .addComponent(Mesa7Boton)
+                            .addComponent(Mesa9Boton)
+                            .addComponent(Mesa10Boton))))
+                .addGap(51, 51, 51)
                 .addGroup(jpMesasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Mesa8Boton)
-                    .addComponent(Mesa7Boton)
-                    .addComponent(Mesa9Boton)
-                    .addComponent(Mesa10Boton))
-                .addGap(123, 123, 123)
-                .addComponent(jButtonUnirMesas)
-                .addGroup(jpMesasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jpMesasLayout.createSequentialGroup()
-                        .addGap(13, 13, 13)
-                        .addComponent(jButtonTransferirMesas))
-                    .addGroup(jpMesasLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonFinalizarTurno)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButtonUnirMesas)
+                    .addComponent(jButtonFinalizarTurno))
+                .addContainerGap(91, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -254,25 +263,29 @@ public class VentaMesas extends javax.swing.JPanel {
             .addComponent(jpMesas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
-
-   private void crearBotonMesa(JButton boton, String texto, int numeroMesa) {
+ // Modificar el método crearBotonMesa para incluir estado inicial
+    private void crearBotonMesa(JButton boton, String texto, int numeroMesa) {
         boton.setText(texto);
         boton.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-        boton.setBackground(new Color(229, 231, 235)); // gris claro
-        boton.setForeground(new Color(39, 39, 42)); // gris oscuro texto
+        boton.setBackground(new Color(40, 167, 69)); // Verde por defecto (libre)
+        boton.setForeground(Color.WHITE);
         boton.setFocusPainted(false);
         boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         boton.setOpaque(true);
         boton.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(156, 163, 175)),
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
                 BorderFactory.createEmptyBorder(20, 40, 20, 40))
         );
         boton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                boton.setBackground(new Color(179, 199, 228));
+                boton.setBackground(boton.getBackground().darker());
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                boton.setBackground(new Color(229, 231, 235));
+                if (boton.getBackground().equals(new Color(220, 53, 69))) { // Rojo
+                    boton.setBackground(new Color(220, 53, 69));
+                } else {
+                    boton.setBackground(new Color(40, 167, 69)); // Verde
+                }
             }
         });
         boton.addActionListener(evt -> {
@@ -282,8 +295,8 @@ public class VentaMesas extends javax.swing.JPanel {
         jpMesas.add(boton);
     }
    
-private void abrirDescripcionDeLaMesa(int numeroMesa) {
-    int usuarioActualId = Sesion.getUsuarioActual().getId_usuario(); // o como manejes tu sesión
+    private void abrirDescripcionDeLaMesa(int numeroMesa) {
+    int usuarioActualId = Sesion.getUsuarioActual().getId_usuario(); 
     DescripcionDeLaMesas panelDescripcion = new DescripcionDeLaMesas(connection, numeroMesa);
     JFrame frame = new JFrame("Descripción Mesa " + numeroMesa);
     frame.setContentPane(panelDescripcion);
@@ -329,27 +342,21 @@ private void abrirDescripcionDeLaMesa(int numeroMesa) {
             }
         }
     }
-   
+
     private void Mesa1BotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Mesa1BotonActionPerformed
-
         abrirDescripcionDeLaMesa(1);
-
     }//GEN-LAST:event_Mesa1BotonActionPerformed
 
     private void Mesa2BotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Mesa2BotonActionPerformed
-
-        abrirDescripcionDeLaMesa(2);
-        
+     abrirDescripcionDeLaMesa(2); 
     }//GEN-LAST:event_Mesa2BotonActionPerformed
 
     private void Mesa3BotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Mesa3BotonActionPerformed
         abrirDescripcionDeLaMesa(3);
-
     }//GEN-LAST:event_Mesa3BotonActionPerformed
 
     private void Mesa4BotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Mesa4BotonActionPerformed
          abrirDescripcionDeLaMesa(4);
-
     }//GEN-LAST:event_Mesa4BotonActionPerformed
 
     private void Mesa5BotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Mesa5BotonActionPerformed
@@ -377,23 +384,34 @@ private void abrirDescripcionDeLaMesa(int numeroMesa) {
     }//GEN-LAST:event_Mesa10BotonActionPerformed
 
     private void jButtonUnirMesasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUnirMesasActionPerformed
-        // Paso 1: Muestra mensaje de selección
-    JOptionPane.showMessageDialog(this, "Por favor, selecciona las mesas que deseas unir.");
-    
-    // Paso 1: Muestra mensaje de selección
-    JOptionPane.showMessageDialog(this, "Por favor, selecciona las mesas que deseas unir.");
-    
+        // Crear y mostrar la ventana de unión de mesas
+    UnionDeMesas unionDeMesas = new UnionDeMesas(connection, this);
+    unionDeMesas.setVisible(true);
     }//GEN-LAST:event_jButtonUnirMesasActionPerformed
 
-    private void jButtonTransferirMesasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTransferirMesasActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonTransferirMesasActionPerformed
+    private void jButtonFinalizarTurnoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFinalizarTurnoActionPerformed
+     String nombreUsuario = Sesion.getUsuarioActual().getNombre();
+    
+        // 1. Cerrar la sesión
+        Sesion.cerrarSesion();
 
-    private void botonConfirmarUnionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonConfirmarUnionActionPerformed
-         
-    }//GEN-LAST:event_botonConfirmarUnionActionPerformed
+        // 2. Mostrar mensaje de despedida
+        JOptionPane.showMessageDialog(
+            this, 
+            "¡Hasta pronto, " + nombreUsuario + "!", 
+            "Sesión finalizada", 
+            JOptionPane.INFORMATION_MESSAGE
+        );
 
-   
+        // 3. Obtener el JFrame padre y cerrarlo
+        javax.swing.JFrame parentFrame = (javax.swing.JFrame) SwingUtilities.getWindowAncestor(this);
+        parentFrame.dispose();
+
+        // 4. Abrir la ventana de login
+        Login login = new Login();
+        login.setVisible(true);
+    }//GEN-LAST:event_jButtonFinalizarTurnoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Mesa10Boton;
     private javax.swing.JButton Mesa1Boton;
@@ -405,10 +423,8 @@ private void abrirDescripcionDeLaMesa(int numeroMesa) {
     private javax.swing.JButton Mesa7Boton;
     private javax.swing.JButton Mesa8Boton;
     private javax.swing.JButton Mesa9Boton;
-    private javax.swing.JButton botonConfirmarUnion;
-    private javax.swing.JButton jButtonFinalizarTurno;
-    private javax.swing.JButton jButtonTransferirMesas;
-    private javax.swing.JButton jButtonUnirMesas;
+    public javax.swing.JButton jButtonFinalizarTurno;
+    public javax.swing.JButton jButtonUnirMesas;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jpMesas;
     // End of variables declaration//GEN-END:variables

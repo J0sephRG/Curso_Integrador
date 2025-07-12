@@ -1,36 +1,31 @@
-package VISTA;
-
-import ConexionSQL.Conexion; // Asegúrate de que esta clase maneje la conexión a SQL Server
+package Vista;
+import ConexionSQL.Conexion; 
 import Controlador.DescripcionDeLaMesasController;
 import javax.swing.table.DefaultTableModel;
 import java.sql.Connection;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import Seguridad.Sesion;  // Importar la clase Sesion
+import Seguridad.Sesion; 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class DescripcionDeLaMesas extends JPanel {
     private DescripcionDeLaMesasController controller;
     private Connection connection;
-    
-     // Modificamos el constructor para que utilice la clase Sesion
     public DescripcionDeLaMesas(Connection connection, int numeroMesa) {
-        // Aquí obtenemos el usuario actual desde la clase Sesion
+     
         int usuarioActualId = Sesion.getUsuarioActual() != null ? Sesion.getUsuarioActual().getId_usuario() : -1;
-        
-        // Si no hay un usuario activo, mostrar un mensaje de error
         if (usuarioActualId == -1) {
             JOptionPane.showMessageDialog(this, "No hay un usuario activo. Por favor, inicie sesión.");
-            SwingUtilities.getWindowAncestor(this).dispose(); // Cerrar la ventana si no hay sesión
+            SwingUtilities.getWindowAncestor(this).dispose();
             return;
         }
-
         this.controller = new DescripcionDeLaMesasController(connection, numeroMesa, this);
         initComponents();
         controller.inicializar();
     }
 
-public void actualizarTabla(DefaultTableModel modelo) {
+    public void actualizarTabla(DefaultTableModel modelo) {
         jTablelListaDeLosPedidos.setModel(modelo);
     }
     
@@ -88,7 +83,7 @@ public void actualizarTabla(DefaultTableModel modelo) {
 
         jButton4 = new javax.swing.JButton();
         jButtonMesas = new javax.swing.JButton();
-        jLabelVENTA = new javax.swing.JLabel();
+        numeroMesa = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -112,8 +107,7 @@ public void actualizarTabla(DefaultTableModel modelo) {
         jComboBoxDeBusquedaDePlatillos = new javax.swing.JComboBox<>();
         jLabel18 = new javax.swing.JLabel();
         jButtonEliminarDeListaDePedidos = new javax.swing.JButton();
-        jLabel19 = new javax.swing.JLabel();
-        jComboBox4 = new javax.swing.JComboBox<>();
+        jButtonTransferirMesas = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -143,9 +137,9 @@ public void actualizarTabla(DefaultTableModel modelo) {
         jButtonMesas.setText("Mesas");
         add(jButtonMesas, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 20, -1, -1));
 
-        jLabelVENTA.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 18)); // NOI18N
-        jLabelVENTA.setText("MESAS");
-        add(jLabelVENTA, new org.netbeans.lib.awtextra.AbsoluteConstraints(392, 45, -1, -1));
+        numeroMesa.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 18)); // NOI18N
+        numeroMesa.setText("MESAS");
+        add(numeroMesa, new org.netbeans.lib.awtextra.AbsoluteConstraints(392, 45, -1, -1));
 
         jPanel2.setBackground(new java.awt.Color(204, 204, 204));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -223,7 +217,7 @@ public void actualizarTabla(DefaultTableModel modelo) {
                 jButtonAgregarAListaDeLosPedidosActionPerformed(evt);
             }
         });
-        jPanel3.add(jButtonAgregarAListaDeLosPedidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 20, -1, -1));
+        jPanel3.add(jButtonAgregarAListaDeLosPedidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 20, -1, -1));
 
         jLabel15.setText("Registro de venta");
         jPanel3.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, -1, -1));
@@ -246,13 +240,16 @@ public void actualizarTabla(DefaultTableModel modelo) {
                 jButtonEliminarDeListaDePedidosActionPerformed(evt);
             }
         });
-        jPanel3.add(jButtonEliminarDeListaDePedidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 20, -1, -1));
+        jPanel3.add(jButtonEliminarDeListaDePedidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 20, -1, -1));
 
-        jLabel19.setText("Tipo de venta:");
-        jPanel3.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 50, -1, -1));
-
-        jComboBox4.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel3.add(jComboBox4, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 80, -1, -1));
+        jButtonTransferirMesas.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButtonTransferirMesas.setText("Transferir mesas");
+        jButtonTransferirMesas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonTransferirMesasActionPerformed(evt);
+            }
+        });
+        jPanel3.add(jButtonTransferirMesas, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 120, -1, -1));
 
         add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 260, 600, 370));
 
@@ -329,7 +326,7 @@ public void actualizarTabla(DefaultTableModel modelo) {
     }//GEN-LAST:event_jButtoRegistrarVentaActionPerformed
 
     private void jButtonAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAtrasActionPerformed
-       // Cerrar o esconder esta ventana o panel
+
         SwingUtilities.getWindowAncestor(this).dispose();
     }//GEN-LAST:event_jButtonAtrasActionPerformed
 
@@ -353,6 +350,10 @@ public void actualizarTabla(DefaultTableModel modelo) {
         controller.actualizarTotales();
     }//GEN-LAST:event_jTextFieldDescuentoKeyReleased
 
+    private void jButtonTransferirMesasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTransferirMesasActionPerformed
+    controller.transferirPlatos();
+    }//GEN-LAST:event_jButtonTransferirMesasActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButtoRegistrarVenta;
     private javax.swing.JButton jButton4;
@@ -361,7 +362,7 @@ public void actualizarTabla(DefaultTableModel modelo) {
     public javax.swing.JButton jButtonBuscarCLIENTE;
     private javax.swing.JButton jButtonEliminarDeListaDePedidos;
     private javax.swing.JButton jButtonMesas;
-    private javax.swing.JComboBox<String> jComboBox4;
+    public javax.swing.JButton jButtonTransferirMesas;
     public javax.swing.JComboBox<String> jComboBoxDeBusquedaDePlatillos;
     public javax.swing.JComboBox<String> jComboBoxTipoDeComprobante;
     public javax.swing.JComboBox<String> jComboBoxTipoDePago;
@@ -374,7 +375,6 @@ public void actualizarTabla(DefaultTableModel modelo) {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel3;
@@ -384,7 +384,6 @@ public void actualizarTabla(DefaultTableModel modelo) {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JLabel jLabelVENTA;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -397,9 +396,14 @@ public void actualizarTabla(DefaultTableModel modelo) {
     public javax.swing.JTextField jTextFieldResultadoDescuento;
     public javax.swing.JTextField jTextFieldTotalDeVenta;
     public javax.swing.JTextField jTextFieldVuelto;
+    private javax.swing.JLabel numeroMesa;
     private javax.swing.JTextField textCantidad;
     public javax.swing.JTextField textDni;
     public javax.swing.JTextField textNombre;
     // End of variables declaration//GEN-END:variables
+
+public JFrame getParentFrame() {
+    return (JFrame) SwingUtilities.getWindowAncestor(this);
+}
 
 }
