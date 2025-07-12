@@ -1,5 +1,4 @@
 package Modelo.VENTAenMesa;
-
 public class MesaUnida {
     private int id_unida;
     private Integer id_mesa_principal; // Puede ser null
