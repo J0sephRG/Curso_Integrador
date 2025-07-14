@@ -24,7 +24,7 @@ public class UsuarioCont {
     }
     public void cargarUsuarios(JTable tabla, UsuarioDAO dao){
         DefaultTableModel modelo = new DefaultTableModel();
-    modelo.setColumnIdentifiers(new String[] { "ID", "Nombre", "Apellido", "Rol" });
+    modelo.setColumnIdentifiers(new String[] { "ID", "Nombre", "Apellido", "Clave", "Rol" });
 
     try {
         for (Usuario u : dao.listarUsuarios()) {

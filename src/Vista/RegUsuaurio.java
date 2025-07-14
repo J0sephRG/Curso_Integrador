@@ -363,7 +363,7 @@ public class RegUsuaurio extends javax.swing.JFrame {
         ps.executeUpdate();
 
         JOptionPane.showMessageDialog(this, "Usuario registrado exitosamente.");
-        this.dispose(); // Cierra el formulario
+        this.dispose();
 
     } catch (SQLException ex) {
         JOptionPane.showMessageDialog(this, "Error al registrar usuario: " + ex.getMessage());

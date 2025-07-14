@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import java.sql.Connection;
 import DAO.MesaDAO;
 import javax.swing.JOptionPane;
+import Vista.VentaMesas;
 import Vista.TablaDePEDIDOSDElivery;
 import Vista.TablaDePEDIDOS;
 import javax.swing.table.DefaultTableModel;

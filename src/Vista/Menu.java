@@ -103,7 +103,7 @@ public class Menu extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 840, 50, 50));
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 760, 50, 50));
 
         BtnUsuario.setBackground(new java.awt.Color(153, 153, 153));
         BtnUsuario.setText("Usuario");
@@ -141,7 +141,7 @@ public class Menu extends javax.swing.JFrame {
         });
         jPanel1.add(BtnRegistroPlatos, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 540, 190, 44));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 190, 910));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 190, 820));
 
         jPanel2.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -153,10 +153,10 @@ public class Menu extends javax.swing.JFrame {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 90, Short.MAX_VALUE)
+            .addGap(0, 50, Short.MAX_VALUE)
         );
 
-        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(187, -5, 1220, 90));
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, -5, 1220, 50));
 
         cont.setBackground(new java.awt.Color(255, 255, 255));
         cont.setName(""); // NOI18N
@@ -166,14 +166,14 @@ public class Menu extends javax.swing.JFrame {
         cont.setLayout(contLayout);
         contLayout.setHorizontalGroup(
             contLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1210, Short.MAX_VALUE)
+            .addGap(0, 1220, Short.MAX_VALUE)
         );
         contLayout.setVerticalGroup(
             contLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 830, Short.MAX_VALUE)
+            .addGap(0, 780, Short.MAX_VALUE)
         );
 
-        getContentPane().add(cont, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 80, 1210, 830));
+        getContentPane().add(cont, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 40, 1220, 780));
         cont.getAccessibleContext().setAccessibleParent(jPanel1);
 
         pack();
@@ -197,7 +197,7 @@ public class Menu extends javax.swing.JFrame {
 
     private void BtnProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnProveedorActionPerformed
         if (Seguridad.Sesion.isRole("Administrador")) {
-                ShowJpanel(new Proveedor());
+                ShowJpanel(new RegistroCl());
             } else {
                 JOptionPane.showMessageDialog(null, "Acceso denegado: Solo administradores.", "Error", JOptionPane.ERROR_MESSAGE);
             }

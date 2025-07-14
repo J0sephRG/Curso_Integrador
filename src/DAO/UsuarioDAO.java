@@ -52,7 +52,6 @@ public class UsuarioDAO {
             statement.setString(2, usuario.getApellido());
             statement.setString(3, usuario.getRol());
 
-            // ✅ Cifrado de contraseña
             String hashed = BCrypt.hashpw(usuario.getClave(), BCrypt.gensalt());
             statement.setString(4, hashed);
 
