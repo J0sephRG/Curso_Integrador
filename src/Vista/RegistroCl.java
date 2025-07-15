@@ -4,6 +4,12 @@
  */
 package Vista;
 
+import java.sql.SQLException;
+import ConexionSQL.Conexion;
+import Controlador.ProveedorCont;
+import DAO.ProveedorDAO;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author enman
@@ -13,9 +19,17 @@ public class RegistroCl extends javax.swing.JPanel {
     /**
      * Creates new form RegistroCl
      */
+    private ProveedorDAO proveedorDAO; 
+    private Conexion conexion;
     public RegistroCl() {
         initComponents();
+        //conexion = new Conexion();  
+        //proveedorDAO = new ProveedorDAO(conexion.Conectar());
+        //ProveedorCont controlador = new ProveedorCont(proveedorDAO, tblproveedor);
+        //controlador.cargarProveedores();//*
+        
     }
+ 
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -29,14 +43,14 @@ public class RegistroCl extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblproveedor = new javax.swing.JTable();
         jButtonModificar = new javax.swing.JButton();
-        jButtonEliminar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
         jButtonBuscar = new javax.swing.JButton();
         textBuscar = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jButtonNuevo = new javax.swing.JButton();
+        btnAgreProve = new javax.swing.JButton();
 
         jPanel2.setBackground(new java.awt.Color(204, 204, 204));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -45,20 +59,20 @@ public class RegistroCl extends javax.swing.JPanel {
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblproveedor.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Nombre", "Apellido", "DNI", "Sexo", "Telefono", "Fecha Nacimiento", "E-mail", "Direccion"
+                "id_proveedor", "N° documento", "Nombre", "Apellido", "E-mail", "Direccion", "Telefono"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblproveedor);
 
-        jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 820, 320));
+        jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 820, 320));
 
         jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 140, 840, 340));
 
@@ -72,13 +86,13 @@ public class RegistroCl extends javax.swing.JPanel {
         });
         jPanel2.add(jButtonModificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 90, -1, 30));
 
-        jButtonEliminar.setBackground(new java.awt.Color(255, 102, 102));
-        jButtonEliminar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonEliminar.setText("Eliminar");
-        jButtonEliminar.setMaximumSize(new java.awt.Dimension(82, 23));
-        jButtonEliminar.setMinimumSize(new java.awt.Dimension(82, 23));
-        jButtonEliminar.setPreferredSize(new java.awt.Dimension(82, 23));
-        jPanel2.add(jButtonEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 90, -1, 30));
+        btnEliminar.setBackground(new java.awt.Color(255, 102, 102));
+        btnEliminar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnEliminar.setText("Eliminar");
+        btnEliminar.setMaximumSize(new java.awt.Dimension(82, 23));
+        btnEliminar.setMinimumSize(new java.awt.Dimension(82, 23));
+        btnEliminar.setPreferredSize(new java.awt.Dimension(82, 23));
+        jPanel2.add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 90, -1, 30));
 
         jButtonBuscar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButtonBuscar.setText("Buscar");
@@ -90,13 +104,13 @@ public class RegistroCl extends javax.swing.JPanel {
         jLabel1.setBackground(new java.awt.Color(255, 255, 255));
         jLabel1.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Registro de Cliente");
+        jLabel1.setText("Registro de Proveedor");
 
-        jButtonNuevo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonNuevo.setText("Nuevo");
-        jButtonNuevo.addActionListener(new java.awt.event.ActionListener() {
+        btnAgreProve.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnAgreProve.setText("Nuevo");
+        btnAgreProve.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonNuevoActionPerformed(evt);
+                btnAgreProveActionPerformed(evt);
             }
         });
 
@@ -107,8 +121,8 @@ public class RegistroCl extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(31, 31, 31)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 548, Short.MAX_VALUE)
-                .addComponent(jButtonNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 517, Short.MAX_VALUE)
+                .addComponent(btnAgreProve, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
         );
         jPanel1Layout.setVerticalGroup(
@@ -117,7 +131,7 @@ public class RegistroCl extends javax.swing.JPanel {
                 .addGap(22, 22, 22)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jButtonNuevo))
+                    .addComponent(btnAgreProve))
                 .addContainerGap(21, Short.MAX_VALUE))
         );
 
@@ -139,22 +153,69 @@ public class RegistroCl extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonModificarActionPerformed
 
-    private void jButtonNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNuevoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonNuevoActionPerformed
+    private void btnAgreProveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgreProveActionPerformed
+        RegistroProveedor pro = new RegistroProveedor();
+        pro.setVisible(true);
+    }//GEN-LAST:event_btnAgreProveActionPerformed
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {
+        eliminarProveedor();
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAgreProve;
+    private javax.swing.JButton btnEliminar;
     private javax.swing.JButton jButtonBuscar;
-    private javax.swing.JButton jButtonEliminar;
     private javax.swing.JButton jButtonModificar;
-    private javax.swing.JButton jButtonNuevo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tblproveedor;
     private javax.swing.JTextField textBuscar;
     // End of variables declaration//GEN-END:variables
+
+    private void cargarProveedores() {
+        Conexion conexion =  new Conexion();
+        ProveedorDAO proveedorDAO = new ProveedorDAO(conexion.Conectar());
+        ProveedorCont controlador =  new ProveedorCont(proveedorDAO, tblproveedor);
+        controlador.cargarProveedores();
+    }
+    private Proveedor obtenerProveedorSeleccionado() {
+    int fila = tblproveedor.getSelectedRow();
+    if (fila == -1) {
+        JOptionPane.showMessageDialog(this, "Seleccione un proveedor de la tabla.");
+        return null;
+    }
+
+    int id = Integer.parseInt(tblproveedor.getValueAt(fila, 0).toString());
+    String numeroDocumento = tblproveedor.getValueAt(fila, 1).toString();
+    String nombre = tblproveedor.getValueAt(fila, 2).toString();
+    String apellido = tblproveedor.getValueAt(fila, 3).toString();
+    String telefono = tblproveedor.getValueAt(fila, 4).toString();
+    String email = tblproveedor.getValueAt(fila, 5).toString();
+    String direccion = tblproveedor.getValueAt(fila, 6).toString();
+
+    Proveedor proveedor = new Proveedor(numeroDocumento, nombre, apellido, telefono, email, direccion);
+    proveedor.setid_proveedor(id);
+    
+    return proveedor;
+    }
+    private void eliminarProveedor() {
+    Proveedor proveedor = obtenerProveedorSeleccionado();
+    if (proveedor == null) return;
+
+    int confirm = JOptionPane.showConfirmDialog(this, "¿Estás seguro de eliminar este proveedor?", "Confirmar", JOptionPane.YES_NO_OPTION);
+    if (confirm == JOptionPane.YES_OPTION) {
+        try {
+            proveedorDAO.eliminarProveedor(proveedor.getid_proveedor());
+            JOptionPane.showMessageDialog(this, "Proveedor eliminado.");
+            cargarProveedores(); // Refresca la tabla
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al eliminar: " + e.getMessage());
+        }
+    }
+}
+
 }
