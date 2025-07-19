@@ -195,9 +195,9 @@
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="4">
                 <StringItem index="0" value="&lt;&lt;Seleccionar&gt;&gt;"/>
-                <StringItem index="1" value="admin"/>
-                <StringItem index="2" value="cajero"/>
-                <StringItem index="3" value="cocinero"/>
+                <StringItem index="1" value="Administrador"/>
+                <StringItem index="2" value="Cajero"/>
+                <StringItem index="3" value="Cocinero"/>
               </StringArray>
             </Property>
           </Properties>

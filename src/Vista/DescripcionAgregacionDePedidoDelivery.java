@@ -25,7 +25,7 @@ public class DescripcionAgregacionDePedidoDelivery extends JPanel {
         // Obtener el usuario actual desde la sesión
         Usuario usuario = Seguridad.Sesion.getUsuarioActual();
         if (usuario != null) {
-            this.usuarioActualId = usuario.getId_usuario();
+            this.usuarioActualId = usuario.getIdUsuario();
         } else {
             this.usuarioActualId = -1;
             JOptionPane.showMessageDialog(this, "No hay un usuario autenticado en sesión.");

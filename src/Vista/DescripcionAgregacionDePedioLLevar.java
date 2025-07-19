@@ -24,7 +24,7 @@ public class DescripcionAgregacionDePedioLLevar extends JPanel {
         throw new IllegalStateException("No hay un usuario en sesión.");
     }
 
-    this.usuarioActualId = usuario.getId_usuario(); 
+    this.usuarioActualId = usuario.getIdUsuario(); 
     this.controller = new DescripcionPedidoLlevarController(connection, this);
     initComponents();
     controller.inicializar();

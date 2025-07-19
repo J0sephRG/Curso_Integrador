@@ -14,7 +14,7 @@ public class DescripcionDeLaMesas extends JPanel {
     private Connection connection;
     public DescripcionDeLaMesas(Connection connection, int numeroMesa) {
      
-        int usuarioActualId = Sesion.getUsuarioActual() != null ? Sesion.getUsuarioActual().getId_usuario() : -1;
+        int usuarioActualId = Sesion.getUsuarioActual() != null ? Sesion.getUsuarioActual().getIdUsuario() : -1;
         if (usuarioActualId == -1) {
             JOptionPane.showMessageDialog(this, "No hay un usuario activo. Por favor, inicie sesión.");
             SwingUtilities.getWindowAncestor(this).dispose();

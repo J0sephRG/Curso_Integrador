@@ -8,6 +8,7 @@ import ConexionSQL.Conexion;
 import Controlador.UsuarioCont;
 import DAO.UsuarioDAO;
 import Vista.RegUsuaurio;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -20,11 +21,13 @@ public class UsAdm extends javax.swing.JPanel {
      */
     private UsuarioDAO usuarioDAO; 
     private Conexion conexion;
+    private UsuarioCont usuarioCont;
     
     public UsAdm() {
         initComponents();
         conexion = new Conexion();  
         usuarioDAO = new UsuarioDAO(conexion.Conectar());  
+        usuarioCont = new UsuarioCont(usuarioDAO, tblUsuarios);
         cargarDatos();
     }
 
@@ -42,13 +45,13 @@ public class UsAdm extends javax.swing.JPanel {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblUsuarios = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButtonBuscar = new javax.swing.JButton();
+        btnModificar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
+        btnBuscar = new javax.swing.JButton();
         textBuscar = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jButtonNuevo = new javax.swing.JButton();
+        btnAgregar = new javax.swing.JButton();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -71,42 +74,63 @@ public class UsAdm extends javax.swing.JPanel {
 
         tblUsuarios.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "ID", "Nombre", "Apellido", "Rol", "DNI", "Sexo", "Telefono", "Fecha Nacimiento", "E-mail", "Direccion", "Fecha Contrato"
+                "ID", "Nombre", "Apellido", "Rol", "Activo"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tblUsuarios);
+        if (tblUsuarios.getColumnModel().getColumnCount() > 0) {
+            tblUsuarios.getColumnModel().getColumn(4).setResizable(false);
+        }
 
         jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 830, 310));
 
         jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 140, 850, 330));
 
-        jButton1.setBackground(new java.awt.Color(204, 255, 204));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton1.setText("Modificar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnModificar.setBackground(new java.awt.Color(204, 255, 204));
+        btnModificar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnModificar.setText("Modificar");
+        btnModificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnModificarActionPerformed(evt);
             }
         });
-        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 90, -1, 30));
+        jPanel2.add(btnModificar, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 90, -1, 30));
 
-        jButton2.setBackground(new java.awt.Color(255, 102, 102));
-        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton2.setText("Eliminar");
-        jButton2.setMaximumSize(new java.awt.Dimension(82, 23));
-        jButton2.setMinimumSize(new java.awt.Dimension(82, 23));
-        jButton2.setPreferredSize(new java.awt.Dimension(82, 23));
-        jPanel2.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 90, -1, 30));
+        btnEliminar.setBackground(new java.awt.Color(255, 102, 102));
+        btnEliminar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnEliminar.setText("Eliminar");
+        btnEliminar.setMaximumSize(new java.awt.Dimension(82, 23));
+        btnEliminar.setMinimumSize(new java.awt.Dimension(82, 23));
+        btnEliminar.setPreferredSize(new java.awt.Dimension(82, 23));
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 90, -1, 30));
 
-        jButtonBuscar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonBuscar.setText("Buscar");
-        jPanel2.add(jButtonBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 90, -1, -1));
+        btnBuscar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 90, -1, -1));
         jPanel2.add(textBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 90, 150, -1));
 
         jPanel4.setBackground(new java.awt.Color(102, 102, 102));
@@ -114,13 +138,13 @@ public class UsAdm extends javax.swing.JPanel {
         jLabel1.setBackground(new java.awt.Color(255, 255, 255));
         jLabel1.setFont(new java.awt.Font("Arial Rounded MT Bold", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Administración de empleados");
+        jLabel1.setText("Administración de Usuarios");
 
-        jButtonNuevo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButtonNuevo.setText("Nuevo");
-        jButtonNuevo.addActionListener(new java.awt.event.ActionListener() {
+        btnAgregar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnAgregar.setText("Nuevo");
+        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonNuevoActionPerformed(evt);
+                btnAgregarActionPerformed(evt);
             }
         });
 
@@ -131,8 +155,8 @@ public class UsAdm extends javax.swing.JPanel {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 470, Short.MAX_VALUE)
-                .addComponent(jButtonNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 489, Short.MAX_VALUE)
+                .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21))
         );
         jPanel4Layout.setVerticalGroup(
@@ -141,7 +165,7 @@ public class UsAdm extends javax.swing.JPanel {
                 .addGap(21, 21, 21)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jButtonNuevo))
+                    .addComponent(btnAgregar))
                 .addContainerGap(22, Short.MAX_VALUE))
         );
 
@@ -159,21 +183,29 @@ public class UsAdm extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnModificarActionPerformed
 
-    private void jButtonNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNuevoActionPerformed
-        RegUsuaurio us = new RegUsuaurio();
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        RegUsuaurio us = new RegUsuaurio(this, usuarioCont);
         us.setVisible(true);
-    }//GEN-LAST:event_jButtonNuevoActionPerformed
+    }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        eliminar();
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+       buscar();
+    }//GEN-LAST:event_btnBuscarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButtonBuscar;
-    private javax.swing.JButton jButtonNuevo;
+    private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnModificar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -183,9 +215,32 @@ public class UsAdm extends javax.swing.JPanel {
     private javax.swing.JTable tblUsuarios;
     private javax.swing.JTextField textBuscar;
     // End of variables declaration//GEN-END:variables
-
+//agrega los datos de la base de datos a la tabla :v
     private void cargarDatos() {
-       UsuarioCont cont = new UsuarioCont(usuarioDAO,tblUsuarios);
-        cont.cargarUsuarios(tblUsuarios, usuarioDAO);
+      usuarioCont.cargarUsuarios();
     }
+// elimina
+    private void eliminar() {
+        int selectedRow = tblUsuarios.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Por favor, seleccione un usuario para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        int idUsuario = (int) tblUsuarios.getValueAt(selectedRow, 0);
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Estás seguro de eliminar este usuario?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+        usuarioCont.eliminarUsuario(idUsuario);
+    }
+//busca
+    private void buscar() {
+        String buscar = textBuscar.getText().trim();
+        usuarioCont.buscarUsuario(null, buscar, buscar, null, null);
+    }
+    
+    public void refrescarTabla() {
+        cargarDatos();
+    }
+   
 }

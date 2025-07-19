@@ -124,7 +124,7 @@ public class PanelCentralDeVentas extends javax.swing.JPanel {
     Connection connection = conexionBD.Conectar();
 
     if (connection != null) {
-        int usuarioActualId = Seguridad.Sesion.getUsuarioActual().getId_usuario();
+        int usuarioActualId = Seguridad.Sesion.getUsuarioActual().getIdUsuario();
             TablaDePEDIDOS panelParaLlevar = new TablaDePEDIDOS(connection);
 
         ShowJpanel(panelParaLlevar);
@@ -143,7 +143,7 @@ public class PanelCentralDeVentas extends javax.swing.JPanel {
     if (connection != null) {
      
         // Crear e instanciar la ventana TablaDePEDIDOSDElivery
-        int usuarioActualId = Seguridad.Sesion.getUsuarioActual().getId_usuario();
+        int usuarioActualId = Seguridad.Sesion.getUsuarioActual().getIdUsuario();
             TablaDePEDIDOSDElivery ventanaDelivery = new TablaDePEDIDOSDElivery(connection);
 
         ShowJpanel(ventanaDelivery); // ← Aquí lo muestras dentro de jpMes

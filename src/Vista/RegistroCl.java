@@ -9,7 +9,7 @@ import ConexionSQL.Conexion;
 import Controlador.ProveedorCont;
 import DAO.ProveedorDAO;
 import javax.swing.JOptionPane;
-
+import Modelo.Proveedor;
 /**
  *
  * @author enman

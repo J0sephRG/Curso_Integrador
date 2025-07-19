@@ -193,7 +193,7 @@ public class DescripcionDeLaMesasController {
     public void registrarVenta() {
         try {
             // Obtener el ID del usuario desde la sesión
-            int usuarioActualId = Sesion.getUsuarioActual().getId_usuario();
+            int usuarioActualId = Sesion.getUsuarioActual().getIdUsuario();
 
             // Crear venta sin ID (lo genera la BD)
             Venta venta = new Venta(

@@ -36,7 +36,7 @@ public class DescripcionDeliveryController {
     this.connection = connection;
     this.vista = vista;
     Usuario usuario = Seguridad.Sesion.getUsuarioActual();
-    this.usuarioActualId = (usuario != null) ? usuario.getId_usuario() : -1; // Manejo por si no hay usuario logueado
+    this.usuarioActualId = (usuario != null) ? usuario.getIdUsuario() : -1; // Manejo por si no hay usuario logueado
     this.platoDAO = new PlatoDAO(connection);
     this.clienteDAO = new ClienteDAO(connection);
     this.ventaDAO = new VentaDAO(connection);

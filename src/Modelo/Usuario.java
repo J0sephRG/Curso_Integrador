@@ -4,7 +4,7 @@ package Modelo;
 
 
 public class Usuario {
-    private int id_usuario;
+    private int IdUsuario;
     private String nombre;
     private String apellido;
     private String rol; 
@@ -15,7 +15,7 @@ public class Usuario {
     }
 
     public Usuario(int id_usuario, String nombre, String apellido, String clave, String rol, boolean activo) {
-        this.id_usuario = id_usuario;
+        this.IdUsuario = IdUsuario;
         this.nombre = nombre;
         this.apellido = apellido;
         this.rol = rol;
@@ -23,12 +23,12 @@ public class Usuario {
         this.activo = activo;
     }
 
-    public int getId_usuario() {
-        return id_usuario;
+    public int getIdUsuario() {
+        return IdUsuario;
     }
 
-    public void setId_usuario(int id_usuario) {
-        this.id_usuario = id_usuario;
+    public void setIdUsuarioo(int id_usuario) {
+        this.IdUsuario = id_usuario;
     }
 
     public String getNombre() {

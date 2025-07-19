@@ -5,6 +5,7 @@
 package Vista;
 
 import ConexionSQL.Conexion;
+import Controlador.UsuarioCont;
 import DAO.UsuarioDAO;
 import com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialLighterIJTheme;
@@ -21,13 +22,19 @@ import Modelo.Usuario;
  * @author JOSEPH ROJAS
  */
 public class Login extends javax.swing.JFrame {
-int intentos;
-
+    
+    private int intentos;
+    private final UsuarioDAO usuarioDAO;
+    private final UsuarioCont usuarioCont;
 
     public Login() {
         
         initComponents();
         this.setLocationRelativeTo(null);
+        Conexion conexion = new Conexion();
+        usuarioDAO = new UsuarioDAO(conexion.Conectar());
+        usuarioCont = new UsuarioCont(usuarioDAO, null);
+        
     }
 
     /**
@@ -176,7 +183,7 @@ int intentos;
     }//GEN-LAST:event_btnIngresarActionPerformed
 
     private void btnCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCuentaActionPerformed
-       RegUsuaurio usuario = new RegUsuaurio();
+       RegUsuaurio usuario = new RegUsuaurio(null, usuarioCont);
        usuario.setVisible(true);
     }//GEN-LAST:event_btnCuentaActionPerformed
 

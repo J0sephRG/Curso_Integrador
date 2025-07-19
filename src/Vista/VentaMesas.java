@@ -296,7 +296,7 @@ public class VentaMesas extends javax.swing.JPanel {
     }
    
     private void abrirDescripcionDeLaMesa(int numeroMesa) {
-    int usuarioActualId = Sesion.getUsuarioActual().getId_usuario(); 
+    int usuarioActualId = Sesion.getUsuarioActual().getIdUsuario(); 
     DescripcionDeLaMesas panelDescripcion = new DescripcionDeLaMesas(connection, numeroMesa);
     JFrame frame = new JFrame("Descripción Mesa " + numeroMesa);
     frame.setContentPane(panelDescripcion);

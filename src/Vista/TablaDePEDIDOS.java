@@ -22,7 +22,7 @@ public class TablaDePEDIDOS extends javax.swing.JPanel {
     public TablaDePEDIDOS(Connection connection) {
     initComponents();
     Usuario usuario = Sesion.getUsuarioActual();
-    this.usuarioActualId = (usuario != null) ? usuario.getId_usuario() : -1; // -1 como valor por defecto si no hay usuario
+    this.usuarioActualId = (usuario != null) ? usuario.getIdUsuario() : -1; // -1 como valor por defecto si no hay usuario
     this.controlador = new ControladorPedidosTablas(connection);
     this.modeloTabla = (DefaultTableModel) jTablePedidosLlevar.getModel();
     cargarPedidos();

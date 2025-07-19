@@ -4,6 +4,9 @@
  */
 package Vista;
 
+import Controlador.UsuarioCont;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.Connection; 
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
@@ -18,9 +21,21 @@ public class RegUsuaurio extends javax.swing.JFrame {
     /**
      * Creates new form Us
      */
-    public RegUsuaurio() {
+    private final UsAdm usAdm;
+    private final UsuarioCont usuarioCont;
+    
+     public RegUsuaurio(UsAdm usAdm, UsuarioCont usuarioCont) {
+        this.usAdm = usAdm;
+        this.usuarioCont = usuarioCont;
         initComponents();
         this.setLocationRelativeTo(null);
+        // Actualizar tabla al cerrar
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                usAdm.refrescarTabla();
+            }
+        });
     }
 
     /**
@@ -103,7 +118,7 @@ public class RegUsuaurio extends javax.swing.JFrame {
             }
         });
 
-        cboRol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "<<Seleccionar>>", "admin", "cajero", "cocinero" }));
+        cboRol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "<<Seleccionar>>", "Administrador", "Cajero", "Cocinero" }));
 
         btnCancelar.setBackground(new java.awt.Color(51, 51, 51));
         btnCancelar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -236,16 +251,10 @@ public class RegUsuaurio extends javax.swing.JFrame {
     }//GEN-LAST:event_txtClaveActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-      int opcion = JOptionPane.showConfirmDialog(
-        this,
-        "¿Estás seguro de salir del registro de usuario?",
-        "Confirmación",
-        JOptionPane.YES_NO_OPTION
-    );
-
-    if (opcion == JOptionPane.YES_OPTION) {
-        this.dispose(); 
-    }
+        int opcion = JOptionPane.showConfirmDialog(this,"¿Estás seguro de salir del registro de usuario?","Confirmación",JOptionPane.YES_NO_OPTION);
+        if (opcion == JOptionPane.YES_OPTION) {
+            this.dispose(); 
+        }
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void jButtonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGuardarActionPerformed
@@ -285,7 +294,7 @@ public class RegUsuaurio extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new RegUsuaurio().setVisible(true);
+                new RegUsuaurio(null,null).setVisible(true);
             }
         });
     }
@@ -354,7 +363,7 @@ public class RegUsuaurio extends javax.swing.JFrame {
         }
 
         // Insertar usuario
-        String sql = "INSERT INTO Usuario (nombre, apellido, rol, clave) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Usuario (nombre, apellido, rol, clave, Activo) VALUES (?, ?, ?, ?.?)";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1, nombre);
         ps.setString(2, apellido);
