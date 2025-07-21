@@ -184,7 +184,7 @@ public class UsAdm extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-        // TODO add your handling code here:
+       modificar();
     }//GEN-LAST:event_btnModificarActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
@@ -227,10 +227,6 @@ public class UsAdm extends javax.swing.JPanel {
             return;
         }
         int idUsuario = (int) tblUsuarios.getValueAt(selectedRow, 0);
-        int confirm = JOptionPane.showConfirmDialog(this, "¿Estás seguro de eliminar este usuario?", "Confirmar", JOptionPane.YES_NO_OPTION);
-        if (confirm != JOptionPane.YES_OPTION) {
-            return;
-        }
         usuarioCont.eliminarUsuario(idUsuario);
     }
 //busca
@@ -241,6 +237,10 @@ public class UsAdm extends javax.swing.JPanel {
     
     public void refrescarTabla() {
         cargarDatos();
+    }
+
+    private void modificar() {
+        
     }
    
 }

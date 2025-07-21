@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -25,8 +26,20 @@ public class UsuarioCont {
         this.tabla = tabla;
     }
     public void cargarUsuarios(){
-        DefaultTableModel modelo = new DefaultTableModel();
+        DefaultTableModel modelo = new DefaultTableModel() {
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            if (columnIndex == 4) return Boolean.class; // "Activo" es la columna 4
+            return String.class;
+        }
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 4; // Solo "Activo" editable
+            }
+        };
         modelo.setColumnIdentifiers(new String[]{"ID", "Nombre", "Apellido", "Rol", "Activo"});
+
         try {
             List<Usuario> usuarios = usuarioDAO.listarUsuarios();
             for (Usuario u : usuarios) {
@@ -38,7 +51,25 @@ public class UsuarioCont {
                     u.isActivo()
                 });
             }
+
             tabla.setModel(modelo);
+
+            // Agregar listener para cambios de estado en la tabla
+            modelo.addTableModelListener(e -> {
+                if (e.getType() == TableModelEvent.UPDATE && e.getColumn() == 4) {
+                    int fila = e.getFirstRow();
+                    int idUsuario = (Integer) tabla.getValueAt(fila, 0);
+                    boolean nuevoEstado = (Boolean) tabla.getValueAt(fila, 4);
+
+                    try {
+                        usuarioDAO.actualizarEstadoActivo(idUsuario, nuevoEstado);
+                        System.out.println("Estado actualizado correctamente en la BD.");
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(null, "Error al actualizar estado del usuario: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            });
+
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al cargar usuarios: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -152,5 +183,4 @@ public class UsuarioCont {
             JOptionPane.showMessageDialog(null, "Error de base de datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
 }

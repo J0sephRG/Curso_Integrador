@@ -7,11 +7,13 @@ package Vista;
 import Controlador.UsuarioCont;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.security.SecureRandom;
 import java.sql.Connection; 
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import org.mindrot.jbcrypt.BCrypt;
 /**
  *
  * @author JOSEPH ROJAS
@@ -29,13 +31,14 @@ public class RegUsuaurio extends javax.swing.JFrame {
         this.usuarioCont = usuarioCont;
         initComponents();
         this.setLocationRelativeTo(null);
-        // Actualizar tabla al cerrar
+
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
                 usAdm.refrescarTabla();
             }
         });
+        
     }
 
     /**
@@ -317,65 +320,77 @@ public class RegUsuaurio extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void agregar() {
-           String nombre = txtNombre.getText().trim();
-    String apellido = txtApellido.getText().trim();
-    String clave = txtClave.getText().trim();
-    String rol = (String) cboRol.getSelectedItem();
+        String nombre = txtNombre.getText().trim();
+        String apellido = txtApellido.getText().trim();
+        String clave = txtClave.getText().trim();
+        String rol = (String) cboRol.getSelectedItem();
 
-    // Validar campos vacíos
-    if (nombre.isEmpty() || apellido.isEmpty() || clave.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.");
-        return;
-    }
-
-    // Validar que nombre y apellido solo contengan letras
-    if (!nombre.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$") || !apellido.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$")) {
-        JOptionPane.showMessageDialog(this, "El nombre y el apellido solo deben contener letras.");
-        return;
-    }
-
-    // Validar que la clave tenga al menos 8 caracteres y contenga letras, números o símbolos
-    if (clave.length() < 8 || !clave.matches("^(?=.*[a-zA-Z])(?=.*\\d|.*[^a-zA-Z\\d]).{8,}$")) {
-        JOptionPane.showMessageDialog(this, "La clave debe tener al menos 8 caracteres y contener letras, números o símbolos.");
-        return;
-    }
-
-    // Confirmación antes de registrar
-    int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que quiere añadir un nuevo usuario?", "Confirmación", JOptionPane.YES_NO_OPTION);
-    if (confirm != JOptionPane.YES_OPTION) {
-        return;
-    }
-
-    try {
-        ConexionSQL.Conexion conect = new ConexionSQL.Conexion();
-        Connection conn = conect.Conectar();
-
-        // Verificar si ya existe el usuario (nombre + apellido)
-        String checkSql = "SELECT COUNT(*) FROM Usuario WHERE nombre = ? AND apellido = ?";
-        PreparedStatement checkPs = conn.prepareStatement(checkSql);
-        checkPs.setString(1, nombre);
-        checkPs.setString(2, apellido);
-        ResultSet rs = checkPs.executeQuery();
-        rs.next();
-        if (rs.getInt(1) > 0) {
-            JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese nombre y apellido.");
+        // Validar campos vacíos
+        if (nombre.isEmpty() || apellido.isEmpty() || clave.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.");
             return;
         }
 
-        // Insertar usuario
-        String sql = "INSERT INTO Usuario (nombre, apellido, rol, clave, Activo) VALUES (?, ?, ?, ?.?)";
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, nombre);
-        ps.setString(2, apellido);
-        ps.setString(3, rol);
-        ps.setString(4, clave); // Puedes cifrar si luego usas AES
-        ps.executeUpdate();
+        // Validar que nombre y apellido solo contengan letras
+        if (!nombre.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$") || !apellido.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$")) {
+            JOptionPane.showMessageDialog(this, "El nombre y el apellido solo deben contener letras.");
+            return;
+        }
 
-        JOptionPane.showMessageDialog(this, "Usuario registrado exitosamente.");
-        this.dispose();
+        // Validar que la clave tenga al menos 8 caracteres y contenga letras, números o símbolos
+        if (clave.length() < 8 || !clave.matches("^(?=.*[a-zA-Z])(?=.*\\d|.*[^a-zA-Z\\d]).{8,}$")) {
+            JOptionPane.showMessageDialog(this, "La clave debe tener al menos 8 caracteres y contener letras, números o símbolos.");
+            return;
+        }
 
-    } catch (SQLException ex) {
-        JOptionPane.showMessageDialog(this, "Error al registrar usuario: " + ex.getMessage());
-    }
+        // Confirmación antes de registrar
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que quiere añadir un nuevo usuario?", "Confirmación", JOptionPane.YES_NO_OPTION);
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        try {
+            ConexionSQL.Conexion conect = new ConexionSQL.Conexion();
+            Connection conn = conect.Conectar();
+
+            // Verificar si ya existe el usuario (nombre + apellido)
+            String checkSql = "SELECT COUNT(*) FROM Usuario WHERE nombre = ? AND apellido = ?";
+            PreparedStatement checkPs = conn.prepareStatement(checkSql);
+            checkPs.setString(1, nombre);
+            checkPs.setString(2, apellido);
+            ResultSet rs = checkPs.executeQuery();
+            rs.next();
+            if (rs.getInt(1) > 0) {
+                JOptionPane.showMessageDialog(this, "Ya existe un usuario con ese nombre y apellido.");
+                return;
+            }
+
+            String hashedPassword = BCrypt.hashpw(clave, BCrypt.gensalt());
+            // Insertar usuario
+            String sql = "INSERT INTO Usuario (nombre, apellido, rol, clave, Activo) VALUES (?, ?, ?, ?,?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, nombre);
+            ps.setString(2, apellido);
+            ps.setString(3, rol);
+            ps.setString(4, hashedPassword);
+            ps.setBoolean(5, true);
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(this, "Usuario registrado exitosamente.");
+            this.dispose();
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al registrar usuario: " + ex.getMessage());
+        }
+        }
+     private String generarClaveTemporal() {
+        int length = 10;
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$!";
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
     }
 }

@@ -15,7 +15,7 @@ public class Usuario {
     }
 
     public Usuario(int id_usuario, String nombre, String apellido, String clave, String rol, boolean activo) {
-        this.IdUsuario = IdUsuario;
+        this.IdUsuario = id_usuario;
         this.nombre = nombre;
         this.apellido = apellido;
         this.rol = rol;
@@ -69,9 +69,5 @@ public class Usuario {
 
     public void setActivo(boolean activo) {
         this.activo = activo;
-    }
-
-    
-    
-   
+    }  
 }

@@ -2,6 +2,15 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/JOSEPH%20ROJAS/OneDrive/Documentos/NetBeansProjects/proDorado/src/Vista/RegUsuaurio.java</file>
+            <file>file:/C:/Users/JOSEPH%20ROJAS/OneDrive/Documentos/NetBeansProjects/proDorado/src/Utils/AESUtil.java</file>
+            <file>file:/C:/Users/JOSEPH%20ROJAS/OneDrive/Documentos/NetBeansProjects/proDorado/src/Utils/ActualizarContrasenias.java</file>
+            <file>file:/C:/Users/JOSEPH%20ROJAS/OneDrive/Documentos/NetBeansProjects/proDorado/src/Modelo/Usuario.java</file>
+            <file>file:/C:/Users/JOSEPH%20ROJAS/OneDrive/Documentos/NetBeansProjects/proDorado/src/Vista/UsAdm.java</file>
+            <file>file:/C:/Users/JOSEPH%20ROJAS/OneDrive/Documentos/NetBeansProjects/proDorado/src/DAO/UsuarioDAO.java</file>
+            <file>file:/C:/Users/JOSEPH%20ROJAS/OneDrive/Documentos/NetBeansProjects/proDorado/src/Controlador/UsuarioCont.java</file>
+            <file>file:/C:/Users/JOSEPH%20ROJAS/OneDrive/Documentos/NetBeansProjects/proDorado/src/Utils/IndicatorPanel.java</file>
+        </group>
     </open-files>
 </project-private>
