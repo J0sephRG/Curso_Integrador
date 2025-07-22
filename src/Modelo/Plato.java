@@ -50,4 +50,9 @@ public class Plato {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+    
+     @Override
+    public String toString() {
+        return nombre; // Solo mostramos el nombre en el JComboBox
+    }
 }

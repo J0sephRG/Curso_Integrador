@@ -52,16 +52,23 @@ INSERT INTO EstadoPedido VALUES ('pendiente'), ('en_preparacion'), ('en_camino')
 -- Tabla Usuario
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Usuario') AND type = N'U')
 BEGIN
-CREATE TABLE Usuario (
+CREATE TABLE Usuarios (
     id_usuario INT IDENTITY(1,1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     apellido VARCHAR(50) NOT NULL,
-    rol VARCHAR(20) NOT NULL FOREIGN KEY REFERENCES Rol(rol),
-    clave VARCHAR(255) NOT NULL,
-    fecha_creacion DATETIME2 DEFAULT SYSUTCDATETIME()
+    clave VARCHAR(255) NOT NULL, -- Para contraseñas hasheadas con jBCrypt
+    rol VARCHAR(20) NOT NULL CHECK (rol IN ('Administrador', 'Cajero', 'OtroRol')),
+    Activo BIT DEFAULT 1
 );
 END;
 GO
+
+CREATE TABLE LoginLogs (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Username VARCHAR(50),
+    Fecha DATETIME DEFAULT GETDATE(),
+    Exitoso BIT
+);
 
 -- Tabla Proveedor
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'Proveedor') AND type = N'U')
@@ -133,7 +140,8 @@ CREATE TABLE Plato (
     id_plato INT IDENTITY(1,1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     precio DECIMAL(10, 2) NOT NULL,
-    descripcion VARCHAR(MAX)
+    descripcion VARCHAR(MAX),
+    stock INT NOT NULL
 );
 END;
 GO
@@ -409,13 +417,14 @@ VALUES
 ('Tiramisu', 6.00, 'Postre italiano con café y cacao'),
 ('Lasaña', 20.00, 'Pasta al horno con carne y salsa bechamel');
 
+-- Ahora sí, usar los IDs reales
 INSERT INTO Plato_Producto (id_plato, id_producto, cantidad)
 VALUES 
-(1, 1, 150), -- Pizza Margarita usa 150g de Mozzarella
-(2, 4, 200), -- Espagueti Carbonara usa 200g de Espagueti
-(3, 5, 50),  -- Ensalada César usa 50g de Lechuga
-(4, 3, 1),   -- Tiramisu usa 1 porción de Tiramisu
-(5, 4, 250); -- Lasaña usa 250g de Espagueti
+(1, 1, 150),
+(2, 4, 200),
+(3, 5, 50),
+(4, 3, 1),
+(5, 4, 250);
 
 INSERT INTO Cliente (dni, nombre, apellido, telefono, email)
 VALUES 

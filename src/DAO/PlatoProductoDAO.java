@@ -1,7 +1,8 @@
 package DAO;
 
-import ConexionSQL.Conexion; // Asegúrate de que esta clase maneje la conexión a SQL Server
+import ConexionSQL.Conexion;
 import Modelo.PlatoProducto;
+import Modelo.ProductoSeleccionado;
 import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
@@ -17,13 +18,21 @@ public class PlatoProductoDAO {
         this.conn = conn;
     }
 
-    public void agregarPlatoProducto(PlatoProducto pp) throws SQLException {
-        String query = "INSERT INTO Plato_Producto(id_plato, id_producto, cantidad) VALUES (?, ?, ?)";
-        try (PreparedStatement statement = conn.prepareStatement(query)) { // Cambiado 'connection' a 'conn'
-            statement.setInt(1, pp.getId_plato());
-            statement.setInt(2, pp.getId_producto());
-            statement.setInt(3, pp.getCantidad());
-            statement.executeUpdate();
+    public boolean insertarProductosEnPlato(int idPlato, List<ProductoSeleccionado> productos) {
+        String sql = "INSERT INTO Plato_Producto (id_plato, id_producto, cantidad) VALUES (?, ?, ?)";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            for (ProductoSeleccionado p : productos) {
+                stmt.setInt(1, idPlato);
+                stmt.setInt(2, p.getIdProducto());
+                stmt.setInt(3, p.getCantidad());
+                stmt.addBatch();  // Usamos batch para mejor rendimiento
+            }
+            stmt.executeBatch();  // Ejecutamos todos juntos
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

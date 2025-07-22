@@ -4,39 +4,30 @@
  */
 package Modelo;
 
+import java.util.Date;
+
 /**
  *
  * @author JOSEPH ROJAS
  */
-public class Proveedor {
+public class Proveedor extends Persona{
     private int id_proveedor;
     private String numeroDocumento;
-    private String nombre;
-    private String apellido;
-    private String telefono;
-    private String email;
     private String direccion;
     // Constructor, Getters y Setters
-    
-    public Proveedor(int id_Proveedor, String numeroDocumento, String nombre, String apellido, String telefono, String email, String direccion) {
+
+    public Proveedor() {
+    }
+
+    public Proveedor(int id_proveedor, String numeroDocumento, String direccion, String nombre, String apellido, Date fechaNacimiento, String tipodocumento, String telefono, String email) {
+        super(nombre, apellido, fechaNacimiento, tipodocumento, telefono, email);
         this.id_proveedor = id_proveedor;
         this.numeroDocumento = numeroDocumento;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.telefono = telefono;
-        this.email = email;
         this.direccion = direccion;
     }
     
-    public Proveedor(String numeroDocumento, String nombre, String apellido, String telefono, String email, String direccion) {
-        this.numeroDocumento = numeroDocumento;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.telefono = telefono;
-        this.email = email;
-        this.direccion = direccion;
-    }
     
+
     public int getid_proveedor(){
         return id_proveedor;
     }
@@ -94,6 +85,11 @@ public class Proveedor {
 
     public void setDireccion(String direccion) {
         this.direccion = direccion;
+    }
+
+    @Override
+    public void mostrarInformacion() {
+        
     }
     
 }

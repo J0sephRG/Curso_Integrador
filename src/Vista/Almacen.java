@@ -201,7 +201,7 @@ public class Almacen extends javax.swing.JPanel {
     private javax.swing.JTable tblProductos;
     private javax.swing.JTextField textBuscar;
     // End of variables declaration//GEN-END:variables
-    private void cargarDatos() {
+     private void cargarDatos() {
         ProductoCont cont = new ProductoCont(productoDAO, tblProductos);
         cont.cargarProductos();
     }

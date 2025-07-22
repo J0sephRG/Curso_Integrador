@@ -52,7 +52,7 @@ public class ProductoDAO {
             while (rs.next()) {
                 int id = rs.getInt("id_producto");
                 String nombre = rs.getString("nombre");
-                double precio = rs.getDouble("precio");
+                double precio = rs.getDouble("precio_unitario"); 
                 int stockAct = rs.getInt("stock_actual"); 
                 int stockMin = rs.getInt("stock_minimo"); 
                 String unidadMedida = rs.getString("unidad_medida"); 
@@ -73,22 +73,18 @@ public class ProductoDAO {
         return productos;
     }
 
-    public Categoria obtenerCategoriaPorId(int categoriaId) {
-    // Aquí se hace una consulta para obtener los datos de la categoría
+ public Categoria obtenerCategoriaPorId(int categoriaId) {
     String query = "SELECT * FROM Categoria WHERE id_categoria = ?";
     Categoria categoria = null;
     try (PreparedStatement stmt = conn.prepareStatement(query)) {
         stmt.setInt(1, categoriaId);
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
-            // Ahora, obtenemos también la descripción de la categoría
             String descripcion = rs.getString("descripcion");
-            
-            // Aquí deberías construir el objeto Categoria con los tres parámetros
             categoria = new Categoria(
-                rs.getInt("id_categoria"),  
-                rs.getString("nombre"),     
-                descripcion               
+                rs.getInt("id_categoria"),
+                rs.getString("nombre_categoria"),  // ← corregido
+                descripcion
             );
         }
         rs.close();
@@ -125,7 +121,7 @@ public class ProductoDAO {
                 Producto p = new Producto(
                     rs.getInt("id_producto"),
                     rs.getString("nombre"),
-                    rs.getDouble("precio"),
+                    rs.getDouble("precio_unitario"),
                     rs.getInt("stock_actual"),
                     rs.getInt("stock_minimo"),
                     rs.getString("unidad_medida"),

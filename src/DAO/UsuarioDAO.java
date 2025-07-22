@@ -17,7 +17,7 @@ public class UsuarioDAO {
         
     public List<Usuario> listarUsuarios() throws SQLException {
         List<Usuario> usuarios = new ArrayList<>();
-        String query = "SELECT id_usuario, nombre, apellido, clave, rol, Activo FROM Usuario";
+        String query = "SELECT id_usuario, nombre, apellido, clave, rol, Activo FROM Usuarios";
         try (PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
@@ -36,7 +36,7 @@ public class UsuarioDAO {
     
     public boolean agregarUsuario(String nombre, String apellido, String clave, String rol) throws SQLException {
         // Verificar unicidad del nombre
-        String checkQuery = "SELECT COUNT(*) FROM Usuario WHERE nombre = ?";
+        String checkQuery = "SELECT COUNT(*) FROM Usuarios WHERE nombre = ?";
         try (PreparedStatement checkStmt = conn.prepareStatement(checkQuery)) {
             checkStmt.setString(1, nombre);
             ResultSet rs = checkStmt.executeQuery();
@@ -64,7 +64,7 @@ public class UsuarioDAO {
         }
 
         String hashedPassword = BCrypt.hashpw(clave, BCrypt.gensalt());
-        String query = "INSERT INTO Usuario (nombre, apellido, clave, rol, Activo) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Usuarios (nombre, apellido, clave, rol, Activo) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, nombre);
             stmt.setString(2, apellido);
@@ -77,7 +77,7 @@ public class UsuarioDAO {
     }
     
     public boolean eliminarUsuario(int idUsuario) throws SQLException {
-        String query = "DELETE FROM Usuario WHERE id_usuario = ?";
+        String query = "DELETE FROM Usuarios WHERE id_usuario = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, idUsuario);
             int filasAfectadas = stmt.executeUpdate();
@@ -87,7 +87,7 @@ public class UsuarioDAO {
     
     public List<Usuario> buscarUsuario(String idUsuario, String nombre, String apellido, String clave, String rol, Boolean activo) throws SQLException {
         List<Usuario> usuarios = new ArrayList<>();
-        StringBuilder query = new StringBuilder("SELECT id_usuario, nombre, apellido, clave, rol, Activo FROM Usuario WHERE 1=1");
+        StringBuilder query = new StringBuilder("SELECT id_usuario, nombre, apellido, clave, rol, Activo FROM Usuarios WHERE 1=1");
         List<Object> params = new ArrayList<>();
 
         if (idUsuario != null && !idUsuario.isEmpty()) {
@@ -135,7 +135,7 @@ public class UsuarioDAO {
     }
     
     public Usuario obtenerPorNombreYClave(String nombre, String clave) throws SQLException {
-        String query = "SELECT id_usuario, nombre, apellido, clave, rol, Activo FROM Usuario WHERE nombre = ? AND Activo = 1";
+        String query = "SELECT id_usuario, nombre, apellido, clave, rol, Activo FROM Usuarios WHERE nombre = ? AND Activo = 1";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, nombre);
             ResultSet rs = stmt.executeQuery();
@@ -173,14 +173,14 @@ public class UsuarioDAO {
     }
     
     public String restablecerContrasena(String nombre) throws SQLException {
-        String query = "SELECT nombre FROM Usuario WHERE nombre = ? AND Activo = 1";
+        String query = "SELECT nombre FROM Usuarios WHERE nombre = ? AND Activo = 1";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, nombre);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 String tempPassword = UUID.randomUUID().toString().substring(0, 8);
                 String hashedTempPassword = BCrypt.hashpw(tempPassword, BCrypt.gensalt());
-                String updateQuery = "UPDATE Usuario SET clave = ? WHERE nombre = ?";
+                String updateQuery = "UPDATE Usuarios SET clave = ? WHERE nombre = ?";
                 try (PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
                     updateStmt.setString(1, hashedTempPassword);
                     updateStmt.setString(2, nombre);
@@ -194,7 +194,7 @@ public class UsuarioDAO {
     
     public void actualizarClave(String nombre, String nuevaClave) throws SQLException {
         String hashedPassword = BCrypt.hashpw(nuevaClave, BCrypt.gensalt());
-        String query = "UPDATE Usuario SET clave = ?, Activo = 1 WHERE nombre = ?";
+        String query = "UPDATE Usuarios SET clave = ?, Activo = 1 WHERE nombre = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, hashedPassword);
             stmt.setString(2, nombre);
@@ -208,7 +208,7 @@ public class UsuarioDAO {
     }
     
     public boolean actualizarEstadoActivo(int idUsuario, boolean activo) throws SQLException {
-        String query = "UPDATE Usuario SET Activo = ? WHERE id_usuario = ?";
+        String query = "UPDATE Usuarios SET Activo = ? WHERE id_usuario = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setBoolean(1, activo);
             stmt.setInt(2, idUsuario);

@@ -14,7 +14,7 @@ public class PlatoDAO {
         this.conn = conn;
     }
 
-    // ✅ Validación centralizada
+   
     private void validarPlato(Plato plato) {
         if (plato == null) throw new IllegalArgumentException("El platillo no puede ser nulo.");
         if (plato.getNombre() == null || plato.getNombre().trim().isEmpty())
@@ -25,7 +25,7 @@ public class PlatoDAO {
             throw new IllegalArgumentException("La descripción es obligatoria.");
     }
 
-    // ✅ Reutilización para mapear resultado de la base de datos
+    // Reutilización para mapear resultado de la base de datos
     private Plato mapearPlato(ResultSet rs) throws SQLException {
         return new Plato(
             rs.getInt("id_plato"),
@@ -105,10 +105,10 @@ public class PlatoDAO {
     }
 
     public Plato buscarPlatoPorId(int idPlato) throws SQLException {
-        return obtenerPlato(idPlato); // ✅ Reutiliza método ya existente
+        return obtenerPlato(idPlato); 
     }
 
-    // ✅ Búsqueda segura por nombre
+    // Búsqueda segura por nombre
     public List<Plato> buscarPlatosPorNombre(String criterio) throws SQLException {
         List<Plato> resultados = new ArrayList<>();
         String query = "SELECT * FROM Plato WHERE LOWER(nombre) LIKE ?";

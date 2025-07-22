@@ -7,6 +7,7 @@ import Modelo.Usuario;
 import ConexionSQL.Conexion;
 import Vista.PanelCentralDeVentas;
 import Vista.UsAdm;
+import Vista.TablaProductos_Platos;
 import java.awt.BorderLayout;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -52,6 +53,7 @@ public class Menu extends javax.swing.JFrame {
         BtnAlmacen = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         BtnRegistroPlatos = new javax.swing.JButton();
+        BtntablaProductos_Plato = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         cont = new javax.swing.JPanel();
 
@@ -140,6 +142,17 @@ public class Menu extends javax.swing.JFrame {
             }
         });
         jPanel1.add(BtnRegistroPlatos, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 540, 190, 44));
+
+        BtntablaProductos_Plato.setBackground(new java.awt.Color(153, 153, 153));
+        BtntablaProductos_Plato.setText("PRI");
+        BtntablaProductos_Plato.setBorder(null);
+        BtntablaProductos_Plato.setBorderPainted(false);
+        BtntablaProductos_Plato.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtntablaProductos_PlatoActionPerformed(evt);
+            }
+        });
+        jPanel1.add(BtntablaProductos_Plato, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 630, 190, 44));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 190, 820));
 
@@ -233,6 +246,16 @@ public class Menu extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_BtnRegistroPlatosActionPerformed
 
+    private void BtntablaProductos_PlatoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtntablaProductos_PlatoActionPerformed
+    if (connection != null) { // Verificar que la conexión no sea nula
+            TablaProductos_Platos TablaProductos_Plato = null; 
+            TablaProductos_Plato = new TablaProductos_Platos(connection);
+            ShowJpanel(TablaProductos_Plato); 
+        } else {
+            System.out.println("Error: No se pudo establecer la conexión a la base de datos.");
+        }
+    }//GEN-LAST:event_BtntablaProductos_PlatoActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -273,6 +296,7 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JButton BtnProveedor;
     private javax.swing.JButton BtnRegistroPlatos;
     private javax.swing.JButton BtnUsuario;
+    private javax.swing.JButton BtntablaProductos_Plato;
     private javax.swing.JButton btnVentas;
     private javax.swing.JPanel cont;
     private javax.swing.JButton jButton2;

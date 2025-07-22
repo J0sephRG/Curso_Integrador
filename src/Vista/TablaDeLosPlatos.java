@@ -294,7 +294,7 @@ public class TablaDeLosPlatos extends javax.swing.JPanel {
                 jButtonLimpiarFormularioActionPerformed(evt);
             }
         });
-        jPanel2.add(jButtonLimpiarFormulario, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 330, -1, -1));
+        jPanel2.add(jButtonLimpiarFormulario, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 460, -1, 30));
 
         jPanel8.setBackground(new java.awt.Color(102, 102, 102));
 
